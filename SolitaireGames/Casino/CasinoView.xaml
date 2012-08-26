@@ -1,0 +1,164 @@
+﻿<UserControl x:Class="SolitaireGames.Casino.CasinoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:solitaireGames="clr-namespace:SolitaireGames"
+             xmlns:local="clr-namespace:SolitaireGames.Casino"
+             xmlns:apexControls="clr-namespace:Apex.Controls;assembly=Apex"
+             xmlns:klondikeSolitaire="clr-namespace:SolitaireGames.KlondikeSolitaire"
+             xmlns:spiderSolitaire="clr-namespace:SolitaireGames.SpiderSolitaire"
+             xmlns:apexCommands="clr-namespace:Apex.Commands;assembly=Apex"
+             mc:Ignorable="d" 
+             x:Name="casinoViewModel"
+             d:DesignHeight="300" d:DesignWidth="300"
+             DataContext="{Binding CasinoViewModel, ElementName=casinoViewModel}">
+    
+    <!-- The main resource dictionary. -->
+    <UserControl.Resources>
+        <ResourceDictionary Source="/SolitaireGames;component/Resources/SolitaireGamesResourceDictionary.xaml" />
+    </UserControl.Resources>
+    
+    <!-- Main container. -->
+    <Grid>
+        
+        <!-- Background image (the baize). -->
+        <Image Source="/SolitaireGames;component/Resources/Backgrounds/Background.jpg" Stretch="Fill" />
+        
+        <!-- The main pivot control. -->
+        <apexControls:PivotControl x:Name="mainPivot" ShowPivotHeadings="False">
+            
+            <!-- Klondike Solitaire is the first pivot item. -->
+            <apexControls:PivotItem Title="Klondike">
+                <klondikeSolitaire:KlondikeSolitaireView 
+                    x:Name="klondikeSolitaireView"
+                    ViewModel="{Binding KlondikeSolitaireViewModel}" />
+            </apexControls:PivotItem>
+            
+            <!-- The casino is the next pivot item. -->
+            <apexControls:PivotItem Title="Casino" IsInitialPage="True" >
+                
+                <!-- The main container for the casino. -->
+                <apexControls:ApexGrid Rows="Auto,Auto,*,Auto">
+                    
+                    <!-- The title of the game. -->
+                    <TextBlock 
+                        Grid.Row="0" FontSize="34" HorizontalAlignment="Center" 
+                        Foreground="#99FFFFFF" Text="Solitaire" />
+                    
+                    <!-- The container for the statistics. -->
+                    <apexControls:ApexGrid Grid.Row="1" Rows="Auto" Columns="*,Auto,Auto,*">
+                                                
+                        <!-- Klondike/Spider Solitaire Statistics. -->
+                        <local:StatisticsView
+                            Width="300"
+                            Grid.Column="1" Grid.Row="0" GameStatistics="{Binding KlondikeSolitaireStatistics}"
+                            apexCommands:ExtendedCommands.LeftClickCommand="{Binding GoToKlondikeSolitaireCommand}"
+                            Cursor="Hand" />
+                        <local:StatisticsView
+                            Width="300"
+                            Grid.Column="2" Grid.Row="0" GameStatistics="{Binding SpiderSolitaireStatistics}" 
+                            apexCommands:ExtendedCommands.LeftClickCommand="{Binding GoToSpiderSolitaireCommand}"
+                            Cursor="Hand" />
+
+                    </apexControls:ApexGrid>
+                    
+                    <!-- The casino commands. -->
+                    <apexControls:ApexGrid
+                        Grid.Row="4" Columns="*,Auto,Auto,Auto,*">
+
+                        <Button 
+                            Grid.Column="1" Style="{StaticResource CasinoButtonStyle}" Width="120" 
+                            Margin="4" Content="Play Klondike" Command="{Binding GoToKlondikeSolitaireCommand}"  />
+                        <Button 
+                            Grid.Column="2" Style="{StaticResource CasinoButtonStyle}" Width="120" 
+                            Margin="4" Content="Settings" Command="{Binding SettingsCommand}"  />
+                        <Button 
+                            Grid.Column="3" Style="{StaticResource CasinoButtonStyle}" Width="120" 
+                            Margin="4" Content="Play Spider" Command="{Binding GoToSpiderSolitaireCommand}"  />
+                        
+                    </apexControls:ApexGrid>
+
+                </apexControls:ApexGrid>
+                
+            </apexControls:PivotItem>
+            
+            <!-- The spider solitaire pivot item. -->
+            <apexControls:PivotItem Title="Spider">
+                    <spiderSolitaire:SpiderSolitaireView
+                        x:Name="spiderSolitaireView"
+                        ViewModel="{Binding SpiderSolitaireViewModel}" />                
+            </apexControls:PivotItem>
+            
+            <!-- The settings pivot item.  -->
+            <apexControls:PivotItem Title="Settings">
+
+                <!-- The main container for the settings. -->
+                <apexControls:ApexGrid Rows="Auto,Auto,*,Auto">
+
+                    <!-- The title. -->
+                    <TextBlock 
+                        Grid.Row="0" FontSize="34" HorizontalAlignment="Center" 
+                        Foreground="#99FFFFFF" Text="Settings" />
+
+                    <!-- The container for the statistics. -->
+                    <apexControls:PaddedGrid Grid.Row="1" Columns="*,*" Width="500" Padding="4"
+                                             Rows="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+
+                        <TextBlock 
+                            Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                            Text="Solitaire" FontWeight="Bold"                            
+                            HorizontalAlignment="Center" Style="{StaticResource CasinoTextStyle}" />
+                        <TextBlock 
+                            Grid.Row="1" Grid.Column="0" Text="Deck Style"
+                            HorizontalAlignment="Right" Style="{StaticResource CasinoTextStyle}" />
+                        <ComboBox
+                            Grid.Row="1" Grid.Column="1" SelectedItem="{Binding DeckFolder}"
+                            ItemsSource="{Binding DeckFolders}" />
+                        <TextBlock
+                            Grid.Row="2" Grid.Column="1" Style="{StaticResource CasinoTextStyle}"
+                            FontSize="12" Text="Requires Restart" />
+                        <TextBlock 
+                            Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                            Text="Klondike Solitaire" FontWeight="Bold"                            
+                            HorizontalAlignment="Center" Style="{StaticResource CasinoTextStyle}" />
+                        <TextBlock 
+                            Grid.Row="4" Grid.Column="0" Text="Draw Mode"
+                            HorizontalAlignment="Right" Style="{StaticResource CasinoTextStyle}" />
+                        <ComboBox
+                            Grid.Row="4" Grid.Column="1" SelectedItem="{Binding KlondikeSolitaireViewModel.DrawMode}"
+                            ItemsSource="{Binding Source={StaticResource DrawModeValues}}" />
+                        <TextBlock 
+                            Grid.Row="5" Grid.Column="0" Text="Statistics"
+                            HorizontalAlignment="Right" Style="{StaticResource CasinoTextStyle}" />
+                        <Button
+                            Grid.Row="5" Grid.Column="1" Content="Reset" HorizontalAlignment="Left"
+                            Width="80" Style="{StaticResource CasinoButtonStyle}" Command="{Binding KlondikeSolitaireStatistics.ResetCommand}" />
+                        <TextBlock 
+                            Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"
+                            Text="Spider Solitaire" FontWeight="Bold"                            
+                            HorizontalAlignment="Center" Style="{StaticResource CasinoTextStyle}" />
+                        <TextBlock 
+                            Grid.Row="7" Grid.Column="0" Text="Difficulty"
+                            HorizontalAlignment="Right" Style="{StaticResource CasinoTextStyle}" />
+                        <ComboBox
+                            Grid.Row="7" Grid.Column="1" SelectedItem="{Binding SpiderSolitaireViewModel.Difficulty}"
+                            ItemsSource="{Binding Source={StaticResource DifficultyValues}}" />
+                        <TextBlock 
+                            Grid.Row="8" Grid.Column="0" Text="Statistics"
+                            HorizontalAlignment="Right" Style="{StaticResource CasinoTextStyle}" />
+                        <Button
+                            Grid.Row="8" Grid.Column="1" Content="Reset" HorizontalAlignment="Left"
+                            Width="80" Style="{StaticResource CasinoButtonStyle}" Command="{Binding SpiderSolitaireStatistics.ResetCommand}" />
+
+                    </apexControls:PaddedGrid>
+
+                    <Button 
+                        Grid.Row="3" Style="{StaticResource CasinoButtonStyle}" Width="120" 
+                        Margin="4" Content="Casino" Command="{Binding GoToCasinoCommand}"  />
+
+                </apexControls:ApexGrid>
+            </apexControls:PivotItem>
+        </apexControls:PivotControl>
+    </Grid>
+</UserControl>
