@@ -34,10 +34,9 @@
                 
                 <!--   The drag stack, cards are stored here temporarily while they -->
                 <!-- are being dragged.  -->
-                <controls:CardStackControl
+                <controls:CardStackControl behaviors:CardDragBehavior.IsDragSource="False"
                     x:Name="dragStack" Grid.Row="0" Grid.Column="0" Margin="0,-2000,0,0"
-                    Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
-                <!-- apexDragAndDrop:DragAndDrop.IsDragSource="False" -->
+                    Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" /> 
                 
                 <!-- The stock. -->
                 <Border
@@ -51,7 +50,6 @@
                         </BehaviorCollection>
                     </Interaction.Behaviors>
                 </controls:CardStackControl>
-
 
                 <!-- The waste. -->
                 <Border

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -8,7 +9,10 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
+using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
+using DynamicData.Kernel;
+using SolitaireAvalonia.Controls;
 
 namespace SolitaireAvalonia.Behaviors;
 
@@ -20,6 +24,12 @@ public class CardDragBehavior : Behavior<Control>
     private bool _dragStarted;
     private Point _start;
 
+    public static readonly AttachedProperty<bool> IsDragSourceProperty =
+        AvaloniaProperty.RegisterAttached<CardDragBehavior, CardStackControl, bool>
+            ("IsDragSource", defaultValue: true);
+    public static void SetIsDragSource(CardStackControl obj, bool value) => obj.SetValue(IsDragSourceProperty, value);
+    public static bool GetIsDragSource(CardStackControl obj) => obj.GetValue(IsDragSourceProperty);
+    
     /// <summary>
     /// 
     /// </summary>
@@ -89,12 +99,19 @@ public class CardDragBehavior : Behavior<Control>
     private void PointerPressed(object? sender, PointerPressedEventArgs e)
     {
         var properties = e.GetCurrentPoint(AssociatedObject).Properties;
-        if (properties.IsLeftButtonPressed)
+        if (properties.IsLeftButtonPressed || AssociatedObject is { })
         {
-            _dragStarted = true;
-            _start = e.GetCurrentPoint(AssociatedObject.Parent).Position;
-            AddTransforms(AssociatedObject);
-            e.Pointer.Capture(AssociatedObject);
+ 
+            var itemsParent = AssociatedObject.GetVisualAncestors()
+                .FirstOrOptional(x => x.GetType() == typeof(CardStackControl));
+
+            if (itemsParent.HasValue && itemsParent.Value is CardStackControl ip && GetIsDragSource(ip))
+            {
+                _dragStarted = true;
+                _start = e.GetCurrentPoint(AssociatedObject.Parent).Position;
+                AddTransforms();
+                e.Pointer.Capture(AssociatedObject);
+            }
         }
     }
 
@@ -118,26 +135,29 @@ public class CardDragBehavior : Behavior<Control>
     private void Released()
     {
         _dragStarted = false;
-        RemoveTransforms(AssociatedObject);
+        RemoveTransforms(   );
     }
 
-    private void AddTransforms(IControl? control)
+    private void AddTransforms()
     {
-        SetTranslateTransform(control, Vector.Zero);
-        ((IPseudoClasses)control.Classes).Add(":dragging");
+        if (AssociatedObject is null) return;
+        SetTranslateTransform(AssociatedObject, Vector.Zero);
+        ((IPseudoClasses)AssociatedObject.Classes).Add(":dragging");
     }
 
-    private void RemoveTransforms(IControl? control)
+    private void RemoveTransforms()
     {
-        ((IPseudoClasses)control.Classes).Remove(":dragging");
-        SetTranslateTransform(control, Vector.Zero);
+        if (AssociatedObject is null) return;
+
+        ((IPseudoClasses)AssociatedObject.Classes).Remove(":dragging");
+        SetTranslateTransform(AssociatedObject, Vector.Zero);
     }
     
     private void PointerMoved(object? sender, PointerEventArgs e)
     {
         var properties = e.GetCurrentPoint(AssociatedObject).Properties;
 
-        if (!Equals(e.Pointer.Captured, AssociatedObject) || !properties.IsLeftButtonPressed || !_dragStarted) return;
+        if (!Equals(e.Pointer.Captured, AssociatedObject) || !properties.IsLeftButtonPressed || !_dragStarted || AssociatedObject is null) return;
 
         var position = e.GetCurrentPoint(AssociatedObject.Parent).Position;
 
