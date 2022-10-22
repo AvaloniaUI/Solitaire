@@ -35,11 +35,8 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     private readonly CasinoViewModel _casinoViewModel;
     [ObservableProperty] private DrawMode _drawMode = DrawMode.DrawThree;
 
-    public KlondikeSolitaireViewModel(CasinoViewModel casinoViewModel)
+    public KlondikeSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel)
     {
-        _casinoViewModel = casinoViewModel;
-
-
         //  Create the quick access arrays.
         foundations.Add(Foundation1);
         foundations.Add(Foundation2);
@@ -55,6 +52,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
         //  Create the turn stock command.
         TurnStockCommand = new RelayCommand(DoTurnStock);
+        
 
         //  If we're in the designer deal a game.
         if (Design.IsDesignMode)
@@ -67,7 +65,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// </summary>
     /// <param name="card">The card.</param>
     /// <returns></returns>
-    public IList<PlayingCard> GetCardCollection(PlayingCard card)
+    public IList<PlayingCardViewModel> GetCardCollection(PlayingCardViewModel card)
     {
         if (Stock.Contains(card)) return Stock;
         if (Waste.Contains(card)) return Waste;
@@ -107,7 +105,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         //  Create a playing card from each card type.
         List<PlayingCard> playingCards = new List<PlayingCard>();
         foreach (var cardType in eachCardType)
-            playingCards.Add(new PlayingCard() {CardType = cardType, IsFaceDown = true});
+            playingCards.Add(new PlayingCardViewModel() {CardType = cardType, IsFaceDown = true});
 
         //  Shuffle the playing cards.
         playingCards.Shuffle();
@@ -118,18 +116,18 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
             //  We have i face down cards and 1 face up card.
             for (int j = 0; j < i; j++)
             {
-                PlayingCard faceDownCard = playingCards.First();
-                playingCards.Remove(faceDownCard);
-                faceDownCard.IsFaceDown = true;
-                tableaus[i].Add(faceDownCard);
+                PlayingCardViewModel faceDownCardViewModel = playingCards.First();
+                playingCards.Remove(faceDownCardViewModel);
+                faceDownCardViewModel.IsFaceDown = true;
+                tableaus[i].Add(faceDownCardViewModel);
             }
 
             //  Add the face up card.
-            PlayingCard faceUpCard = playingCards.First();
-            playingCards.Remove(faceUpCard);
-            faceUpCard.IsFaceDown = false;
-            faceUpCard.IsPlayable = true;
-            tableaus[i].Add(faceUpCard);
+            PlayingCardViewModel faceUpCardViewModel = playingCards.First();
+            playingCards.Remove(faceUpCardViewModel);
+            faceUpCardViewModel.IsFaceDown = false;
+            faceUpCardViewModel.IsPlayable = true;
+            tableaus[i].Add(faceUpCardViewModel);
         }
 
         //  Finally we add every card that's left over to the stock.
@@ -189,7 +187,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
             {
                 if (Stock.Count > 0)
                 {
-                    PlayingCard card = Stock.Last();
+                    PlayingCardViewModel card = Stock.Last();
                     Stock.Remove(card);
                     card.IsFaceDown = false;
                     card.IsPlayable = false;
@@ -236,7 +234,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// </summary>
     /// <param name="card">The card.</param>
     /// <returns>True if card moved.</returns>
-    public bool TryMoveCardToAppropriateFoundation(PlayingCard card)
+    public bool TryMoveCardToAppropriateFoundation(PlayingCardViewModel card)
     {
         //  Try the top of the waste first.
         if (Waste.LastOrDefault() == card)
@@ -272,9 +270,9 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// <param name="card">The card we're moving.</param>
     /// <param name="checkOnly">if set to <c>true</c> we only check if we CAN move, but don't actually move.</param>
     /// <returns>True if a card was moved.</returns>
-    public bool MoveCard(ObservableCollection<PlayingCard> from,
-        ObservableCollection<PlayingCard> to,
-        PlayingCard card, bool checkOnly)
+    public bool MoveCard(ObservableCollection<PlayingCardViewModel> from,
+        ObservableCollection<PlayingCardViewModel> to,
+        PlayingCardViewModel card, bool checkOnly)
     {
         //  The trivial case is where from and to are the same.
         if (from == to)
@@ -423,12 +421,12 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// <param name="from">The stack to move from.</param>
     /// <param name="to">The stack to move to.</param>
     /// <param name="card">The card.</param>
-    private void DoMoveCard(ObservableCollection<PlayingCard> from,
-        ObservableCollection<PlayingCard> to,
-        PlayingCard card)
+    private void DoMoveCard(ObservableCollection<PlayingCardViewModel> from,
+        ObservableCollection<PlayingCardViewModel> to,
+        PlayingCardViewModel card)
     {
         //  Indentify the run of cards we're moving.
-        List<PlayingCard> run = new List<PlayingCard>();
+        List<PlayingCardViewModel> run = new List<PlayingCardViewModel>();
         for (int i = from.IndexOf(card); i < from.Count; i++)
             run.Add(from[i]);
 
@@ -443,10 +441,10 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         if (from.Count > 0)
         {
             //  Reveal the top card and make it playable.
-            PlayingCard topCard = from.Last();
+            PlayingCardViewModel topCardViewModel = from.Last();
 
-            topCard.IsFaceDown = false;
-            topCard.IsPlayable = true;
+            topCardViewModel.IsFaceDown = false;
+            topCardViewModel.IsPlayable = true;
         }
     }
 
@@ -479,7 +477,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         base.DoRightClickCard(parameter);
 
         //  Cast the card.
-        PlayingCard card = parameter as PlayingCard;
+        PlayingCardViewModel card = parameter as PlayingCardViewModel;
         if (card == null)
             return;
 
@@ -488,34 +486,34 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     }
 
     //  For ease of access we have arrays of the foundations and tableaus.
-    List<ObservableCollection<PlayingCard>> foundations = new();
-    List<ObservableCollection<PlayingCard>> tableaus = new();
+    List<ObservableCollection<PlayingCardViewModel>> foundations = new();
+    List<ObservableCollection<PlayingCardViewModel>> tableaus = new();
  
-    public ObservableCollection<PlayingCard> Foundation1 { get; } = new();
+    public ObservableCollection<PlayingCardViewModel> Foundation1 { get; } = new();
 
-    public ObservableCollection<PlayingCard> Foundation2 { get; } = new();
+    public ObservableCollection<PlayingCardViewModel> Foundation2 { get; } = new();
 
-    public ObservableCollection<PlayingCard> Foundation3 { get; } = new();
+    public ObservableCollection<PlayingCardViewModel> Foundation3 { get; } = new();
 
-    public ObservableCollection<PlayingCard> Foundation4 { get; } = new();
+    public ObservableCollection<PlayingCardViewModel> Foundation4 { get; } = new();
 
-    public ObservableCollection<PlayingCard> Tableau1 { get; } = new();
+    public ObservableCollection<PlayingCardViewModel> Tableau1 { get; } = new();
 
-    public ObservableCollection<PlayingCard> Tableau2 { get; } = new();
+    public ObservableCollection<PlayingCardViewModel> Tableau2 { get; } = new();
 
-    public ObservableCollection<PlayingCard> Tableau3 { get; } = new();
+    public ObservableCollection<PlayingCardViewModel> Tableau3 { get; } = new();
 
-    public ObservableCollection<PlayingCard> Tableau4 { get; } = new();
+    public ObservableCollection<PlayingCardViewModel> Tableau4 { get; } = new();
 
-    public ObservableCollection<PlayingCard> Tableau5 { get; } = new();
+    public ObservableCollection<PlayingCardViewModel> Tableau5 { get; } = new();
 
-    public ObservableCollection<PlayingCard> Tableau6 { get; } = new();
+    public ObservableCollection<PlayingCardViewModel> Tableau6 { get; } = new();
 
-    public ObservableCollection<PlayingCard> Tableau7 { get; } = new();
+    public ObservableCollection<PlayingCardViewModel> Tableau7 { get; } = new();
 
-    public ObservableCollection<PlayingCard> Stock { get; } = new();
+    public ObservableCollection<PlayingCardViewModel> Stock { get; } = new();
 
-    public ObservableCollection<PlayingCard> Waste { get; } = new();
+    public ObservableCollection<PlayingCardViewModel> Waste { get; } = new();
 
 
     /// <summary>

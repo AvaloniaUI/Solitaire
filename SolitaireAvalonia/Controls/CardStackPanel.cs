@@ -35,7 +35,7 @@ namespace SolitaireAvalonia.Controls
 
         /// <summary>
         /// Use the offset values specified in the playing card class (see
-        /// PlayingCard.FaceDownOffset and PlayingCard.FaceUpOffset).
+        /// PlayingCardViewModel.FaceDownOffset and PlayingCardViewModel.FaceUpOffset).
         /// </summary>
         UseCardValues
     }
@@ -127,7 +127,7 @@ namespace SolitaireAvalonia.Controls
             foreach (Control child in Children)
             {
                 //  Get the card. If we don't have one, skip.
-                PlayingCard card = child.DataContext as PlayingCard;
+                PlayingCardViewModel card = child.DataContext as PlayingCardViewModel;
                 if (card == null)
                     continue;
 
@@ -161,7 +161,7 @@ namespace SolitaireAvalonia.Controls
             foreach (Control child in Children)
             {
                 //  Get the card. If we don't have one, skip.
-                PlayingCard card = (child).DataContext as PlayingCard;
+                PlayingCardViewModel card = (child).DataContext as PlayingCardViewModel;
                 if (card == null)
                     continue;
 

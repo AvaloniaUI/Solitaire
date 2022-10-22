@@ -45,7 +45,7 @@ namespace SolitaireAvalonia.Converters
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             //  Cast the data.
-            if (value is not null && value is PlayingCard pc)
+            if (value is not null && value is PlayingCardViewModel pc)
             {
                 //  We're going to create an image source.
                 string imageSource = string.Empty;

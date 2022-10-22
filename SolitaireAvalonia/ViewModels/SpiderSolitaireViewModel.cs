@@ -30,12 +30,10 @@ namespace SolitaireAvalonia.ViewModels
 
     public class SpiderSolitaireViewModel : CardGameViewModel
     {
-        private readonly CasinoViewModel _casinoViewModel;
-
-        public SpiderSolitaireViewModel(CasinoViewModel casinoViewModel)
+ 
+        public SpiderSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel)
         {
-            _casinoViewModel = casinoViewModel;
-        }
+         }
         // public SpiderSolitaireViewModel()
         // {
         //     //  Create the quick access arrays.
@@ -57,7 +55,7 @@ namespace SolitaireAvalonia.ViewModels
         //         DoDealNewGame(null);
         // }
         //
-        // public IList<PlayingCard> GetCardCollection(PlayingCard card)
+        // public IList<PlayingCardViewModel> GetCardCollection(PlayingCardViewModel card)
         // {
         //     if (stock.Contains(card)) return stock;
         //     foreach (var tableau in tableaus) if (tableau.Contains(card)) return tableau;
@@ -93,10 +91,10 @@ namespace SolitaireAvalonia.ViewModels
         //     //  Create a playing card from each card type.
         //     //  We just keep on adding cards of suits that depend on the
         //     //  difficulty setting until we have the required 104.
-        //     List<PlayingCard> playingCards = new List<PlayingCard>();
+        //     List<PlayingCardViewModel> playingCards = new List<PlayingCardViewModel>();
         //     foreach (var cardType in eachCardType)
         //     {
-        //         PlayingCard card = new PlayingCard() { CardType = cardType, IsFaceDown = true };
+        //         PlayingCardViewModel card = new PlayingCardViewModel() { CardType = cardType, IsFaceDown = true };
         //
         //         switch (Difficulty)
         //         {
@@ -128,7 +126,7 @@ namespace SolitaireAvalonia.ViewModels
         //     //  Now distribute them - do the tableaus first.
         //     for (int i = 0; i < 54; i++)
         //     {
-        //         PlayingCard card = playingCards.First();
+        //         PlayingCardViewModel card = playingCards.First();
         //         playingCards.Remove(card);
         //         card.IsFaceDown = true;
         //         tableaus[i % 10].Add(card);
@@ -163,7 +161,7 @@ namespace SolitaireAvalonia.ViewModels
         //
         //     for (int i = 0; i < 10; i++)
         //     {
-        //         PlayingCard card = stock.Last();
+        //         PlayingCardViewModel card = stock.Last();
         //         stock.Remove(card);
         //         card.IsFaceDown = false;
         //         card.IsPlayable = true;
@@ -178,9 +176,9 @@ namespace SolitaireAvalonia.ViewModels
         //     CheckForVictory();
         // }
         //
-        // public bool MoveCard(ObservableCollection<PlayingCard> from,
-        //     ObservableCollection<PlayingCard> to,
-        //     PlayingCard card, bool checkOnly)
+        // public bool MoveCard(ObservableCollection<PlayingCardViewModel> from,
+        //     ObservableCollection<PlayingCardViewModel> to,
+        //     PlayingCardViewModel card, bool checkOnly)
         // {
         //     //  The trivial case is where from and to are the same.
         //     if (from == to)
@@ -219,12 +217,12 @@ namespace SolitaireAvalonia.ViewModels
         //     return true;
         // }
         //
-        // private void DoMoveCard(ObservableCollection<PlayingCard> from,
-        //     ObservableCollection<PlayingCard> to,
-        //     PlayingCard card)
+        // private void DoMoveCard(ObservableCollection<PlayingCardViewModel> from,
+        //     ObservableCollection<PlayingCardViewModel> to,
+        //     PlayingCardViewModel card)
         // {
         //     //  Indentify the run of cards we're moving.
-        //     List<PlayingCard> run = new List<PlayingCard>();
+        //     List<PlayingCardViewModel> run = new List<PlayingCardViewModel>();
         //     for (int i = from.IndexOf(card); i < from.Count; i++)
         //         run.Add(from[i]);
         //
@@ -239,7 +237,7 @@ namespace SolitaireAvalonia.ViewModels
         //     if (from.Count > 0)
         //     {
         //         //  Reveal the top card and make it playable.
-        //         PlayingCard topCard = from.Last();
+        //         PlayingCardViewModel topCard = from.Last();
         //
         //         topCard.IsFaceDown = false;
         //         topCard.IsPlayable = true;
@@ -286,7 +284,7 @@ namespace SolitaireAvalonia.ViewModels
         //                         Score += 100;
         //                         for (int j = 0; j < 13; j++)
         //                         {
-        //                             PlayingCard card = tableau[i];
+        //                             PlayingCardViewModel card = tableau[i];
         //                             tableau.Remove(card);
         //                             foundation.Add(card);
         //                         }
@@ -326,41 +324,41 @@ namespace SolitaireAvalonia.ViewModels
         // }
         //
         // //  For ease of access we have an array of tableaus.
-        // List<ObservableCollection<PlayingCard>> tableaus = new List<ObservableCollection<PlayingCard>>();
+        // List<ObservableCollection<PlayingCardViewModel>> tableaus = new List<ObservableCollection<PlayingCardViewModel>>();
         //
         // //  Ten tableaus in spider solitaire.
-        // private ObservableCollection<PlayingCard> tableau1 = new ObservableCollection<PlayingCard>();
-        // private ObservableCollection<PlayingCard> tableau2 = new ObservableCollection<PlayingCard>();
-        // private ObservableCollection<PlayingCard> tableau3 = new ObservableCollection<PlayingCard>();
-        // private ObservableCollection<PlayingCard> tableau4 = new ObservableCollection<PlayingCard>();
-        // private ObservableCollection<PlayingCard> tableau5 = new ObservableCollection<PlayingCard>();
-        // private ObservableCollection<PlayingCard> tableau6 = new ObservableCollection<PlayingCard>();
-        // private ObservableCollection<PlayingCard> tableau7 = new ObservableCollection<PlayingCard>();
-        // private ObservableCollection<PlayingCard> tableau8 = new ObservableCollection<PlayingCard>();
-        // private ObservableCollection<PlayingCard> tableau9 = new ObservableCollection<PlayingCard>();
-        // private ObservableCollection<PlayingCard> tableau10 = new ObservableCollection<PlayingCard>();
+        // private ObservableCollection<PlayingCardViewModel> tableau1 = new ObservableCollection<PlayingCardViewModel>();
+        // private ObservableCollection<PlayingCardViewModel> tableau2 = new ObservableCollection<PlayingCardViewModel>();
+        // private ObservableCollection<PlayingCardViewModel> tableau3 = new ObservableCollection<PlayingCardViewModel>();
+        // private ObservableCollection<PlayingCardViewModel> tableau4 = new ObservableCollection<PlayingCardViewModel>();
+        // private ObservableCollection<PlayingCardViewModel> tableau5 = new ObservableCollection<PlayingCardViewModel>();
+        // private ObservableCollection<PlayingCardViewModel> tableau6 = new ObservableCollection<PlayingCardViewModel>();
+        // private ObservableCollection<PlayingCardViewModel> tableau7 = new ObservableCollection<PlayingCardViewModel>();
+        // private ObservableCollection<PlayingCardViewModel> tableau8 = new ObservableCollection<PlayingCardViewModel>();
+        // private ObservableCollection<PlayingCardViewModel> tableau9 = new ObservableCollection<PlayingCardViewModel>();
+        // private ObservableCollection<PlayingCardViewModel> tableau10 = new ObservableCollection<PlayingCardViewModel>();
         //
         // //  As in most games there is one stock pile.
-        // private ObservableCollection<PlayingCard> stock = new ObservableCollection<PlayingCard>();
+        // private ObservableCollection<PlayingCardViewModel> stock = new ObservableCollection<PlayingCardViewModel>();
         //
         // //  A single foundation is where we place all completed sequences.
-        // private ObservableCollection<PlayingCard> foundation = new ObservableCollection<PlayingCard>();
+        // private ObservableCollection<PlayingCardViewModel> foundation = new ObservableCollection<PlayingCardViewModel>();
         //
         // private ViewModelCommand dealCardsCommand;
         //
         // //  Accessors for the various card stacks.
-        // public ObservableCollection<PlayingCard> Tableau1 { get { return tableau1; } }
-        // public ObservableCollection<PlayingCard> Tableau2 { get { return tableau2; } }
-        // public ObservableCollection<PlayingCard> Tableau3 { get { return tableau3; } }
-        // public ObservableCollection<PlayingCard> Tableau4 { get { return tableau4; } }
-        // public ObservableCollection<PlayingCard> Tableau5 { get { return tableau5; } }
-        // public ObservableCollection<PlayingCard> Tableau6 { get { return tableau6; } }
-        // public ObservableCollection<PlayingCard> Tableau7 { get { return tableau7; } }
-        // public ObservableCollection<PlayingCard> Tableau8 { get { return tableau8; } }
-        // public ObservableCollection<PlayingCard> Tableau9 { get { return tableau9; } }
-        // public ObservableCollection<PlayingCard> Tableau10 { get { return tableau10; } }
-        // public ObservableCollection<PlayingCard> Stock { get { return stock; } }
-        // public ObservableCollection<PlayingCard> Foundation { get { return foundation; } }
+        // public ObservableCollection<PlayingCardViewModel> Tableau1 { get { return tableau1; } }
+        // public ObservableCollection<PlayingCardViewModel> Tableau2 { get { return tableau2; } }
+        // public ObservableCollection<PlayingCardViewModel> Tableau3 { get { return tableau3; } }
+        // public ObservableCollection<PlayingCardViewModel> Tableau4 { get { return tableau4; } }
+        // public ObservableCollection<PlayingCardViewModel> Tableau5 { get { return tableau5; } }
+        // public ObservableCollection<PlayingCardViewModel> Tableau6 { get { return tableau6; } }
+        // public ObservableCollection<PlayingCardViewModel> Tableau7 { get { return tableau7; } }
+        // public ObservableCollection<PlayingCardViewModel> Tableau8 { get { return tableau8; } }
+        // public ObservableCollection<PlayingCardViewModel> Tableau9 { get { return tableau9; } }
+        // public ObservableCollection<PlayingCardViewModel> Tableau10 { get { return tableau10; } }
+        // public ObservableCollection<PlayingCardViewModel> Stock { get { return stock; } }
+        // public ObservableCollection<PlayingCardViewModel> Foundation { get { return foundation; } }
         //
         // private NotifyingProperty DifficultyProperty =
         //   new NotifyingProperty("Difficulty", typeof(Difficulty), Difficulty.Medium);

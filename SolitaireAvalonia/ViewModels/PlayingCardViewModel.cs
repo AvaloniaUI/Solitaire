@@ -7,7 +7,7 @@ namespace SolitaireAvalonia.ViewModels
     /// The Playing Card represents a Card played in a game - so as
     /// well as the card type it also has the face down property etc.
     /// </summary>
-    public partial class PlayingCard : ViewModelBase
+    public partial class PlayingCardViewModel : ViewModelBase
     {
         /// <summary>
         /// Gets the card suit.

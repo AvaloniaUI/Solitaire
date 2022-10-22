@@ -23,16 +23,16 @@ namespace SolitaireAvalonia.Views
         //     //  source stack again.                
         //     ItemsControl sourceStack = args.DragSource as ItemsControl;
         //     foreach (var dragCard in draggingCards)
-        //         ((ObservableCollection<PlayingCard>)((ItemsControl)args.DragSource).Items).Add(dragCard);
+        //         ((ObservableCollection<PlayingCardViewModel>)((ItemsControl)args.DragSource).Items).Add(dragCard);
         //
         //     //  If we have a drop target, move the card.
         //     if (args.DropTarget != null)
         //     {
         //         //  Move the card.
         //         ViewModel.MoveCard(
-        //             (ObservableCollection<PlayingCard>)((ItemsControl)args.DragSource).Items,
-        //             (ObservableCollection<PlayingCard>)((ItemsControl)args.DropTarget).Items,
-        //             (PlayingCard)args.DragData, false);
+        //             (ObservableCollection<PlayingCardViewModel>)((ItemsControl)args.DragSource).Items,
+        //             (ObservableCollection<PlayingCardViewModel>)((ItemsControl)args.DropTarget).Items,
+        //             (PlayingCardViewModel)args.DragData, false);
         //     }
         // }
         //
@@ -44,7 +44,7 @@ namespace SolitaireAvalonia.Views
         // void Instance_DragAndDropStart(object sender, DragAndDropEventArgs args)
         // {
         //     //  The data should be a playing card.
-        //     PlayingCard card = args.DragData as PlayingCard;
+        //     PlayingCardViewModel card = args.DragData as PlayingCardViewModel;
         //     if (card == null || card.IsPlayable == false)
         //     {
         //         args.Allow = false;
@@ -54,8 +54,8 @@ namespace SolitaireAvalonia.Views
         //
         //     //  If the card is draggable, we're going to want to drag the whole
         //     //  stack.
-        //     IList<PlayingCard> cards = ViewModel.GetCardCollection(card);
-        //     draggingCards = new List<PlayingCard>();
+        //     IList<PlayingCardViewModel> cards = ViewModel.GetCardCollection(card);
+        //     draggingCards = new List<PlayingCardViewModel>();
         //     int start = cards.IndexOf(card);
         //     for (int i = start; i < cards.Count; i++)
         //         draggingCards.Add(cards[i]);
@@ -68,7 +68,7 @@ namespace SolitaireAvalonia.Views
         //     //  Hide each dragging card.
         //     ItemsControl sourceStack = args.DragSource as ItemsControl;
         //     foreach (var dragCard in draggingCards)
-        //         ((ObservableCollection<PlayingCard>)sourceStack.Items).Remove(dragCard);
+        //         ((ObservableCollection<PlayingCardViewModel>)sourceStack.Items).Remove(dragCard);
         // }
         //
         //
@@ -87,7 +87,7 @@ namespace SolitaireAvalonia.Views
         //     SpiderSolitaireView me = o as SpiderSolitaireView;
         // }
         //
-        // private List<PlayingCard> draggingCards;
+        // private List<PlayingCardViewModel> draggingCards;
         //
         // private void CardStackControl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         // {
