@@ -1,5 +1,5 @@
-﻿<UserControl x:Class="SolitaireGames.Casino.StatisticsView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl x:Class="StatisticsView"
+             xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
@@ -16,8 +16,8 @@
     <Border Padding="10" Margin="10" BorderBrush="#99FFFFFF" BorderThickness="6" CornerRadius="15"
             DataContext="{Binding GameStatistics, ElementName=statisticsView}">
 
-        <apexControls:PaddedGrid 
-            Rows="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" Columns="3*,*" 
+        <Grid 
+            RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="3*,*" 
             TextBlock.Foreground="#99FFFFFF" TextBlock.FontSize="13">
             
             <!-- The Game Title. -->
@@ -48,7 +48,7 @@
             <TextBlock Grid.Row="10" Grid.Column="1" Text="{Binding CumulativeGameTime, Converter={StaticResource TimeSpanToShortStringConverter}}" />
             <TextBlock Grid.Row="11" Grid.Column="0" Text="Average Time" />
             <TextBlock Grid.Row="11" Grid.Column="1" Text="{Binding AverageGameTime, Converter={StaticResource TimeSpanToShortStringConverter}}" />
-        </apexControls:PaddedGrid>
+        </Grid>
 
     </Border> 
 </UserControl>

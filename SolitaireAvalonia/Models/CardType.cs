@@ -1,4 +1,4 @@
-﻿namespace SolitaireAvalonia
+﻿namespace SolitaireAvalonia.Models
 {
     /// <summary>
     /// The Card Types.

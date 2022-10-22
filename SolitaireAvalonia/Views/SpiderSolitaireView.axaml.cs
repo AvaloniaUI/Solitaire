@@ -13,8 +13,9 @@ using Avalonia.Navigation;
 using Avalonia.Shapes;
 using System.Collections.ObjectModel;
 using Apex.DragAndDrop;
+using SolitaireAvalonia.ViewModels;
 
-namespace SolitaireAvalonia.SpiderSolitaire
+namespace SolitaireAvalonia.Views
 {
     /// <summary>
     /// Interaction logic for SpiderSolitaireView.xaml

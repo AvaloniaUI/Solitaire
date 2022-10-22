@@ -11,8 +11,9 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Navigation;
 using Avalonia.Shapes;
+using SolitaireAvalonia.ViewModels;
 
-namespace SolitaireAvalonia.Casino
+namespace SolitaireAvalonia.Views
 {
     /// <summary>
     /// Interaction logic for StatisticsView.xaml

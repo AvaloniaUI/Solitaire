@@ -1,8 +1,7 @@
 ﻿using System;
-using Avalonia.Data;
 using Avalonia.Data.Converters;
 
-namespace SolitaireAvalonia
+namespace SolitaireAvalonia.Converters
 {
     /// <summary>
     /// A converter that turns a time span into a small string, only 

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Apex.MVVM;
 
-namespace SolitaireAvalonia
+namespace SolitaireAvalonia.ViewModels
 {
     /// <summary>
     /// A set of general statistics for a game.

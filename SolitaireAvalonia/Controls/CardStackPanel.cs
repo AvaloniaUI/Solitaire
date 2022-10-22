@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Avalonia.Controls;
 using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Layout;
+using SolitaireAvalonia.ViewModels;
 
-namespace SolitaireAvalonia
+namespace SolitaireAvalonia.Controls
 {
     /// <summary>
     /// The offset mode - how we offset individual cards in a stack.
@@ -70,7 +71,7 @@ namespace SolitaireAvalonia
 
             //  Measure each child (always needed, even if we don't use
             //  the measurement!)
-            foreach(UIElement child in Children)
+            foreach(Control child in Children)
             {
                 //  Measure the child against infinite space.
                 child.Measure(infiniteSpace);
@@ -102,12 +103,12 @@ namespace SolitaireAvalonia
             List<Size> offsets = CalculateOffsets();
             
             //  If we're going to pass the bounds, deal with it.
-            if ((ActualWidth > 0 && finalSize.Width > ActualWidth) || 
-                (ActualHeight > 0 && finalSize.Height > ActualHeight))
+            if ((Bounds.Width > 0 && finalSize.Width > Bounds.Width) || 
+                (Bounds.Height > 0 && finalSize.Height > Bounds.Height))
             {
                 //  Work out the amount we have to remove from the offsets.
-                double overrunX = finalSize.Width - ActualWidth;
-                double overrunY = finalSize.Height - ActualHeight;
+                double overrunX = finalSize.Width - Bounds.Width;
+                double overrunY = finalSize.Height - Bounds.Height;
 
                 //  Now as a per-offset.
                 double dx = overrunX / offsets.Count;
@@ -118,17 +119,16 @@ namespace SolitaireAvalonia
                 {
                     offsets[i] = new Size(Math.Max(0, offsets[i].Width - dx), Math.Max(0, offsets[i].Height - dy));
                 }
-
                 //  Make sure the final size isn't increased past what we can handle.
-                finalSize.Width -= overrunX;
-                finalSize.Height -= overrunY;
+
+                finalSize -= new Size(overrunX, overrunY);
             }
 
             //  Arrange each child.
-            foreach (UIElement child in Children)
+            foreach (Control child in Children)
             {
                 //  Get the card. If we don't have one, skip.
-                PlayingCard card = ((FrameworkElement)child).DataContext as PlayingCard;
+                PlayingCard card = child.DataContext as PlayingCard;
                 if (card == null)
                     continue;
 
@@ -159,10 +159,10 @@ namespace SolitaireAvalonia
             int total = Children.Count;
 
             //  Go through each card.
-            foreach (UIElement child in Children)
+            foreach (Control child in Children)
             {
                 //  Get the card. If we don't have one, skip.
-                PlayingCard card = ((FrameworkElement)child).DataContext as PlayingCard;
+                PlayingCard card = (child).DataContext as PlayingCard;
                 if (card == null)
                     continue;
 
@@ -202,7 +202,7 @@ namespace SolitaireAvalonia
                             faceUpOffset = FaceUpOffset;
                         }
                         break;
-                    case SolitaireGames.OffsetMode.UseCardValues:
+                    case OffsetMode.UseCardValues:
                         //  Offset each time by the amount specified in the card object.
                         faceDownOffset = card.FaceDownOffset;
                         faceUpOffset = card.FaceUpOffset;
@@ -218,14 +218,12 @@ namespace SolitaireAvalonia
                 
                 //  Offset.
                 switch (Orientation)
-                {
+                { 
                     case Orientation.Horizontal:
-                        offset.Width = card.IsFaceDown ? faceDownOffset : faceUpOffset;
+                        offset = new Size(card.IsFaceDown ? faceDownOffset : faceUpOffset, offset.Height);
                         break;
                     case Orientation.Vertical:
-                        offset.Height = card.IsFaceDown ? faceDownOffset : faceUpOffset;
-                        break;
-                    default:
+                        offset = new Size(offset.Width, card.IsFaceDown ? faceDownOffset : faceUpOffset);
                         break;
                 }
 
@@ -240,77 +238,48 @@ namespace SolitaireAvalonia
         /// Gets the last child.
         /// </summary>
         /// <value>The last child.</value>
-        private UIElement LastChild
+        private IControl? LastChild => Children.Count > 0 ? Children[Children.Count - 1] : null;
+
+        static CardStackPanel()
         {
-            get { return Children.Count > 0 ? Children[Children.Count - 1] : null; }
+            AffectsRender<CardStackPanel>(FaceUpOffsetProperty, FaceDownOffsetProperty);
         }
 
-        /// <summary>
-        /// Face down offset.
-        /// </summary>
-        private static readonly DependencyProperty FaceDownOffsetProperty =
-          DependencyProperty.Register("FaceDownOffset", typeof(double), typeof(CardStackPanel),
-          new FrameworkPropertyMetadata(5.0, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
+        public static readonly StyledProperty<double> FaceDownOffsetProperty = AvaloniaProperty.Register<CardStackPanel, double>(
+            "FaceDownOffset", 5.0);
 
-        /// <summary>
-        /// Gets or sets the face down offset.
-        /// </summary>
-        /// <value>The face down offset.</value>
         public double FaceDownOffset
         {
-            get { return (double)GetValue(FaceDownOffsetProperty); }
-            set { SetValue(FaceDownOffsetProperty, value); }
+            get => GetValue(FaceDownOffsetProperty);
+            set => SetValue(FaceDownOffsetProperty, value);
         }
 
-        /// <summary>
-        /// Face up offset.
-        /// </summary>
-        private static readonly DependencyProperty FaceUpOffsetProperty =
-          DependencyProperty.Register("FaceUpOffset", typeof(double), typeof(CardStackPanel),
-          new FrameworkPropertyMetadata(5.0, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
+        public static readonly StyledProperty<double> FaceUpOffsetProperty = AvaloniaProperty.Register<CardStackPanel, double>(
+            "FaceUpOffset", 5.0);
 
-        /// <summary>
-        /// Gets or sets the face up offset.
-        /// </summary>
-        /// <value>The face up offset.</value>
         public double FaceUpOffset
         {
-            get { return (double)GetValue(FaceUpOffsetProperty); }
-            set { SetValue(FaceUpOffsetProperty, value); }
+            get => GetValue(FaceUpOffsetProperty);
+            set => SetValue(FaceUpOffsetProperty, value);
         }
+        
+        
+        public static readonly StyledProperty<OffsetMode> OffsetModeProperty = AvaloniaProperty.Register<CardStackPanel, OffsetMode>(
+            "OffsetMode");
 
-        /// <summary>
-        /// The offset mode.
-        /// </summary>
-        private static readonly DependencyProperty OffsetModeProperty =
-          DependencyProperty.Register("OffsetMode", typeof(OffsetMode), typeof(CardStackPanel),
-          new PropertyMetadata(OffsetMode.EveryCard));
-
-        /// <summary>
-        /// Gets or sets the offset mode.
-        /// </summary>
-        /// <value>The offset mode.</value>
         public OffsetMode OffsetMode
         {
-            get { return (OffsetMode)GetValue(OffsetModeProperty); }
-            set { SetValue(OffsetModeProperty, value); }
+            get => GetValue(OffsetModeProperty);
+            set => SetValue(OffsetModeProperty, value);
         }
 
-        /// <summary>
-        /// The NValue, used for some modes.
-        /// </summary>
-        private static readonly DependencyProperty NValueProperty =
-          DependencyProperty.Register("NValue", typeof(int), typeof(CardStackPanel),
-          new PropertyMetadata(1));
+        public static readonly StyledProperty<int> NValueProperty = AvaloniaProperty.Register<CardStackPanel, int>(
+            "NValue", 1);
 
-        /// <summary>
-        /// Gets or sets the N value.
-        /// </summary>
-        /// <value>The N value.</value>
         public int NValue
         {
-            get { return (int)GetValue(NValueProperty); }
-            set { SetValue(NValueProperty, value); }
+            get => GetValue(NValueProperty);
+            set => SetValue(NValueProperty, value);
         }
     }
 }

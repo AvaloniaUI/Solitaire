@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using Avalonia.Data;
 using System.Globalization;
-using Avalonia.Controls;
+using System.Linq;
 using Avalonia.Data.Converters;
 using Avalonia.Media;
-using Avalonia.Media.Imaging;
-namespace SolitaireAvalonia
+using SolitaireAvalonia.Models;
+
+namespace SolitaireAvalonia.Converters
 {
     /// <summary>
     /// Converter to get the brush for a playing card.

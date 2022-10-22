@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Apex.MVVM;
-using Apex.Extensions;
+using System.Linq; 
 using System.Collections.ObjectModel;
+using SolitaireAvalonia.Models;
 
-namespace SolitaireAvalonia.KlondikeSolitaire
+namespace SolitaireAvalonia.ViewModels
 {
     /// <summary>
     /// The DrawMode, i.e. how many cards to draw.

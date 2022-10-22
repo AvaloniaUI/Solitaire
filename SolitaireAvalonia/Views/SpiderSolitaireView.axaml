@@ -1,26 +1,14 @@
-﻿<UserControl x:Class="SolitaireGames.SpiderSolitaire.SpiderSolitaireView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:SolitaireGames.SpiderSolitaire"
-             xmlns:solitaireGames="clr-namespace:SolitaireGames"
-             xmlns:apexControls="clr-namespace:Apex.Controls;assembly=Apex"
-             xmlns:apexAdorners="clr-namespace:Apex.Adorners;assembly=Apex"
-             xmlns:apexDragAndDrop="clr-namespace:Apex.DragAndDrop;assembly=Apex"
-             mc:Ignorable="d" 
-             x:Name="spiderSolitaireView"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:SolitaireAvalonia.ViewModels"
+             mc:Ignorable="d"  
+             x:DataType="viewModels:SpiderSolitaireViewModel"
              d:DesignHeight="300" d:DesignWidth="300">
-
-    <!-- Point to the main resource dictionary for the assembly. -->
-    <UserControl.Resources>
-        <ResourceDictionary Source="/SolitaireGames;component/Resources/SolitaireGamesResourceDictionary.xaml" />
-    </UserControl.Resources>
-
+    
     <!-- The main grid - the game is at the top and the commands are at the bottom. -->
-    <apexControls:ApexGrid 
-        Rows="*,Auto"
-        DataContext="{Binding ViewModel, ElementName=spiderSolitaireView}">
+    <Grid RowsDefinitions="*,Auto" >
 
         <!-- The cards etc are all in a Viewbox so that they resize in a sensible
         way when we resize the window. -->
@@ -33,7 +21,7 @@
                 MinimumHorizontalDragDistance="0.0" MinimumVerticalDragDistance="0.0">
 
                 <!-- This is the layout grid for the tableaus, foundations etc. -->
-                <apexControls:ApexGrid Width="1600" Height="840" Columns="*,*,*,*,*,*,*,*,*,*" Rows="640,200">
+                <Grid Width="1600" Height="840" ColumnDefinitions="*,*,*,*,*,*,*,*,*,*" RowDefinitions="640,200">
 
                     <!-- The drag stack, cards are stored here temporarily while they
                     are being dragged. -->
@@ -43,52 +31,52 @@
 
                     <!-- The tableaus. -->
                     <Border 
-                            Grid.Row="0" Grid.Column="0" Style="{StaticResource RunMarker}" />
+                            Grid.Row="0" Grid.Column="0" Classes="RunMarker" />
                     <solitaireGames:CardStackControl 
                             Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Tableau1}"
                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
                     <Border 
-                            Grid.Row="0" Grid.Column="1" Style="{StaticResource RunMarker}" />
+                            Grid.Row="0" Grid.Column="1" Classes="RunMarker" />
                     <solitaireGames:CardStackControl
                             Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Tableau2}"
                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
                     <Border 
-                            Grid.Row="0" Grid.Column="2" Style="{StaticResource RunMarker}" />
+                            Grid.Row="0" Grid.Column="2" Classes="RunMarker" />
                     <solitaireGames:CardStackControl 
                             Grid.Row="0" Grid.Column="2" ItemsSource="{Binding Tableau3}"
                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
                     <Border 
-                            Grid.Row="0" Grid.Column="3" Style="{StaticResource RunMarker}" />
+                            Grid.Row="0" Grid.Column="3" Classes="RunMarker" />
                     <solitaireGames:CardStackControl 
                             Grid.Row="0" Grid.Column="3" ItemsSource="{Binding Tableau4}"
                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
                     <Border 
-                            Grid.Row="0" Grid.Column="4" Style="{StaticResource RunMarker}" />
+                            Grid.Row="0" Grid.Column="4" Classes="RunMarker" />
                     <solitaireGames:CardStackControl 
                             Grid.Row="0" Grid.Column="4" ItemsSource="{Binding Tableau5}"
                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
                     <Border 
-                            Grid.Row="0" Grid.Column="5" Style="{StaticResource RunMarker}" />
+                            Grid.Row="0" Grid.Column="5" Classes="RunMarker" />
                     <solitaireGames:CardStackControl 
                             Grid.Row="0" Grid.Column="5" ItemsSource="{Binding Tableau6}"
                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
                     <Border 
-                            Grid.Row="0" Grid.Column="6" Style="{StaticResource RunMarker}" />
+                            Grid.Row="0" Grid.Column="6" Classes="RunMarker" />
                     <solitaireGames:CardStackControl 
                             Grid.Row="0" Grid.Column="6" ItemsSource="{Binding Tableau7}"
                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
                     <Border 
-                            Grid.Row="0" Grid.Column="7" Style="{StaticResource RunMarker}" />
+                            Grid.Row="0" Grid.Column="7" Classes="RunMarker" />
                     <solitaireGames:CardStackControl 
                             Grid.Row="0" Grid.Column="7" ItemsSource="{Binding Tableau8}"
                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
                     <Border 
-                            Grid.Row="0" Grid.Column="8" Style="{StaticResource RunMarker}" />
+                            Grid.Row="0" Grid.Column="8" Classes="RunMarker" />
                     <solitaireGames:CardStackControl 
                             Grid.Row="0" Grid.Column="8" ItemsSource="{Binding Tableau9}"
                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
                     <Border 
-                            Grid.Row="0" Grid.Column="9" Style="{StaticResource RunMarker}" />
+                            Grid.Row="0" Grid.Column="9" Classes="RunMarker" />
                     <solitaireGames:CardStackControl 
                             Grid.Row="0" Grid.Column="9" ItemsSource="{Binding Tableau10}"
                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
@@ -108,39 +96,37 @@
                         OffsetMode="EveryNthCard" NValue="10"
                         MouseLeftButtonUp="CardStackControl_MouseLeftButtonUp" />
                     
-                </apexControls:ApexGrid>
+                </Grid>
             </apexDragAndDrop:DragAndDropHost>
         </Viewbox>
 
         <!-- A padded grid is used to layout commands and info at the bottom of the screen. -->
-        <apexControls:PaddedGrid 
-            Grid.Row="1" Padding="4" Columns="Auto,*,Auto,Auto,Auto,*,Auto">
+        <Grid 
+            Grid.Row="1" Padding="4" ColumnDefinitions="Auto,*,Auto,Auto,Auto,*,Auto">
             <Button 
-                Style="{StaticResource CasinoButtonStyle}"
-                Grid.Column="0" Width="120" Content="Go to Casino"
+                Classes="CasinoButtonStyle"                Grid.Column="0" Width="120" Content="Go to Casino"
                 Command="{Binding GoToCasinoCommand}" />
-            <TextBlock Grid.Column="2" Style="{StaticResource CasinoTextStyle}" VerticalAlignment="Center">
+            <TextBlock Grid.Column="2" Classes="CasinoTextStyle" VerticalAlignment="Center">
                 <Run Text="Score:" />
                 <Run Text="{Binding Score}" />
             </TextBlock>
-            <TextBlock Grid.Column="3" Style="{StaticResource CasinoTextStyle}" VerticalAlignment="Center">
+            <TextBlock Grid.Column="3" Classes="CasinoTextStyle" VerticalAlignment="Center">
                 <Run Text="Moves:" />
                 <Run Text="{Binding Moves}" />
             </TextBlock>
-            <TextBlock Grid.Column="4" Style="{StaticResource CasinoTextStyle}" VerticalAlignment="Center">
+            <TextBlock Grid.Column="4" Classes="CasinoTextStyle" VerticalAlignment="Center">
                 <Run Text="Time:" />
                 <Run Text="{Binding ElapsedTime, Converter={StaticResource TimeSpanToShortStringConverter}}" />
             </TextBlock>
             <Button 
-                Style="{StaticResource CasinoButtonStyle}"
-                Grid.Column="6" Width="120" Content="Deal New Game"
+                Classes="CasinoButtonStyle"                Grid.Column="6" Width="120" Content="Deal New Game"
                 Command="{Binding DealNewGameCommand}" />
-        </apexControls:PaddedGrid>
+        </Grid>
 
         <!-- The win overlay. -->
-        <apexControls:ApexGrid 
-            Rows="*,Auto,Auto,Auto,*" Grid.RowSpan="2" Background="#00FFFFFF"
-            Visibility="{Binding IsGameWon, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Grid 
+            RowDefinitions="*,Auto,Auto,Auto,*" Grid.RowSpan="2" Background="#00FFFFFF"
+            IsVisible="{Binding IsGameWon}">
 
             <TextBlock 
                Grid.Row="1" FontSize="34" FontWeight="SemiBold" Foreground="#99FFFFFF"
@@ -157,12 +143,12 @@
             <StackPanel 
                 Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button 
-                    Style="{StaticResource CasinoButtonStyle}" Width="120" 
+                    Classes="CasinoButtonStyle" Width="120" 
                     Margin="4" Content="Play Again" Command="{Binding DealNewGameCommand}" />
                 <Button 
-                    Style="{StaticResource CasinoButtonStyle}" Width="120" 
+                    Classes="CasinoButtonStyle" Width="120" 
                     Margin="4" Content="Back to Casino" Command="{Binding GoToCasinoCommand}"  />
             </StackPanel>
-        </apexControls:ApexGrid>
-    </apexControls:ApexGrid>
+        </Grid>
+    </Grid>
 </UserControl>

@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Apex.MVVM;
-using SolitaireGames.KlondikeSolitaire;
+using System.Collections.Generic; 
 using System.IO.IsolatedStorage;
 using System.IO;
 using System.Xml.Serialization;
-using SolitaireGames.SpiderSolitaire;
+using SolitaireAvalonia.Converters;
 
 namespace SolitaireAvalonia.ViewModels
 {

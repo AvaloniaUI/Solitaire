@@ -1,153 +1,153 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
-                    xmlns:apexMVVM="clr-namespace:Apex.MVVM;assembly=Apex"
-                    xmlns:apexCommands="clr-namespace:Apex.Commands;assembly=Apex"
-                    xmlns:apexDragAndDrop="clr-namespace:Apex.DragAndDrop;assembly=Apex"
-                    xmlns:apexConverters="clr-namespace:Apex.Converters;assembly=Apex"
-                    xmlns:solitaireGames="clr-namespace:SolitaireGames"
-                    xmlns:klondike="clr-namespace:SolitaireGames.KlondikeSolitaire"
-                    xmlns:spider="clr-namespace:SolitaireGames.SpiderSolitaire">
-    
-    <!-- Converters.-->
-    <apexConverters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-    <solitaireGames:TimeSpanToShortStringConverter x:Key="TimeSpanToShortStringConverter" />
-    <solitaireGames:PlayingCardToBrushConverter x:Key="PlayingCardToBrushConverter" />
-
-    <!-- The playing card data template. -->
-    <DataTemplate DataType="{x:Type solitaireGames:PlayingCard}">
-        <Border
-            Width="140" Height="190" Cursor="Hand"
-            BorderThickness="1" CornerRadius="6"
-            apexDragAndDrop:DragAndDrop.IsDraggable="True"
-            apexCommands:ExtendedCommands.RightClickCommand="{Binding RelativeSource={RelativeSource 
-            FindAncestor, AncestorType={x:Type UserControl}}, Path=ViewModel.RightClickCardCommand}"
-            apexCommands:ExtendedCommands.RightClickCommandParameter="{Binding }"
-            >
-            <apexCommands:EventBindings.EventBindings>
-                <apexCommands:EventBindingCollection>
-                    <apexCommands:EventBinding 
-                        EventName="MouseLeftButtonUp"
-                        Command="{Binding RelativeSource={RelativeSource 
-            FindAncestor, AncestorType={x:Type UserControl}}, Path=ViewModel.LeftClickCardCommand}" CommandParameter="{Binding}" />
-                </apexCommands:EventBindingCollection>
-            </apexCommands:EventBindings.EventBindings>
-            <Border.Background>
-                <MultiBinding Converter="{StaticResource PlayingCardToBrushConverter}">
-                    <Binding Path="CardType" />
-                    <Binding Path="IsFaceDown" />
-                </MultiBinding>
-            </Border.Background>
-            <Border.Style>
-                <Style TargetType="Border">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsFaceDown}" Value="True">
-                            <Setter Property="BorderBrush" Value="#00ffffff" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding IsFaceDown}" Value="False">
-                            <Setter Property="BorderBrush" Value="#ff666666" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
-        </Border>
-    </DataTemplate>
-
-    <!-- The style for the card stack control. -->
-    <Style TargetType="{x:Type solitaireGames:CardStackControl}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type solitaireGames:CardStackControl}">
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
-                        <ItemsControl ItemsSource="{TemplateBinding ItemsSource}"
-                                      apexDragAndDrop:DragAndDrop.IsDragSource="True"
-                                      apexDragAndDrop:DragAndDrop.IsDropTarget="True"
-                                      Background="Transparent">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <solitaireGames:CardStackPanel 
-                                        FaceDownOffset="{Binding FaceDownOffset, RelativeSource={RelativeSource AncestorType={x:Type solitaireGames:CardStackControl}}}"
-                                        FaceUpOffset="{Binding FaceUpOffset, RelativeSource={RelativeSource AncestorType={x:Type solitaireGames:CardStackControl}}}"
-                                        OffsetMode="{Binding OffsetMode, RelativeSource={RelativeSource AncestorType={x:Type solitaireGames:CardStackControl}}}"
-                                        NValue="{Binding NValue, RelativeSource={RelativeSource AncestorType={x:Type solitaireGames:CardStackControl}}}"
-                                        Orientation="{Binding Orientation, RelativeSource={RelativeSource AncestorType={x:Type solitaireGames:CardStackControl}}}" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                        </ItemsControl>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <!--The style for text etc in a game. -->
-    <Style x:Key="CasinoTextStyle" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="#99FFFFFF" />
-        <Setter Property="FontSize" Value="16" />
-    </Style>
-
-    <!-- The style for a stack marker. -->
-    <Style x:Key="StackMarker" TargetType="Border">
-        <Setter Property="Padding" Value="10" />
-        <Setter Property="BorderThickness" Value="6" />
-        <Setter Property="CornerRadius" Value="15" />
-        <Setter Property="BorderBrush" Value="#33FFFFFF" />
-        <Setter Property="Margin" Value="8,10,40,60" />
-    </Style>
-    
-    <!-- Style for a run marker. -->
-    <Style x:Key="RunMarker" TargetType="Border">
-        <Setter Property="Padding" Value="10" />
-        <Setter Property="BorderThickness" Value="6" />
-        <Setter Property="CornerRadius" Value="15" />
-        <Setter Property="BorderBrush">
-            <Setter.Value>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop Color="#33FFFFFF" Offset="0" />
-                    <GradientStop Color="#00FFFFFF" Offset="0.8" />
-                </LinearGradientBrush>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="Margin" Value="8,10,40,40" />
-    </Style>
-    
-    <!-- A nice clean style for a button. -->
-    <Style x:Key="CasinoButtonStyle" TargetType="Button">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Border 
-                        Padding="4" BorderThickness="2" CornerRadius="15" BorderBrush="#66FFFFFF"
-                        Background="#11FFFFFF"
-                        Cursor="Hand">
-                        <ContentPresenter 
-                            TextBlock.Foreground="#99FFFFFF"
-                            TextBlock.FontWeight="SemiBold"
-                            HorizontalAlignment="Center"
-                            Content="{TemplateBinding Content}"
-                            />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <!-- Data provider for DrawMode. -->
-    <ObjectDataProvider 
-        MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="DrawModeValues">
-        <ObjectDataProvider.MethodParameters>
-            <x:Type TypeName="klondike:DrawMode" />
-        </ObjectDataProvider.MethodParameters>
-    </ObjectDataProvider>
-
-    <!-- Data provider for Difficulty. -->
-    <ObjectDataProvider 
-        MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="DifficultyValues">
-        <ObjectDataProvider.MethodParameters>
-            <x:Type TypeName="spider:Difficulty" />
-        </ObjectDataProvider.MethodParameters>
-    </ObjectDataProvider>
-    
-</ResourceDictionary>
+﻿<!-- <ResourceDictionary xmlns="https://github.com/avaloniaui" -->
+<!--                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" -->
+<!--                     xmlns:sys="clr-namespace:System;assembly=mscorlib" -->
+<!--                     xmlns:apexMVVM="clr-namespace:Apex.MVVM;assembly=Apex" -->
+<!--                     xmlns:apexCommands="clr-namespace:Apex.Commands;assembly=Apex" -->
+<!--                     xmlns:apexDragAndDrop="clr-namespace:Apex.DragAndDrop;assembly=Apex" -->
+<!--                     xmlns:apexConverters="clr-namespace:Apex.Converters;assembly=Apex" -->
+<!--                     xmlns:solitaireGames="clr-namespace:SolitaireGames" -->
+<!--                     xmlns:klondike="clr-namespace:SolitaireGames.KlondikeSolitaire" -->
+<!--                     xmlns:spider="clr-namespace:SolitaireGames.SpiderSolitaire"> -->
+<!--      -->
+<!--     ~1~ Converters.@1@ -->
+<!--     <apexConverters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" /> -->
+<!--     <solitaireGames:TimeSpanToShortStringConverter x:Key="TimeSpanToShortStringConverter" /> -->
+<!--     <solitaireGames:PlayingCardToBrushConverter x:Key="PlayingCardToBrushConverter" /> -->
+<!-- -->
+<!--     ~1~ The playing card data template. @1@ -->
+<!--     <DataTemplate DataType="{x:Type solitaireGames:PlayingCard}"> -->
+<!--         <Border -->
+<!--             Width="140" Height="190" Cursor="Hand" -->
+<!--             BorderThickness="1" CornerRadius="6" -->
+<!--             apexDragAndDrop:DragAndDrop.IsDraggable="True" -->
+<!--             apexCommands:ExtendedCommands.RightClickCommand="{Binding RelativeSource={RelativeSource  -->
+<!--             FindAncestor, AncestorType={x:Type UserControl}}, Path=ViewModel.RightClickCardCommand}" -->
+<!--             apexCommands:ExtendedCommands.RightClickCommandParameter="{Binding }" -->
+<!--             > -->
+<!--             <apexCommands:EventBindings.EventBindings> -->
+<!--                 <apexCommands:EventBindingCollection> -->
+<!--                     <apexCommands:EventBinding  -->
+<!--                         EventName="MouseLeftButtonUp" -->
+<!--                         Command="{Binding RelativeSource={RelativeSource  -->
+<!--             FindAncestor, AncestorType={x:Type UserControl}}, Path=ViewModel.LeftClickCardCommand}" CommandParameter="{Binding}" /> -->
+<!--                 </apexCommands:EventBindingCollection> -->
+<!--             </apexCommands:EventBindings.EventBindings> -->
+<!--             <Border.Background> -->
+<!--                 <MultiBinding Converter="{StaticResource PlayingCardToBrushConverter}"> -->
+<!--                     <Binding Path="CardType" /> -->
+<!--                     <Binding Path="IsFaceDown" /> -->
+<!--                 </MultiBinding> -->
+<!--             </Border.Background> -->
+<!--             <Border.Style> -->
+<!--                 <Style TargetType="Border"> -->
+<!--                     <Style.Triggers> -->
+<!--                         <DataTrigger Binding="{Binding IsFaceDown}" Value="True"> -->
+<!--                             <Setter Property="BorderBrush" Value="#00ffffff" /> -->
+<!--                         </DataTrigger> -->
+<!--                         <DataTrigger Binding="{Binding IsFaceDown}" Value="False"> -->
+<!--                             <Setter Property="BorderBrush" Value="#ff666666" /> -->
+<!--                         </DataTrigger> -->
+<!--                     </Style.Triggers> -->
+<!--                 </Style> -->
+<!--             </Border.Style> -->
+<!--         </Border> -->
+<!--     </DataTemplate> -->
+<!-- -->
+<!--     ~1~ The style for the card stack control. @1@ -->
+<!--     <Style TargetType="{x:Type solitaireGames:CardStackControl}"> -->
+<!--         <Setter Property="Template"> -->
+<!--             <Setter.Value> -->
+<!--                 <ControlTemplate TargetType="{x:Type solitaireGames:CardStackControl}"> -->
+<!--                     <Border Background="{TemplateBinding Background}" -->
+<!--                             BorderBrush="{TemplateBinding BorderBrush}" -->
+<!--                             BorderThickness="{TemplateBinding BorderThickness}"> -->
+<!--                         <ItemsControl ItemsSource="{TemplateBinding ItemsSource}" -->
+<!--                                       apexDragAndDrop:DragAndDrop.IsDragSource="True" -->
+<!--                                       apexDragAndDrop:DragAndDrop.IsDropTarget="True" -->
+<!--                                       Background="Transparent"> -->
+<!--                             <ItemsControl.ItemsPanel> -->
+<!--                                 <ItemsPanelTemplate> -->
+<!--                                     <solitaireGames:CardStackPanel  -->
+<!--                                         FaceDownOffset="{Binding FaceDownOffset, RelativeSource={RelativeSource AncestorType={x:Type solitaireGames:CardStackControl}}}" -->
+<!--                                         FaceUpOffset="{Binding FaceUpOffset, RelativeSource={RelativeSource AncestorType={x:Type solitaireGames:CardStackControl}}}" -->
+<!--                                         OffsetMode="{Binding OffsetMode, RelativeSource={RelativeSource AncestorType={x:Type solitaireGames:CardStackControl}}}" -->
+<!--                                         NValue="{Binding NValue, RelativeSource={RelativeSource AncestorType={x:Type solitaireGames:CardStackControl}}}" -->
+<!--                                         Orientation="{Binding Orientation, RelativeSource={RelativeSource AncestorType={x:Type solitaireGames:CardStackControl}}}" /> -->
+<!--                                 </ItemsPanelTemplate> -->
+<!--                             </ItemsControl.ItemsPanel> -->
+<!--                         </ItemsControl> -->
+<!--                     </Border> -->
+<!--                 </ControlTemplate> -->
+<!--             </Setter.Value> -->
+<!--         </Setter> -->
+<!--     </Style> -->
+<!-- -->
+<!--     ~1~The style for text etc in a game. @1@ -->
+<!--     <Style x:Key="CasinoTextStyle" TargetType="TextBlock"> -->
+<!--         <Setter Property="Foreground" Value="#99FFFFFF" /> -->
+<!--         <Setter Property="FontSize" Value="16" /> -->
+<!--     </Style> -->
+<!-- -->
+<!--     ~1~ The style for a stack marker. @1@ -->
+<!--     <Style x:Key="StackMarker" TargetType="Border"> -->
+<!--         <Setter Property="Padding" Value="10" /> -->
+<!--         <Setter Property="BorderThickness" Value="6" /> -->
+<!--         <Setter Property="CornerRadius" Value="15" /> -->
+<!--         <Setter Property="BorderBrush" Value="#33FFFFFF" /> -->
+<!--         <Setter Property="Margin" Value="8,10,40,60" /> -->
+<!--     </Style> -->
+<!--      -->
+<!--     ~1~ Style for a run marker. @1@ -->
+<!--     <Style x:Key="RunMarker" TargetType="Border"> -->
+<!--         <Setter Property="Padding" Value="10" /> -->
+<!--         <Setter Property="BorderThickness" Value="6" /> -->
+<!--         <Setter Property="CornerRadius" Value="15" /> -->
+<!--         <Setter Property="BorderBrush"> -->
+<!--             <Setter.Value> -->
+<!--                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1"> -->
+<!--                     <GradientStop Color="#33FFFFFF" Offset="0" /> -->
+<!--                     <GradientStop Color="#00FFFFFF" Offset="0.8" /> -->
+<!--                 </LinearGradientBrush> -->
+<!--             </Setter.Value> -->
+<!--         </Setter> -->
+<!--         <Setter Property="Margin" Value="8,10,40,40" /> -->
+<!--     </Style> -->
+<!--      -->
+<!--     ~1~ A nice clean style for a button. @1@ -->
+<!--     <Style x:Key="CasinoButtonStyle" TargetType="Button"> -->
+<!--         <Setter Property="Template"> -->
+<!--             <Setter.Value> -->
+<!--                 <ControlTemplate TargetType="Button"> -->
+<!--                     <Border  -->
+<!--                         Padding="4" BorderThickness="2" CornerRadius="15" BorderBrush="#66FFFFFF" -->
+<!--                         Background="#11FFFFFF" -->
+<!--                         Cursor="Hand"> -->
+<!--                         <ContentPresenter  -->
+<!--                             TextBlock.Foreground="#99FFFFFF" -->
+<!--                             TextBlock.FontWeight="SemiBold" -->
+<!--                             HorizontalAlignment="Center" -->
+<!--                             Content="{TemplateBinding Content}" -->
+<!--                             /> -->
+<!--                     </Border> -->
+<!--                 </ControlTemplate> -->
+<!--             </Setter.Value> -->
+<!--         </Setter> -->
+<!--     </Style> -->
+<!-- -->
+<!--     ~1~ Data provider for DrawMode. @1@ -->
+<!--     <ObjectDataProvider  -->
+<!--         MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="DrawModeValues"> -->
+<!--         <ObjectDataProvider.MethodParameters> -->
+<!--             <x:Type TypeName="klondike:DrawMode" /> -->
+<!--         </ObjectDataProvider.MethodParameters> -->
+<!--     </ObjectDataProvider> -->
+<!-- -->
+<!--     ~1~ Data provider for Difficulty. @1@ -->
+<!--     <ObjectDataProvider  -->
+<!--         MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="DifficultyValues"> -->
+<!--         <ObjectDataProvider.MethodParameters> -->
+<!--             <x:Type TypeName="spider:Difficulty" /> -->
+<!--         </ObjectDataProvider.MethodParameters> -->
+<!--     </ObjectDataProvider> -->
+<!--      -->
+<!-- </ResourceDictionary> -->

@@ -12,7 +12,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Navigation;
 using Avalonia.Shapes;
 
-namespace SolitaireAvalonia.Casino
+namespace SolitaireAvalonia.Views
 {
     /// <summary>
     /// Interaction logic for CasinoView.xaml

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using SolitaireAvalonia.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+
+namespace SolitaireAvalonia.Web;
 
 public class Program
 {
@@ -23,7 +24,3 @@ public class Program
         return builder;
     }
 }
-
-
-
-

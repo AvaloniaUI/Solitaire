@@ -5,8 +5,9 @@ using System.Text;
 using Apex.MVVM;
 using Apex.Extensions;
 using System.Collections.ObjectModel;
+using SolitaireAvalonia.Models;
 
-namespace SolitaireAvalonia.SpiderSolitaire
+namespace SolitaireAvalonia.ViewModels
 {
     /// <summary>
     /// The different difficulties offered.

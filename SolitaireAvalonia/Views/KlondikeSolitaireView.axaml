@@ -1,13 +1,8 @@
-﻿<UserControl x:Class="SolitaireGames.KlondikeSolitaire.KlondikeSolitaireView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl x:Class="SolitaireAvalonia.Views.KlondikeSolitaireView"
+             xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:SolitaireGames.KlondikeSolitaire"
-             xmlns:solitaireGames="clr-namespace:SolitaireGames"
-             xmlns:apexControls="clr-namespace:Apex.Controls;assembly=Apex"
-             xmlns:apexCommands="clr-namespace:Apex.Commands;assembly=Apex"
-             xmlns:apexDragAndDrop="clr-namespace:Apex.DragAndDrop;assembly=Apex"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"  
              mc:Ignorable="d" 
              x:Name="klondikeSolitaireView"
              d:DesignHeight="300" d:DesignWidth="300">
@@ -18,8 +13,8 @@
     </UserControl.Resources>
     
     <!-- The main grid - the game is at the top and the commands are at the bottom. -->
-    <apexControls:ApexGrid 
-        Rows="*,Auto"
+    <Grid 
+        RowDefinitions="*,Auto"
         DataContext="{Binding ViewModel, ElementName=klondikeSolitaireView}">
 
         <!-- The cards etc are all in a Viewbox so that they resize in a sensible
@@ -33,7 +28,7 @@
                 MinimumHorizontalDragDistance="0.0" MinimumVerticalDragDistance="0.0">
                 
                 <!-- This is the layout grid for the tableaus, foundations etc. -->
-                <apexControls:ApexGrid Width="1200" Height="840" Columns="*,*,*,*,*,*,*" Rows="240,600">
+                <Grid Width="1200" Height="840" ColumnDefinitions="*,*,*,*,*,*,*" RowDefinitions="240,600">
 
                      <!-- The drag stack, cards are stored here temporarily while they
                     are being dragged. -->
@@ -44,14 +39,14 @@
                     
                         <!-- The stock. -->
                         <Border 
-                            Grid.Row="0" Grid.Column="0" Style="{StaticResource StackMarker}" />
+                            Grid.Row="0" Grid.Column="0" Classes="StackMarker" />
                         <solitaireGames:CardStackControl 
                             Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Stock}" Cursor="Hand"
                             Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" MouseLeftButtonUp="CardStackControl_MouseLeftButtonUp" />
 
                         <!-- The waste. -->
                         <Border 
-                            Grid.Row="0" Grid.Column="1" Style="{StaticResource StackMarker}" />
+                            Grid.Row="0" Grid.Column="1" Classes="StackMarker" />
                         <solitaireGames:CardStackControl 
                             x:Name="wasteStack"
                             Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding Waste}"
@@ -59,96 +54,94 @@
 
                         <!-- The foundations. -->
                         <Border 
-                            Grid.Row="0" Grid.Column="3" Style="{StaticResource StackMarker}" />
+                            Grid.Row="0" Grid.Column="3" Classes="StackMarker" />
                         <solitaireGames:CardStackControl 
                             Grid.Row="0" Grid.Column="3" ItemsSource="{Binding Foundation1}"
                             Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" />
                         <Border 
-                            Grid.Row="0" Grid.Column="4" Style="{StaticResource StackMarker}" />
+                            Grid.Row="0" Grid.Column="4" Classes="StackMarker" />
                         <solitaireGames:CardStackControl 
                             Grid.Row="0" Grid.Column="4" ItemsSource="{Binding Foundation2}"
                             Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" />
                         <Border 
-                            Grid.Row="0" Grid.Column="5" Style="{StaticResource StackMarker}" />
+                            Grid.Row="0" Grid.Column="5" Classes="StackMarker" />
                         <solitaireGames:CardStackControl 
                             Grid.Row="0" Grid.Column="5" ItemsSource="{Binding Foundation3}"
                             Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" />
                         <Border 
-                            Grid.Row="0" Grid.Column="6" Style="{StaticResource StackMarker}" />
+                            Grid.Row="0" Grid.Column="6" Classes="StackMarker" />
                         <solitaireGames:CardStackControl 
                             Grid.Row="0" Grid.Column="6" ItemsSource="{Binding Foundation4}"
                             Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" />
 
                         <!-- The tableaus. -->
                         <Border 
-                            Grid.Row="1" Grid.Column="0" Style="{StaticResource RunMarker}" />
+                            Grid.Row="1" Grid.Column="0" Classes="RunMarker" />
                         <solitaireGames:CardStackControl 
                             Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Tableau1}"
                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
                         <Border 
-                            Grid.Row="1" Grid.Column="1" Style="{StaticResource RunMarker}" />
+                            Grid.Row="1" Grid.Column="1" Classes="RunMarker" />
                         <solitaireGames:CardStackControl
                             Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Tableau2}"
                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
                         <Border 
-                            Grid.Row="1" Grid.Column="2" Style="{StaticResource RunMarker}" />
+                            Grid.Row="1" Grid.Column="2" Classes="RunMarker" />
                         <solitaireGames:CardStackControl 
                             Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Tableau3}"
                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
                         <Border 
-                            Grid.Row="1" Grid.Column="3" Style="{StaticResource RunMarker}" />
+                            Grid.Row="1" Grid.Column="3" Classes="RunMarker" />
                         <solitaireGames:CardStackControl 
                             Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Tableau4}"
                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
                         <Border 
-                            Grid.Row="1" Grid.Column="4" Style="{StaticResource RunMarker}" />
+                            Grid.Row="1" Grid.Column="4" Classes="RunMarker" />
                         <solitaireGames:CardStackControl 
                             Grid.Row="1" Grid.Column="4" ItemsSource="{Binding Tableau5}"
                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
                         <Border 
-                            Grid.Row="1" Grid.Column="5" Style="{StaticResource RunMarker}" />
+                            Grid.Row="1" Grid.Column="5" Classes="RunMarker" />
                         <solitaireGames:CardStackControl 
                             Grid.Row="1" Grid.Column="5" ItemsSource="{Binding Tableau6}"
                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
                         <Border 
-                            Grid.Row="1" Grid.Column="6" Style="{StaticResource RunMarker}" />
+                            Grid.Row="1" Grid.Column="6" Classes="RunMarker" />
                         <solitaireGames:CardStackControl 
                             Grid.Row="1" Grid.Column="6" ItemsSource="{Binding Tableau7}"
                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
-                </apexControls:ApexGrid>
+                </Grid>
             </apexDragAndDrop:DragAndDropHost>
         </Viewbox>
 
         <!-- A padded grid is used to layout commands and info at the bottom of the screen. -->
-        <apexControls:PaddedGrid 
-            Grid.Row="1" Padding="4" Columns="Auto,*,Auto,Auto,Auto,*,Auto">
+        
+        <Grid 
+            Grid.Row="1" Margin="4" ColumnDefinitions="Auto,*,Auto,Auto,Auto,*,Auto">
             <Button 
-                Style="{StaticResource CasinoButtonStyle}"
-                Grid.Column="0" Width="120" Content="Deal New Game"
+                Classes="CasinoButtonStyle"                Grid.Column="0" Width="120" Content="Deal New Game"
                 Command="{Binding DealNewGameCommand}" />
-            <TextBlock Grid.Column="2" Style="{StaticResource CasinoTextStyle}" VerticalAlignment="Center">
+            <TextBlock Grid.Column="2" Classes="CasinoTextStyle" VerticalAlignment="Center">
                 <Run Text="Score:" />
                 <Run Text="{Binding Score}" />
             </TextBlock>
-            <TextBlock Grid.Column="3" Style="{StaticResource CasinoTextStyle}" VerticalAlignment="Center">
+            <TextBlock Grid.Column="3" Classes="CasinoTextStyle" VerticalAlignment="Center">
                 <Run Text="Moves:" />
                 <Run Text="{Binding Moves}" />
             </TextBlock>
-            <TextBlock Grid.Column="4" Style="{StaticResource CasinoTextStyle}" VerticalAlignment="Center">
+            <TextBlock Grid.Column="4" Classes="CasinoTextStyle" VerticalAlignment="Center">
                 <Run Text="Time:" />
                 <Run Text="{Binding ElapsedTime, Converter={StaticResource TimeSpanToShortStringConverter}}" />
             </TextBlock>
             <Button 
-                Style="{StaticResource CasinoButtonStyle}"
-                Grid.Column="6" Width="120" Content="Go to Casino"
+                Classes="CasinoButtonStyle"                Grid.Column="6" Width="120" Content="Go to Casino"
                 Command="{Binding GoToCasinoCommand}" />
-        </apexControls:PaddedGrid>
+        </Grid>
 
         <!-- The win overlay. -->        
-        <apexControls:ApexGrid 
-            Rows="*,Auto,Auto,Auto,*" Grid.RowSpan="2" Background="#00FFFFFF"
-            Visibility="{Binding IsGameWon, Converter={StaticResource BooleanToVisibilityConverter}}">
-
+        <Grid 
+            RowDefinitions="*,Auto,Auto,Auto,*" Grid.RowSpan="2" Background="#00FFFFFF"
+            IsVisible="{Binding IsGameWon}">
             <TextBlock 
                Grid.Row="1" FontSize="34" FontWeight="SemiBold" Foreground="#99FFFFFF"
                HorizontalAlignment="Center" Text="You Win!" />
@@ -164,12 +157,12 @@
             <StackPanel 
                 Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button 
-                    Style="{StaticResource CasinoButtonStyle}" Width="120" 
+                    Classes="CasinoButtonStyle" Width="120" 
                     Margin="4" Content="Play Again" Command="{Binding DealNewGameCommand}" />
                 <Button 
-                    Style="{StaticResource CasinoButtonStyle}" Width="120" 
+                    Classes="CasinoButtonStyle" Width="120" 
                     Margin="4" Content="Back to Casino" Command="{Binding GoToCasinoCommand}"  />
             </StackPanel>
-        </apexControls:ApexGrid>
-    </apexControls:ApexGrid>
+        </Grid>
+    </Grid>
 </UserControl>

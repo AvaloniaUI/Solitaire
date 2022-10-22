@@ -13,8 +13,9 @@ using Avalonia.Navigation;
 using Avalonia.Shapes;
 using System.Collections.ObjectModel;
 using Apex.DragAndDrop;
-
-namespace SolitaireAvalonia.KlondikeSolitaire
+using SolitaireAvalonia.ViewModels;
+ 
+ namespace SolitaireAvalonia.Views
 {
     /// <summary>
     /// Interaction logic for KlondikeSolitaireView.xaml
