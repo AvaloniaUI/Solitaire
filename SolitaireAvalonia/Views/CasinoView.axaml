@@ -1,93 +1,70 @@
 ﻿<UserControl x:Class="SolitaireAvalonia.Views.CasinoView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
-             x:Name="casinoViewModel"
-             d:DesignHeight="300" d:DesignWidth="300"
-             DataContext="{Binding CasinoViewModel, ElementName=casinoViewModel}">
-    
-    <!-- The main resource dictionary. -->
-    <!-- <UserControl.Resources> -->
-    <!--     <ResourceDictionary Source="/SolitaireGames;component/Resources/SolitaireGamesResourceDictionary.xaml" /> -->
-    <!-- </UserControl.Resources> -->
-    <!-- -->
-    <!-- Main container. -->
-    <Grid>
-        
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:views="clr-namespace:SolitaireAvalonia.Views"
+             xmlns:viewModels="clr-namespace:SolitaireAvalonia.ViewModels"
+             x:DataType="viewModels:CasinoViewModel"
+             x:CompileBindings="True"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <Panel>
+
         <!-- Background image (the baize). -->
-        <Image Source="/SolitaireGames;component/Resources/Backgrounds/Background.jpg" Stretch="Fill" />
-        
-        <!-- The main pivot control. -->
-        <TabControl x:Name="mainPivot">
-            
-            <!-- Klondike Solitaire is the first pivot item. -->
-            <TabItem Header="Klondike">
-                <KlondikeSolitaireView 
-                    x:Name="klondikeSolitaireView"
-                    ViewModel="{Binding KlondikeSolitaireViewModel}" />
-            </TabItem>
-            
-            <!-- The casino is the next pivot item. -->
-            <apexControls:PivotItem Title="Casino" IsInitialPage="True" >
+        <Image Source="avares://SolitaireAvalonia/Assets/Backgrounds/Background.jpg" Stretch="Fill" />
+
+        <!-- The main container for the casino. -->
+        <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+            <!-- The title of the game. -->
+            <TextBlock
+                Grid.Row="0" FontSize="34" HorizontalAlignment="Center"
+                Foreground="#99FFFFFF" Text="Solitaire" />
+
+            <!-- The container for the statistics. -->
+            <Grid Grid.Row="1" RowDefinitions="Auto" ColumnDefinitions="*,Auto,Auto,*">
+
+                <!-- Klondike/Spider Solitaire Statistics. -->
+                <views:StatisticsView
+                    Width="300"
+                    Grid.Column="1" Grid.Row="0" 
+                    Cursor="Hand" />
+                <!-- GameStatistics="{Binding KlondikeSolitaireStatistics}" -->
+                <!-- apexCommands:ExtendedCommands.LeftClickCommand="{Binding GoToKlondikeSolitaireCommand}" -->
+
+                <views:StatisticsView
+                    Width="300"
+                    Grid.Column="2" Grid.Row="0" 
+                    Cursor="Hand" />
+                <!-- GameStatistics="{Binding SpiderSolitaireStatistics}" -->
+                <!-- apexCommands:ExtendedCommands.LeftClickCommand="{Binding GoToSpiderSolitaireCommand}" -->
+
+            </Grid>
+
+             
+            <ContentControl Grid.Row="0" Content="{Binding CurrentView, Mode=OneWay}" Grid.RowSpan="4" >
                 
-                <!-- The main container for the casino. -->
-                <Grid RowDefinitions="Auto,Auto,*,Auto">
-                    
-                    <!-- The title of the game. -->
-                    <TextBlock 
-                        Grid.Row="0" FontSize="34" HorizontalAlignment="Center" 
-                        Foreground="#99FFFFFF" Text="Solitaire" />
-                    
-                    <!-- The container for the statistics. -->
-                    <Grid Grid.Row="1" RowDefinitions="Auto" ColumnDefinitions="*,Auto,Auto,*">
-                                                
-                        <!-- Klondike/Spider Solitaire Statistics. -->
-                        <StatisticsView
-                            Width="300"
-                            Grid.Column="1" Grid.Row="0" GameStatistics="{Binding KlondikeSolitaireStatistics}"
-                            apexCommands:ExtendedCommands.LeftClickCommand="{Binding GoToKlondikeSolitaireCommand}"
-                            Cursor="Hand" />
-                        <StatisticsView
-                            Width="300"
-                            Grid.Column="2" Grid.Row="0" GameStatistics="{Binding SpiderSolitaireStatistics}" 
-                            apexCommands:ExtendedCommands.LeftClickCommand="{Binding GoToSpiderSolitaireCommand}"
-                            Cursor="Hand" />
+            </ContentControl>
 
-                    </Grid>
-                    
-                    <!-- The casino commands. -->
-                    <Grid
-                        Grid.Row="4" ColumnDefinitions="*,Auto,Auto,Auto,*">
-
-                        <Button 
-                            Grid.Column="1" Classes="CasinoButtonStyle" Width="120" 
-                            Margin="4" Content="Play Klondike" Command="{Binding GoToKlondikeSolitaireCommand}"  />
-                        <Button 
-                            Grid.Column="2" Classes="CasinoButtonStyle" Width="120" 
-                            Margin="4" Content="Settings" Command="{Binding SettingsCommand}"  />
-                        <Button 
-                            Grid.Column="3" Classes="CasinoButtonStyle" Width="120" 
-                            Margin="4" Content="Play Spider" Command="{Binding GoToSpiderSolitaireCommand}"  />
-                        
-                    </Grid>
-
-                </Grid>
-                
-            </apexControls:PivotItem>
             
-            <!-- The spider solitaire pivot item. -->
-            <apexControls:PivotItem Title="Spider">
-                    <spiderSolitaire:SpiderSolitaireView
-                        x:Name="spiderSolitaireView"
-                        ViewModel="{Binding SpiderSolitaireViewModel}" />                
-            </apexControls:PivotItem>
-            
-            <!-- The settings pivot item.  -->
-            <apexControls:PivotItem Title="Settings">
+            <!-- The casino commands. -->
+            <Grid Grid.Row="4" ColumnDefinitions="*,Auto,Auto,Auto,*">
 
-            </apexControls:PivotItem>
-        </TabControl>
-    </Grid>
+                <Button
+                    Grid.Column="1" Classes="CasinoButtonStyle" Width="120"
+                    Margin="4" Content="Play Klondike" Command="{Binding NavigateToKlondikeSolitaireCommand}" />
+                <Button
+                    Grid.Column="2" Classes="CasinoButtonStyle" Width="120"
+                    Margin="4" Content="Settings" Command="{Binding NavigateToSettingsCommand}" />
+                <Button
+                    Grid.Column="3" Classes="CasinoButtonStyle" Width="120"
+                    Margin="4" Content="Play Spider" Command="{Binding NavigateToSpiderSolitaireCommand}" />
+            </Grid>
+            
+
+        </Grid>
+
+    </Panel>
 </UserControl>

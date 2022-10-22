@@ -151,3 +151,5 @@
 <!--     </ObjectDataProvider> -->
 <!--      -->
 <!-- </ResourceDictionary> -->
+
+<controls:ResourceDictionary xmlns:controls="https://github.com/avaloniaui" />

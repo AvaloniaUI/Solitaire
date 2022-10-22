@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using SolitaireAvalonia.ViewModels;
@@ -13,14 +14,34 @@ namespace SolitaireAvalonia
                 return null;
 
             var name = data.GetType().FullName!.Replace("ViewModel", "View");
-            var type = Type.GetType(name);
+            IControl? returnVal = null;
+            Exception? ex = null;
 
-            if (type != null)
+            try
             {
-                return (Control)Activator.CreateInstance(type)!;
+                var type = Type.GetType(name);
+
+                if (type != null)
+                {
+                    returnVal = (Control) Activator.CreateInstance(type)!;
+                }
             }
-            
-            return new TextBlock { Text = name };
+            catch (Exception _)
+            {
+                ex = _;
+            }
+            finally
+            {
+                if (ex is { })
+                {
+                    returnVal = new TextBlock
+                    {
+                        Text = $"An exception occurred while trying to instantiate {name}: {ex}"
+                    };
+                }
+            }
+
+            return returnVal;
         }
 
         public bool Match(object? data)

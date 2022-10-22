@@ -1,17 +1,13 @@
-﻿<UserControl x:Class="StatisticsView"
+﻿<UserControl x:Class="SolitaireAvalonia.Views.StatisticsView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:apexControls="clr-namespace:Apex.Controls;assembly=Apex"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              x:Name="statisticsView">
     
-    <!-- Point to the main resource dictionary for the assembly. -->
-    <UserControl.Resources>
-        <ResourceDictionary Source="/SolitaireGames;component/Resources/SolitaireGamesResourceDictionary.xaml" />
-    </UserControl.Resources>
+    <!-- Point to the main resource dictionary for the assembly. --> 
     
     <Border Padding="10" Margin="10" BorderBrush="#99FFFFFF" BorderThickness="6" CornerRadius="15"
             DataContext="{Binding GameStatistics, ElementName=statisticsView}">
@@ -45,9 +41,9 @@
             <TextBlock Grid.Row="9" Grid.Column="0" Text="Average Score" />
             <TextBlock Grid.Row="9" Grid.Column="1" Text="{Binding AverageScore}" />
             <TextBlock Grid.Row="10" Grid.Column="0" Text="Cumulative Time" />
-            <TextBlock Grid.Row="10" Grid.Column="1" Text="{Binding CumulativeGameTime, Converter={StaticResource TimeSpanToShortStringConverter}}" />
+            <!-- <TextBlock Grid.Row="10" Grid.Column="1" Text="{Binding CumulativeGameTime, Converter={StaticResource TimeSpanToShortStringConverter}}" /> -->
             <TextBlock Grid.Row="11" Grid.Column="0" Text="Average Time" />
-            <TextBlock Grid.Row="11" Grid.Column="1" Text="{Binding AverageGameTime, Converter={StaticResource TimeSpanToShortStringConverter}}" />
+            <!-- <TextBlock Grid.Row="11" Grid.Column="1" Text="{Binding AverageGameTime, Converter={StaticResource TimeSpanToShortStringConverter}}" /> -->
         </Grid>
 
     </Border> 

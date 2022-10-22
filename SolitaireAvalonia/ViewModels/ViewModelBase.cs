@@ -1,8 +1,10 @@
-﻿using ReactiveUI;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using ReactiveUI;
 
 namespace SolitaireAvalonia.ViewModels
 {
-    public class ViewModelBase : ReactiveObject
+    [ObservableObject]
+    public abstract partial class ViewModelBase 
     {
     }
 }

@@ -8,5 +8,5 @@
         x:Class="SolitaireAvalonia.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="SolitaireAvalonia">
-        <views:MainView />
+        <views:CasinoView/>
 </Window>

@@ -19,14 +19,14 @@ namespace SolitaireAvalonia
             {
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainViewModel()
+                    DataContext = new CasinoViewModel()
                 };
             }
             else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
             {
-                singleViewPlatform.MainView = new MainView
+                singleViewPlatform.MainView = new CasinoView()
                 {
-                    DataContext = new MainViewModel()
+                    DataContext = new CasinoViewModel()
                 };
             }
 
