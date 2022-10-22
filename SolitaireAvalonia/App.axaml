@@ -8,5 +8,9 @@
 
     <Application.Styles>
         <FluentTheme Mode="Dark"/>
+        <StyleInclude Source="/Styles.axaml" />
+
     </Application.Styles>
+    
+     
 </Application>

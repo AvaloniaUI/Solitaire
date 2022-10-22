@@ -71,20 +71,19 @@ namespace SolitaireAvalonia.Controls
 
             //  Measure each child (always needed, even if we don't use
             //  the measurement!)
-            foreach(Control child in Children)
+            foreach (var child in Children.Cast<Control?>())
             {
                 //  Measure the child against infinite space.
-                child.Measure(infiniteSpace);
+                child?.Measure(infiniteSpace);
             }
 
             //  Add the size of the last element.
-            if (LastChild != null)
-            {
-                //  Add the size.
-                totalX += LastChild.DesiredSize.Width;
-                totalY += LastChild.DesiredSize.Height;
-            }
-                        
+            if (LastChild == null) return new Size(totalX, totalY);
+            
+            //  Add the size.
+            totalX += LastChild.DesiredSize.Width;
+            totalY += LastChild.DesiredSize.Height;
+
             return new Size(totalX, totalY);
         }
 
@@ -219,15 +218,14 @@ namespace SolitaireAvalonia.Controls
                 //  Offset.
                 switch (Orientation)
                 { 
-                    // case Orientation.Horizontal:
-                    //     offset = new Size(card.IsFaceDown ? faceDownOffset : faceUpOffset, offset.Height);
-                    //     break;
-                    // case Orientation.Vertical:
-                    //     offset = new Size(offset.Width, card.IsFaceDown ? faceDownOffset : faceUpOffset);
-                    //     break;
+                    case Orientation.Horizontal:
+                        offset = new Size(card.IsFaceDown ? faceDownOffset : faceUpOffset, offset.Height);
+                        break;
+                    case Orientation.Vertical:
+                        offset = new Size(offset.Width, card.IsFaceDown ? faceDownOffset : faceUpOffset);
+                        break;
                     default:
                         break;
-                        
                 }
 
                 //  Add to the list.

@@ -14,7 +14,7 @@
 
         <Grid 
             RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="3*,*" 
-            TextBlock.Foreground="#99FFFFFF" TextBlock.FontSize="13">
+            TextElement.Foreground="#99FFFFFF" TextElement.FontSize="13">
             
             <!-- The Game Title. -->
             <TextBlock 

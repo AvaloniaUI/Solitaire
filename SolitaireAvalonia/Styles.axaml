@@ -1,0 +1,138 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:SolitaireAvalonia.Converters"
+        xmlns:solitaireGames="clr-namespace:SolitaireAvalonia.ViewModels"
+        xmlns:controls="clr-namespace:SolitaireAvalonia.Controls">
+    <Styles.Resources>
+        <converters:TimeSpanToShortStringConverter x:Key="TimeSpanToShortStringConverter" />
+        <converters:PlayingCardToBrushConverter x:Key="PlayingCardToBrushConverter" />
+
+
+    </Styles.Resources>
+    <!-- Converters.-->
+
+    <!-- The playing card data template. -->
+
+    <!-- The style for the card stack control. -->
+    <Style Selector="controls|CardStackControl">
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:CardStackControl}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <!-- Items="{TemplateBinding Items}" -->
+                        <!-- apexDragAndDrop:DragAndDrop.IsDragSource="True" -->
+                        <!-- apexDragAndDrop:DragAndDrop.IsDropTarget="True" -->
+                        <ItemsControl Items="{TemplateBinding Items}"
+
+                                      Background="Transparent">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type solitaireGames:PlayingCard}"  >
+                                    <Border
+                                        Classes.isFaceDown="{Binding IsFaceDown}"
+                                        Background="{Binding  ., Converter={StaticResource PlayingCardToBrushConverter}}"
+                                        Width="140" Height="190" Cursor="Hand"
+                                        BorderThickness="1" CornerRadius="6">
+                                        <!-- apexDragAndDrop:DragAndDrop.IsDraggable="True" -->
+                                        <!-- apexCommands:ExtendedCommands.RightClickCommand="{Binding RelativeSource={RelativeSource  -->
+                                        <!-- FindAncestor, AncestorType={x:Type UserControl}}, Path=ViewModel.RightClickCardCommand}" -->
+                                        <!-- apexCommands:ExtendedCommands.RightClickCommandParameter="{Binding }"> -->
+                                        <!-- <apexCommands:EventBindings.EventBindings> -->
+                                        <!--     <apexCommands:EventBindingCollection> -->
+                                        <!--         <apexCommands:EventBinding -->
+                                        <!--             EventName="MouseLeftButtonUp" -->
+                                        <!--             Command="{Binding RelativeSource={RelativeSource  -->
+                                        <!-- FindAncestor, AncestorType={x:Type UserControl}}, Path=ViewModel.LeftClickCardCommand}" -->
+                                        <!--             CommandParameter="{Binding}" /> -->
+                                        <!--     </apexCommands:EventBindingCollection> -->
+                                        <!-- </apexCommands:EventBindings.EventBindings> -->
+                                        <!-- <Border.Background> -->
+                                        <!--     <MultiBinding Converter="{StaticResource PlayingCardToBrushConverter}"> -->
+                                        <!--         <Binding Path="CardType" Mode="OneWay" /> -->
+                                        <!--         <Binding Path="IsFaceDown" Mode="OneWay"/> -->
+                                        <!--     </MultiBinding> -->
+                                        <!-- </Border.Background> -->
+                                        
+                                        <Border.Styles>
+                                            <Style Selector="Border.isFaceDown">
+                                                <Setter Property="BorderBrush" Value="Transparent" />
+                                            </Style>
+                                            <Style Selector="Border:not(.isFaceDown)">
+                                                <Setter Property="BorderBrush" Value="Gray" />
+                                            </Style>
+                                        </Border.Styles>
+                                    </Border>
+                                </DataTemplate>
+
+                            </ItemsControl.ItemTemplate>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <controls:CardStackPanel
+                                        FaceDownOffset="{Binding $parent[controls:CardStackControl].FaceDownOffset}"
+                                        FaceUpOffset="{Binding $parent[controls:CardStackControl].FaceUpOffset}"
+                                        OffsetMode="{Binding $parent[controls:CardStackControl].OffsetMode}"
+                                        NValue="{Binding $parent[controls:CardStackControl].NValue}"
+                                        Orientation="{Binding $parent[controls:CardStackControl].Orientation}" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--The style for text etc in a game. -->
+    <Style Selector="TextBlock.CasinoTextStyle">
+        <Setter Property="Foreground" Value="#99FFFFFF" />
+        <Setter Property="FontSize" Value="16" />
+    </Style>
+
+    <!-- The style for a stack marker. -->
+    <Style Selector="Border.StackMarker">
+        <Setter Property="Padding" Value="10" />
+        <Setter Property="BorderThickness" Value="6" />
+        <Setter Property="CornerRadius" Value="15" />
+        <Setter Property="BorderBrush" Value="#33FFFFFF" />
+        <Setter Property="Margin" Value="8,10,40,60" />
+    </Style>
+
+    <!-- Style for a run marker. -->
+    <Style Selector="Border.RunMarker">
+        <Setter Property="Padding" Value="10" />
+        <Setter Property="BorderThickness" Value="6" />
+        <Setter Property="CornerRadius" Value="15" />
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#33FFFFFF" Offset="0" />
+                    <GradientStop Color="#00FFFFFF" Offset="0.8" />
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Margin" Value="8,10,40,40" />
+    </Style>
+
+    <!-- A nice clean style for a button. -->
+    <Style Selector="Button.CasinoButtonStyle">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Padding="4" BorderThickness="2" CornerRadius="15" BorderBrush="#66FFFFFF"
+                        Background="#11FFFFFF"
+                        Cursor="Hand">
+                        <ContentPresenter
+                            TextElement.Foreground="#99FFFFFF"
+                            TextElement.FontWeight="SemiBold"
+                            HorizontalAlignment="Center"
+                            Content="{TemplateBinding Content}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</Styles>

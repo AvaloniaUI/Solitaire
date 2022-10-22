@@ -26,72 +26,72 @@
 <!-- -->
 <!--                      The drag stack, cards are stored here temporarily while they -->
 <!--                     are being dragged. --> 
-<!--                     <solitaireGames:CardStackControl  -->
+<!--                     <CardStackControl  -->
 <!--                         x:Name="dragStack" Grid.Row="0" Grid.Column="0" Margin="0,-2000,0,0" -->
 <!--                         Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" /> -->
 <!-- -->
 <!--                     ~1~ The tableaus. @1@ -->
 <!--                     <Border  -->
 <!--                             Grid.Row="0" Grid.Column="0" Classes="RunMarker" /> -->
-<!--                     <solitaireGames:CardStackControl  -->
-<!--                             Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Tableau1}" -->
+<!--                     <CardStackControl  -->
+<!--                             Grid.Row="0" Grid.Column="0" Items="{Binding Tableau1}" -->
 <!--                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" /> -->
 <!--                     <Border  -->
 <!--                             Grid.Row="0" Grid.Column="1" Classes="RunMarker" /> -->
-<!--                     <solitaireGames:CardStackControl -->
-<!--                             Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Tableau2}" -->
+<!--                     <CardStackControl -->
+<!--                             Grid.Row="0" Grid.Column="1" Items="{Binding Tableau2}" -->
 <!--                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" /> -->
 <!--                     <Border  -->
 <!--                             Grid.Row="0" Grid.Column="2" Classes="RunMarker" /> -->
-<!--                     <solitaireGames:CardStackControl  -->
-<!--                             Grid.Row="0" Grid.Column="2" ItemsSource="{Binding Tableau3}" -->
+<!--                     <CardStackControl  -->
+<!--                             Grid.Row="0" Grid.Column="2" Items="{Binding Tableau3}" -->
 <!--                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" /> -->
 <!--                     <Border  -->
 <!--                             Grid.Row="0" Grid.Column="3" Classes="RunMarker" /> -->
-<!--                     <solitaireGames:CardStackControl  -->
-<!--                             Grid.Row="0" Grid.Column="3" ItemsSource="{Binding Tableau4}" -->
+<!--                     <CardStackControl  -->
+<!--                             Grid.Row="0" Grid.Column="3" Items="{Binding Tableau4}" -->
 <!--                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" /> -->
 <!--                     <Border  -->
 <!--                             Grid.Row="0" Grid.Column="4" Classes="RunMarker" /> -->
-<!--                     <solitaireGames:CardStackControl  -->
-<!--                             Grid.Row="0" Grid.Column="4" ItemsSource="{Binding Tableau5}" -->
+<!--                     <CardStackControl  -->
+<!--                             Grid.Row="0" Grid.Column="4" Items="{Binding Tableau5}" -->
 <!--                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" /> -->
 <!--                     <Border  -->
 <!--                             Grid.Row="0" Grid.Column="5" Classes="RunMarker" /> -->
-<!--                     <solitaireGames:CardStackControl  -->
-<!--                             Grid.Row="0" Grid.Column="5" ItemsSource="{Binding Tableau6}" -->
+<!--                     <CardStackControl  -->
+<!--                             Grid.Row="0" Grid.Column="5" Items="{Binding Tableau6}" -->
 <!--                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" /> -->
 <!--                     <Border  -->
 <!--                             Grid.Row="0" Grid.Column="6" Classes="RunMarker" /> -->
-<!--                     <solitaireGames:CardStackControl  -->
-<!--                             Grid.Row="0" Grid.Column="6" ItemsSource="{Binding Tableau7}" -->
+<!--                     <CardStackControl  -->
+<!--                             Grid.Row="0" Grid.Column="6" Items="{Binding Tableau7}" -->
 <!--                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" /> -->
 <!--                     <Border  -->
 <!--                             Grid.Row="0" Grid.Column="7" Classes="RunMarker" /> -->
-<!--                     <solitaireGames:CardStackControl  -->
-<!--                             Grid.Row="0" Grid.Column="7" ItemsSource="{Binding Tableau8}" -->
+<!--                     <CardStackControl  -->
+<!--                             Grid.Row="0" Grid.Column="7" Items="{Binding Tableau8}" -->
 <!--                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" /> -->
 <!--                     <Border  -->
 <!--                             Grid.Row="0" Grid.Column="8" Classes="RunMarker" /> -->
-<!--                     <solitaireGames:CardStackControl  -->
-<!--                             Grid.Row="0" Grid.Column="8" ItemsSource="{Binding Tableau9}" -->
+<!--                     <CardStackControl  -->
+<!--                             Grid.Row="0" Grid.Column="8" Items="{Binding Tableau9}" -->
 <!--                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" /> -->
 <!--                     <Border  -->
 <!--                             Grid.Row="0" Grid.Column="9" Classes="RunMarker" /> -->
-<!--                     <solitaireGames:CardStackControl  -->
-<!--                             Grid.Row="0" Grid.Column="9" ItemsSource="{Binding Tableau10}" -->
+<!--                     <CardStackControl  -->
+<!--                             Grid.Row="0" Grid.Column="9" Items="{Binding Tableau10}" -->
 <!--                             Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" /> -->
 <!-- -->
 <!--                     ~1~ The foundation. @1@ -->
-<!--                     <solitaireGames:CardStackControl  -->
-<!--                         Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Foundation}" -->
+<!--                     <CardStackControl  -->
+<!--                         Grid.Row="1" Grid.Column="0" Items="{Binding Foundation}" -->
 <!--                         Grid.ColumnSpan="3" HorizontalAlignment="Left" -->
 <!--                         Orientation="Horizontal" FaceDownOffset="30" FaceUpOffset="30" -->
 <!--                         OffsetMode="EveryNthCard" NValue="13" /> -->
 <!--                      -->
 <!--                     ~1~ The stock. @1@ -->
-<!--                     <solitaireGames:CardStackControl  -->
-<!--                         Grid.Row="1" Grid.Column="8" ItemsSource="{Binding Stock}" -->
+<!--                     <CardStackControl  -->
+<!--                         Grid.Row="1" Grid.Column="8" Items="{Binding Stock}" -->
 <!--                         Grid.ColumnSpan="2" HorizontalAlignment="Right" -->
 <!--                         Orientation="Horizontal" FaceDownOffset="30" FaceUpOffset="0" -->
 <!--                         OffsetMode="EveryNthCard" NValue="10" -->

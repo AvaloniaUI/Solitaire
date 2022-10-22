@@ -23,15 +23,15 @@ namespace SolitaireAvalonia.Views
         //     //  source stack again.                
         //     ItemsControl sourceStack = args.DragSource as ItemsControl;
         //     foreach (var dragCard in draggingCards)
-        //         ((ObservableCollection<PlayingCard>)((ItemsControl)args.DragSource).ItemsSource).Add(dragCard);
+        //         ((ObservableCollection<PlayingCard>)((ItemsControl)args.DragSource).Items).Add(dragCard);
         //
         //     //  If we have a drop target, move the card.
         //     if (args.DropTarget != null)
         //     {
         //         //  Move the card.
         //         ViewModel.MoveCard(
-        //             (ObservableCollection<PlayingCard>)((ItemsControl)args.DragSource).ItemsSource,
-        //             (ObservableCollection<PlayingCard>)((ItemsControl)args.DropTarget).ItemsSource,
+        //             (ObservableCollection<PlayingCard>)((ItemsControl)args.DragSource).Items,
+        //             (ObservableCollection<PlayingCard>)((ItemsControl)args.DropTarget).Items,
         //             (PlayingCard)args.DragData, false);
         //     }
         // }
@@ -61,14 +61,14 @@ namespace SolitaireAvalonia.Views
         //         draggingCards.Add(cards[i]);
         //
         //     //  Clear the drag stack.
-        //     dragStack.ItemsSource = draggingCards;
+        //     dragStack.Items = draggingCards;
         //     dragStack.UpdateLayout();
         //     args.DragAdorner = new Apex.Adorners.VisualAdorner(dragStack);
         //
         //     //  Hide each dragging card.
         //     ItemsControl sourceStack = args.DragSource as ItemsControl;
         //     foreach (var dragCard in draggingCards)
-        //         ((ObservableCollection<PlayingCard>)sourceStack.ItemsSource).Remove(dragCard);
+        //         ((ObservableCollection<PlayingCard>)sourceStack.Items).Remove(dragCard);
         // }
         //
         //

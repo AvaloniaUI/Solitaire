@@ -9,13 +9,14 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using SolitaireAvalonia.Models;
+using SolitaireAvalonia.ViewModels;
 
 namespace SolitaireAvalonia.Converters
 {
     /// <summary>
     /// Converter to get the brush for a playing card.
     /// </summary>
-    public class PlayingCardToBrushConverter : IMultiValueConverter
+    public class PlayingCardToBrushConverter : IValueConverter
     {
         /// <summary>
         /// Sets the deck folder.
@@ -41,58 +42,46 @@ namespace SolitaireAvalonia.Converters
         static Dictionary<string, Brush> brushes = new Dictionary<string, Brush>();
 
         /// <inheritdoc />
-        public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             //  Cast the data.
-            if (values == null || values.Count() != 2)
-                return null;
-
-            //  Cast the values.
-            CardType cardType = (CardType)values[0];
-            bool faceDown = (bool)values[1];
-
-            //  We're going to create an image source.
-            string imageSource = string.Empty;
-
-            //  If the card is face down, we're using the 'Rear' image.
-            //  Otherwise it's just the enum value (e.g. C3, SA).
-            if (faceDown)
-                imageSource = "Back";
-            else
-                imageSource = cardType.ToString();
-            
-            var assetLoader = AvaloniaLocator.Current.GetService<IAssetLoader>();
-
-            //  Turn this string into a proper path.
-            imageSource = $"avares://{nameof(SolitaireAvalonia)}/{deckFolder}/{imageSource}.png";
- 
-            //  Do we need to add this brush to the static dictionary?
-            if (brushes.ContainsKey(imageSource) == false)
+            if (value is not null && value is PlayingCard pc)
             {
-                var image = assetLoader.Open(new Uri(imageSource));
+                //  We're going to create an image source.
+                string imageSource = string.Empty;
 
-                var k = new ImageBrush(new Bitmap(image));
-                brushes.Add(imageSource, k);
-             }
+                //  If the card is face down, we're using the 'Rear' image.
+                //  Otherwise it's just the enum value (e.g. C3, SA).
+                if (pc.IsFaceDown)
+                    imageSource = "Back";
+                else
+                    imageSource = pc.CardType.ToString();
 
-            //  Return the brush.
-            return brushes[imageSource];
+                var assetLoader = AvaloniaLocator.Current.GetService<IAssetLoader>();
+
+                //  Turn this string into a proper path.
+                imageSource = $"avares://{nameof(SolitaireAvalonia)}/Assets/Decks/{deckFolder}/{imageSource}.png";
+
+                //  Do we need to add this brush to the static dictionary?
+                if (brushes.ContainsKey(imageSource) == false)
+                {
+                    var image = assetLoader.Open(new Uri(imageSource));
+
+                    var k = new ImageBrush(new Bitmap(image));
+                    brushes.Add(imageSource, k);
+                }
+
+                //  Return the brush.
+                return brushes[imageSource];
+            }
+
+            return null;
         }
 
-        /// <summary>
-        /// Converts a binding target value to the source binding values.
-        /// </summary>
-        /// <param name="value">The value that the binding target produces.</param>
-        /// <param name="targetTypes">The array of types to convert to. The array length indicates the number and types of values that are suggested for the method to return.</param>
-        /// <param name="parameter">The converter parameter to use.</param>
-        /// <param name="culture">The culture to use in the converter.</param>
-        /// <returns>
-        /// An array of values that have been converted from the target value back to the source values.
-        /// </returns>
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        /// <inheritdoc />
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
- 
     }
 }

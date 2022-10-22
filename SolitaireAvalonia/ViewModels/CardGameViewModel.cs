@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Windows.Input;
 using Avalonia.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace SolitaireAvalonia.ViewModels
 {
     /// <summary>
     /// Base class for a ViewModel for a card game.
     /// </summary>
-    public class CardGameViewModel : ViewModelBase
+    public partial class CardGameViewModel : ViewModelBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CardGameViewModel"/> class.
@@ -22,6 +25,8 @@ namespace SolitaireAvalonia.ViewModels
             // rightClickCardCommand = new ViewModelCommand(DoRightClickCard, true);
             // dealNewGameCommand = new ViewModelCommand(DoDealNewGame, true);
             // goToCasinoCommand = new ViewModelCommand(DoGoToCasino, true);
+
+            DealNewGameCommand = new RelayCommand(DoDealNewGame);
         }
 
         /// <summary>
@@ -51,14 +56,14 @@ namespace SolitaireAvalonia.ViewModels
         /// Deals a new game.
         /// </summary>
         /// <param name="parameter">The parameter.</param>
-        protected virtual void DoDealNewGame(object parameter)
+        protected virtual void DoDealNewGame()
         {
             //  Stop the timer and reset the game data.
             StopTimer();
-            // ElapsedTime = TimeSpan.FromSeconds(0);
-            // Moves = 0;
-            // Score = 0;
-            // IsGameWon = false;
+            ElapsedTime = TimeSpan.FromSeconds(0);
+            Moves = 0;
+            Score = 0;
+            IsGameWon = false;
         }
 
         /// <summary>
@@ -87,7 +92,7 @@ namespace SolitaireAvalonia.ViewModels
         {
             //  Get the time, update the elapsed time, record the last tick.
             DateTime timeNow = DateTime.Now;
-            // ElapsedTime += timeNow - lastTick;
+            ElapsedTime += timeNow - lastTick;
             lastTick = timeNow;
         }
 
@@ -110,127 +115,39 @@ namespace SolitaireAvalonia.ViewModels
         /// The time of the last tick.
         /// </summary>
         private DateTime lastTick;
-        //
-        // /// <summary>
-        // /// The score notifying property.
-        // /// </summary>
-        // private NotifyingProperty scoreProperty = new NotifyingProperty("Score", typeof(int), 0);
-        //
-        // /// <summary>
-        // /// Gets or sets the score.
-        // /// </summary>
-        // /// <value>The score.</value>
-        // public int Score
-        // {
-        //     get { return (int)GetValue(scoreProperty); }
-        //     set { SetValue(scoreProperty, value); }
-        // }
-        //
-        // /// <summary>
-        // /// The elapsed time property.
-        // /// </summary>
-        // private readonly NotifyingProperty elapsedTimeProperty =
-        //     new NotifyingProperty("ElapsedTime", typeof(double), default(double));
-        //
-        // /// <summary>
-        // /// Gets or sets the elapsed time.
-        // /// </summary>
-        // /// <value>The elapsed time.</value>
-        // public TimeSpan ElapsedTime
-        // {
-        //     get { return TimeSpan.FromSeconds((double)GetValue(elapsedTimeProperty)); }
-        //     set { SetValue(elapsedTimeProperty, value.TotalSeconds); }
-        // }
-        //
-        // /// <summary>
-        // /// The moves notifying property.
-        // /// </summary>
-        // private readonly NotifyingProperty movesProperty =
-        //     new NotifyingProperty("Moves", typeof(int), 0);
-        //
-        // /// <summary>
-        // /// Gets or sets the moves.
-        // /// </summary>
-        // /// <value>The moves.</value>
-        // public int Moves
-        // {
-        //     get { return (int)GetValue(movesProperty); }
-        //     set { SetValue(movesProperty, value); }
-        // }
-        //
-        // /// <summary>
-        // /// The victory flag.
-        // /// </summary>
-        // private NotifyingProperty isGameWonProperty = new NotifyingProperty("IsGameWon",
-        //     typeof(bool), false);
-        //
-        // /// <summary>
-        // /// Gets or sets a value indicating whether this instance is game won.
-        // /// </summary>
-        // /// <value>
-        // /// 	<c>true</c> if this instance is game won; otherwise, <c>false</c>.
-        // /// </value>
-        // public bool IsGameWon
-        // {
-        //     get { return (bool)GetValue(isGameWonProperty); }
-        //     set { SetValue(isGameWonProperty, value); }
-        // }
-        //
-        // /// <summary>
-        // /// The left click card command.
-        // /// </summary>
-        // private ViewModelCommand leftClickCardCommand;
-        //
-        // /// <summary>
-        // /// Gets the left click card command.
-        // /// </summary>
-        // /// <value>The left click card command.</value>
-        // public ViewModelCommand LeftClickCardCommand
-        // {
-        //     get { return leftClickCardCommand; }
-        // }
-        //
-        // /// <summary>
-        // /// The right click card command.
-        // /// </summary>
-        // private ViewModelCommand rightClickCardCommand;
-        //
-        // /// <summary>
-        // /// Gets the right click card command.
-        // /// </summary>
-        // /// <value>The right click card command.</value>
-        // public ViewModelCommand RightClickCardCommand
-        // {
-        //     get { return rightClickCardCommand; }
-        // }
-        //
-        // /// <summary>
-        // /// The command to go to the casino.
-        // /// </summary>
-        // private ViewModelCommand goToCasinoCommand;
-        //
-        // /// <summary>
-        // /// Gets the go to casino command.
-        // /// </summary>
-        // /// <value>The go to casino command.</value>
-        // public ViewModelCommand GoToCasinoCommand
-        // {
-        //     get { return goToCasinoCommand; }
-        // }
-        //
-        // /// <summary>
-        // /// The command to deal a new game.
-        // /// </summary>
-        // private ViewModelCommand dealNewGameCommand;
-        //
-        // /// <summary>
-        // /// Gets the deal new game command.
-        // /// </summary>
-        // /// <value>The deal new game command.</value>
-        // public ViewModelCommand DealNewGameCommand
-        // {
-        //     get { return dealNewGameCommand; }
-        // }
+ 
+        [ObservableProperty] private int _score;
+
+        [ObservableProperty] private TimeSpan _elapsedTime;
+
+        [ObservableProperty] private int _moves;
+
+        [ObservableProperty] private bool _isGameWon;
+
+        /// <summary>
+        /// Gets the left click card command.
+        /// </summary>
+        /// <value>The left click card command.</value>
+        public ICommand LeftClickCardCommand { get; }
+
+        /// <summary>
+        /// Gets the right click card command.
+        /// </summary>
+        /// <value>The right click card command.</value>
+        public ICommand RightClickCardCommand { get; }
+
+        /// <summary>
+        /// Gets the go to casino command.
+        /// </summary>
+        /// <value>The go to casino command.</value>
+        public ICommand GoToCasinoCommand { get; }
+
+
+        /// <summary>
+        /// Gets the deal new game command.
+        /// </summary>
+        /// <value>The deal new game command.</value>
+        public ICommand DealNewGameCommand { get; }
 
         /// <summary>
         /// Occurs when the game is won.
