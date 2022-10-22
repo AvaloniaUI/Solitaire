@@ -203,8 +203,8 @@ namespace SolitaireAvalonia.Controls
                         break;
                     case OffsetMode.UseCardValues:
                         //  Offset each time by the amount specified in the card object.
-                        // faceDownOffset = card.FaceDownOffset;
-                        // faceUpOffset = card.FaceUpOffset;
+                        faceDownOffset = card.FaceDownOffset;
+                        faceUpOffset = card.FaceUpOffset;
                         break;
                     default:
                         break;
@@ -214,15 +214,17 @@ namespace SolitaireAvalonia.Controls
 
                 //  Create the offset as a size.
                 Size offset = new Size(0, 0);
+
+                var offsetsX = card.IsFaceDown ? faceDownOffset : faceUpOffset;
                 
                 //  Offset.
                 switch (Orientation)
                 { 
                     case Orientation.Horizontal:
-                        offset = new Size(card.IsFaceDown ? faceDownOffset : faceUpOffset, offset.Height);
+                        offset = new Size(offsetsX, offset.Height);
                         break;
                     case Orientation.Vertical:
-                        offset = new Size(offset.Width, card.IsFaceDown ? faceDownOffset : faceUpOffset);
+                        offset = new Size(offset.Width, offsetsX);
                         break;
                     default:
                         break;
