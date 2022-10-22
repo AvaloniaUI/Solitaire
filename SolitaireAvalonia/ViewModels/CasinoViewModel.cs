@@ -188,164 +188,27 @@ namespace SolitaireAvalonia.ViewModels
         // private void DoSettingsCommand()
         // {
         // }
-        //
+        
+        
         // /// <summary>
         // /// The Klondike stats.
         // /// </summary>
         // private NotifyingProperty KlondikeSolitaireStatisticsProperty =
         //   new NotifyingProperty("KlondikeSolitaireStatistics", typeof(GameStatistics),
-        //       new GameStatistics() { GameName = "Klondike Solitaire" });
-        //
-        // /// <summary>
-        // /// Gets or sets the klondike solitaire statistics.
-        // /// </summary>
-        // /// <value>The klondike solitaire statistics.</value>
-        // public GameStatistics KlondikeSolitaireStatistics
-        // {
-        //     get { return (GameStatistics)GetValue(KlondikeSolitaireStatisticsProperty); }
-        //     set { SetValue(KlondikeSolitaireStatisticsProperty, value); }
-        // }
-        //
-        // /// <summary>
-        // /// The spider stats.
-        // /// </summary>
+        //       new GameStatistics() { GameName = "Klondike Solitaire" }); 
+        // public GameStatistics KlondikeSolitaireStatistics 
+        
         // private NotifyingProperty SpiderSolitaireStatisticsProperty =
         //   new NotifyingProperty("SpiderSolitaireStatistics", typeof(GameStatistics),
         //       new GameStatistics() { GameName = "Spider Solitaire" });
-        //
-        // /// <summary>
-        // /// Gets or sets the spider solitaire statistics.
-        // /// </summary>
-        // /// <value>The spider solitaire statistics.</value>
-        // public GameStatistics SpiderSolitaireStatistics
-        // {
-        //     get { return (GameStatistics)GetValue(SpiderSolitaireStatisticsProperty); }
-        //     set { SetValue(SpiderSolitaireStatisticsProperty, value); }
-        // }
-        //
-        // /// <summary>
-        // /// The Klondike view model.
-        // /// </summary>
-        // private NotifyingProperty KlondikeSolitaireViewModelProperty =
-        //   new NotifyingProperty("KlondikeSolitaireViewModel", typeof(KlondikeSolitaireViewModel), 
-        //       new KlondikeSolitaireViewModel());
-        //
-        // /// <summary>
-        // /// Gets or sets the klondike solitaire view model.
-        // /// </summary>
-        // /// <value>The klondike solitaire view model.</value>
-        // public KlondikeSolitaireViewModel KlondikeSolitaireViewModel
-        // {
-        //     get { return (KlondikeSolitaireViewModel)GetValue(KlondikeSolitaireViewModelProperty); }
-        //     set { SetValue(KlondikeSolitaireViewModelProperty, value); }
-        // }
-        //
-        // /// <summary>
-        // /// The spider solitaire view model.
-        // /// </summary>
-        // private NotifyingProperty SpiderSolitaireViewModelProperty =
-        //   new NotifyingProperty("SpiderSolitaireViewModel", typeof(SpiderSolitaireViewModel), 
-        //       new SpiderSolitaireViewModel());
-        //
-        // /// <summary>
-        // /// Gets or sets the spider solitaire view model.
-        // /// </summary>
-        // /// <value>The spider solitaire view model.</value>
-        // public SpiderSolitaireViewModel SpiderSolitaireViewModel
-        // {
-        //     get { return (SpiderSolitaireViewModel)GetValue(SpiderSolitaireViewModelProperty); }
-        //     set { SetValue(SpiderSolitaireViewModelProperty, value); }
-        // }
-        //
-        // /// <summary>
-        // /// The selected deck folder.
-        // /// </summary>
-        // private NotifyingProperty DeckFolderProperty =
-        //   new NotifyingProperty("DeckFolder", typeof(string), "Classic");
-        //
-        // /// <summary>
-        // /// Gets or sets the deck folder.
-        // /// </summary>
-        // /// <value>The deck folder.</value>
+        //GameStatistics SpiderSolitaireStatistics
         // public string DeckFolder
-        // {
-        //     get { return (string)GetValue(DeckFolderProperty); }
-        //     set 
-        //     { 
-        //         SetValue(DeckFolderProperty, value);
-        //         PlayingCardToBrushConverter.SetDeckFolder(value);
-        //     }
-        // }
-        //
-        // /// <summary>
-        // /// The set of available deck folders.
-        // /// </summary>
-        // private List<string> deckFolders = new List<string>() { "Classic", "Hearts", "Seasons", "Large Print" };
-        //
-        // /// <summary>
-        // /// Gets the deck folders.
-        // /// </summary>
-        // /// <value>The deck folders.</value>
-        // [XmlIgnore]
-        // public List<string> DeckFolders
-        // {
-        //     get { return deckFolders; }
-        // }
-        //
-        // /// <summary>
-        // /// The go to casino command.
-        // /// </summary>
-        // private ViewModelCommand goToCasinoCommand;
-        //
-        // /// <summary>
-        // /// The go to klondike command.
-        // /// </summary>
-        // private ViewModelCommand goToKlondikeSolitaireCommand;
-        //
-        // /// <summary>
-        // /// The spider command.
-        // /// </summary>
-        // private ViewModelCommand goToSpiderSolitaireCommand;
-        //
-        // /// <summary>
-        // /// The settings command.
-        // /// </summary>
-        // private ViewModelCommand settingsCommand;
-        //
-        // /// <summary>
-        // /// Gets the go to casino command.
-        // /// </summary>
-        // /// <value>The go to casino command.</value>
-        // public ViewModelCommand GoToCasinoCommand
-        // {
-        //     get { return goToCasinoCommand; }
-        // }
-        //
-        // /// <summary>
-        // /// Gets the go to klondike solitaire command.
-        // /// </summary>
-        // /// <value>The go to klondike solitaire command.</value>
-        // public ViewModelCommand GoToKlondikeSolitaireCommand
-        // {
-        //     get { return goToKlondikeSolitaireCommand; }
-        // }
-        //
-        // /// <summary>
-        // /// Gets the go to spider solitaire command.
-        // /// </summary>
-        // /// <value>The go to spider solitaire command.</value>
-        // public ViewModelCommand GoToSpiderSolitaireCommand
-        // {
-        //     get { return goToSpiderSolitaireCommand; }
-        // }
-        //
-        // /// <summary>
-        // /// Gets the settings command.
-        // /// </summary>
-        // /// <value>The settings command.</value>
-        // public ViewModelCommand SettingsCommand
-        // {
-        //     get { return settingsCommand; }
-        // }
+        // new NotifyingProperty("DeckFolder", typeof(string), "Classic");
+        
+        /// <summary>
+        /// The set of available deck folders.
+        /// </summary>
+        /// <value>The deck folders.</value> 
+        public List<string> DeckFolders { get; } = new List<string> { "Classic", "Hearts", "Seasons", "Large Print" };
     }
 }
