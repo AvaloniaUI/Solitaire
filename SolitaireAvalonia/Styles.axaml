@@ -28,12 +28,19 @@
                                     <Border
                                         Classes="playingCard"
                                         Classes.isFaceDown="{Binding IsFaceDown}"
-                                        Background="{Binding  ., Converter={StaticResource PlayingCardToBrushConverter}}"
-                                        Width="140" Height="190" Cursor="Hand"
+                                         Width="140" Height="190" Cursor="Hand"
                                         BorderThickness="1" CornerRadius="6">
                                         <Border.Styles>
                                             <Style Selector=""></Style>
                                         </Border.Styles>
+                                        
+                                        <Border.Background>
+                                            <MultiBinding Converter="{StaticResource PlayingCardToBrushConverter}">
+                                                <Binding Path="CardType" />
+                                                <Binding Path="IsFaceDown" />
+                                            </MultiBinding>
+                                        </Border.Background>
+                                        
                                         <!-- apexDragAndDrop:DragAndDrop.IsDraggable="True" -->
                                         <!-- apexCommands:ExtendedCommands.RightClickCommand="{Binding RelativeSource={RelativeSource  -->
                                         <!-- FindAncestor, AncestorType={x:Type UserControl}}, Path=ViewModel.RightClickCardCommand}" -->
