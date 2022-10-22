@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using Avalonia;
 using Avalonia.Data.Converters;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using SolitaireAvalonia.Models;
 
 namespace SolitaireAvalonia.Converters
@@ -37,7 +40,6 @@ namespace SolitaireAvalonia.Converters
         /// </summary>
         static Dictionary<string, Brush> brushes = new Dictionary<string, Brush>();
 
-
         /// <inheritdoc />
         public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
         {
@@ -58,16 +60,20 @@ namespace SolitaireAvalonia.Converters
                 imageSource = "Back";
             else
                 imageSource = cardType.ToString();
+            
+            var assetLoader = AvaloniaLocator.Current.GetService<IAssetLoader>();
 
             //  Turn this string into a proper path.
-            imageSource = "pack://application:,,,/SolitaireGames;component/Resources/Decks/" + deckFolder + "/" + imageSource + ".png";
-
+            imageSource = $"avares://{nameof(SolitaireAvalonia)}/{deckFolder}/{imageSource}.png";
+ 
             //  Do we need to add this brush to the static dictionary?
             if (brushes.ContainsKey(imageSource) == false)
             {
-                Debug.WriteLine("TODO: Images from playing card");
-            }
-                // brushes.Add(imageSource, new ImageBrush(new Image()));
+                var image = assetLoader.Open(new Uri(imageSource));
+
+                var k = new ImageBrush(new Bitmap(image));
+                brushes.Add(imageSource, k);
+             }
 
             //  Return the brush.
             return brushes[imageSource];
