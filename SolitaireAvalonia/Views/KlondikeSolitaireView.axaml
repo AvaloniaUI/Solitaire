@@ -18,7 +18,7 @@
 
         <!--  The cards etc are all in a Viewbox so that they resize in a sensible -->
         <!-- way when we resize the window. -->
-        <Viewbox Grid.Row="0" Margin="10">
+        <Viewbox Grid.Row="0" Margin="10" ClipToBounds="False">
  
             <!-- This is the layout grid for the tableaus, foundations etc. -->
             <Grid Width="1200" Height="840" ColumnDefinitions="*,*,*,*,*,*,*" RowDefinitions="240,600">
