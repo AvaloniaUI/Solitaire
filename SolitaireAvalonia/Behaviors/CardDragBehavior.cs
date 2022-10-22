@@ -15,7 +15,7 @@ namespace SolitaireAvalonia.Behaviors;
 /// <summary>
 /// 
 /// </summary>
-public class CardDragBehavior : Behavior<IControl>
+public class CardDragBehavior : Behavior<Control>
 {
     private bool _dragStarted;
     private Point _start;
@@ -124,12 +124,12 @@ public class CardDragBehavior : Behavior<IControl>
     private void AddTransforms(IControl? control)
     {
         SetTranslateTransform(control, Vector.Zero);
-        ((IPseudoClasses) control.Classes).Add(":dragging");
+        ((IPseudoClasses)control.Classes).Add(":dragging");
     }
 
     private void RemoveTransforms(IControl? control)
     {
-        ((IPseudoClasses) control.Classes).Remove(":dragging");
+        ((IPseudoClasses)control.Classes).Remove(":dragging");
         SetTranslateTransform(control, Vector.Zero);
     }
     
