@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
@@ -112,6 +113,8 @@ public class CardDragBehavior : Behavior<Control>
 
     private void PointerPressed(object? sender, PointerPressedEventArgs e)
     {
+        if (!AssociatedDataContext.IsPlayable) return;
+
         var properties = e.GetCurrentPoint(AssociatedObject).Properties;
         if (properties.IsLeftButtonPressed || AssociatedObject is { })
         {
@@ -121,7 +124,6 @@ public class CardDragBehavior : Behavior<Control>
             if (itemsParent.HasValue && itemsParent.Value is CardStackControl ip && GetIsDragSource(ip))
             {
                 //  The data should be a playing card. 
-                if (!AssociatedDataContext.IsPlayable) return;
 
 
                 // var gi = AssociatedDataContext.CardGameInstance;
@@ -166,7 +168,7 @@ public class CardDragBehavior : Behavior<Control>
 
     private void PointerReleased(object? sender, PointerReleasedEventArgs e)
     {
-        if (!Equals(e.Pointer.Captured, AssociatedObject)) return;
+        if (!Equals(e.Pointer.Captured, AssociatedObject) || !_dragStarted) return;
 
         if (e.InitialPressMouseButton == MouseButton.Left)
         {
@@ -185,22 +187,26 @@ public class CardDragBehavior : Behavior<Control>
     {
         _dragStarted = false;
 
-        var targetVisual = AssociatedObject?.GetVisualRoot()?.GetVisualAt(position);
-        
-        var targetCardStackControl =
-            targetVisual?.GetVisualAncestors().FirstOrDefault(x => x is CardStackControl)?.GetHashCode();
-        
-        var homeCardStackControl = AssociatedObject?.GetVisualAncestors().FirstOrDefault(x => x is CardStackControl)
-            ?.GetHashCode();
 
-        if (targetVisual is Control { DataContext: PlayingCardViewModel targetPlayingCardInstance } _ &&
-            targetCardStackControl != homeCardStackControl)
+        var targetVisual = AssociatedObject?.GetVisualRoot()?.GetVisualsAt(position);
+
+        var targetCardStackControl =
+            targetVisual?.Where(x =>
+                    x is Control { DataContext: PlayingCardViewModel pv } && pv != AssociatedDataContext)
+                .Cast<Control>().FirstOrDefault();
+
+        if (targetCardStackControl is { } && targetCardStackControl.DataContext is PlayingCardViewModel target)
         {
-           var fromList = AssociatedDataContext.CardGameInstance.GetCardCollection(AssociatedDataContext);
-           var toList = AssociatedDataContext.CardGameInstance.GetCardCollection(targetPlayingCardInstance);
-           
-           AssociatedDataContext.CardGameInstance.MoveCard(fromList, toList, AssociatedDataContext);
+            var gi = AssociatedDataContext.CardGameInstance;
+            var fromList = gi.GetCardCollection(AssociatedDataContext);
+            var toList = gi.GetCardCollection(target);
+
+            gi.CheckAndMoveCard(fromList, toList, AssociatedDataContext);
         }
+        else
+        {
+        }
+
 
         RemoveTransforms();
     }

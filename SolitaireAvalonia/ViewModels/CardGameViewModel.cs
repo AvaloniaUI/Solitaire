@@ -63,10 +63,11 @@ namespace SolitaireAvalonia.ViewModels
 
         public abstract IList<PlayingCardViewModel> GetCardCollection(PlayingCardViewModel card);
 
-        public abstract void MoveCard(IList<PlayingCardViewModel> from,
+
+        public abstract bool CheckAndMoveCard(IList<PlayingCardViewModel> from,
             IList<PlayingCardViewModel> to,
-            PlayingCardViewModel card);
-            
+            PlayingCardViewModel card,
+            bool checkOnly = false);
             
         /// <summary>
         /// Deals a new game.

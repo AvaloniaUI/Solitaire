@@ -378,7 +378,7 @@ namespace SolitaireAvalonia.ViewModels
             throw new NotImplementedException();
         }
 
-        public override void MoveCard(IList<PlayingCardViewModel> from, IList<PlayingCardViewModel> to, PlayingCardViewModel card)
+        public override bool CheckAndMoveCard(IList<PlayingCardViewModel> from, IList<PlayingCardViewModel> to, PlayingCardViewModel card, bool checkOnly = false)
         {
             throw new NotImplementedException();
         }

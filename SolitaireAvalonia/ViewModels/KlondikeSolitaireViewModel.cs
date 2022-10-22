@@ -239,7 +239,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         //  Try the top of the waste first.
         if (Waste.LastOrDefault() == card)
             foreach (var foundation in foundations)
-                if (MoveCard(Waste, foundation, card, false))
+                if (CheckAndMoveCard(Waste, foundation, card))
                     return true;
 
         //  Is the card in a tableau?
@@ -255,7 +255,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
         //  Try and move to each foundation.
         foreach (var foundation in foundations)
-            if (MoveCard(tableaus[i - 1], foundation, card, false))
+            if (CheckAndMoveCard(tableaus[i - 1], foundation, card))
                 return true;
 
         //  We couldn't move the card.
@@ -270,9 +270,11 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// <param name="card">The card we're moving.</param>
     /// <param name="checkOnly">if set to <c>true</c> we only check if we CAN move, but don't actually move.</param>
     /// <returns>True if a card was moved.</returns>
-    public bool MoveCard(ObservableCollection<PlayingCardViewModel> from,
-        ObservableCollection<PlayingCardViewModel> to,
-        PlayingCardViewModel card, bool checkOnly)
+
+    public override bool CheckAndMoveCard(IList<PlayingCardViewModel> from,
+        IList<PlayingCardViewModel> to,
+        PlayingCardViewModel card,
+        bool checkOnly = false)
     {
         //  The trivial case is where from and to are the same.
         if (from == to)
@@ -421,7 +423,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// <param name="from">The stack to move from.</param>
     /// <param name="to">The stack to move to.</param>
     /// <param name="card">The card.</param>
-    public override void MoveCard(IList<PlayingCardViewModel> from,
+    private void MoveCard(IList<PlayingCardViewModel> from,
         IList<PlayingCardViewModel> to,
         PlayingCardViewModel card)
     {

@@ -1,5 +1,6 @@
 ﻿using System;
 using Avalonia;
+using Avalonia.Rendering;
 
 namespace SolitaireAvalonia.Desktop
 {
@@ -16,6 +17,7 @@ namespace SolitaireAvalonia.Desktop
         public static AppBuilder BuildAvaloniaApp()
             => AppBuilder.Configure<App>()
                 .UsePlatformDetect()
-                .LogToTrace();
+                .With(new X11PlatformOptions() { UseGpu = false}) 
+                 .LogToTrace();
     }
 }
