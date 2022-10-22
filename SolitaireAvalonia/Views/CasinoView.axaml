@@ -3,44 +3,21 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:views="clr-namespace:SolitaireAvalonia.Views"
              xmlns:viewModels="clr-namespace:SolitaireAvalonia.ViewModels"
              x:DataType="viewModels:CasinoViewModel"
              x:CompileBindings="True"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
 
-    <Panel>
-
-        <!-- Background image (the baize). -->
-        <Image Source="avares://SolitaireAvalonia/Assets/Backgrounds/Background.jpg" Stretch="Fill" />
-
-        <!-- The main container for the casino. -->
-        <Grid RowDefinitions="Auto,Auto,*,Auto">
-
-
-             
-            <ContentControl Grid.Row="0" Content="{Binding CurrentView, Mode=OneWay}" Grid.RowSpan="4" >
-                
-            </ContentControl>
-
-            
-            <!-- The casino commands. -->
-            <Grid Grid.Row="4" ColumnDefinitions="*,Auto,Auto,Auto,*">
-
-                <Button
-                    Grid.Column="1" Classes="CasinoButtonStyle" Width="120"
-                    Margin="4" Content="Play Klondike" Command="{Binding NavigateToKlondikeSolitaireCommand}" />
-                <Button
-                    Grid.Column="2" Classes="CasinoButtonStyle" Width="120"
-                    Margin="4" Content="Settings" Command="{Binding NavigateToSettingsCommand}" />
-                <Button
-                    Grid.Column="3" Classes="CasinoButtonStyle" Width="120"
-                    Margin="4" Content="Play Spider" Command="{Binding NavigateToSpiderSolitaireCommand}" />
-            </Grid>
-            
-
-        </Grid>
-
+    <UserControl.Background>
+        <RadialGradientBrush GradientOrigin="50%,50%">
+            <RadialGradientBrush.GradientStops>
+                <GradientStop Color="#16A757" Offset="0" />
+                <GradientStop Color="#116336" Offset="1" />
+            </RadialGradientBrush.GradientStops>
+        </RadialGradientBrush>
+    </UserControl.Background>
+    <Panel> 
+        <ContentControl Content="{Binding CurrentView, Mode=OneWay}" />
     </Panel>
 </UserControl>
