@@ -5,12 +5,22 @@ using System.Linq;
 namespace SolitaireAvalonia.Utils;
 
 public static class LinqExtensions
-{
-    private static Random randomizer = new ();
+{ 
+    /// </summary>
+    private static Random random = new ();
 
-    public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source)
+    /// <summary>
+    /// Shuffles the specified list.
+    /// </summary> 
+    public static void Shuffle<T>(this IList<T> list)
     {
-        return source.OrderBy((item) => randomizer.Next());
+        var n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            var k = random.Next(n + 1);
+            (list[k], list[n]) = (list[n], list[k]);
+        }
     }
 }
  
