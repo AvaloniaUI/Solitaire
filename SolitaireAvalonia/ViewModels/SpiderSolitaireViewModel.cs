@@ -6,7 +6,7 @@ using Apex.MVVM;
 using Apex.Extensions;
 using System.Collections.ObjectModel;
 
-namespace SolitaireGames.SpiderSolitaire
+namespace SolitaireAvalonia.SpiderSolitaire
 {
     /// <summary>
     /// The different difficulties offered.

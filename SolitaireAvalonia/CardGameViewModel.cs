@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Apex.MVVM;
-using System.Windows.Threading;
+using Avalonia.Threading;
 
-namespace SolitaireGames
+namespace SolitaireAvalonia
 {
     /// <summary>
     /// Base class for a ViewModel for a card game.

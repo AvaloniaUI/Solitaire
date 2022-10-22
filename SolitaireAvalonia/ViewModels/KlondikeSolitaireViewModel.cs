@@ -6,7 +6,7 @@ using Apex.MVVM;
 using Apex.Extensions;
 using System.Collections.ObjectModel;
 
-namespace SolitaireGames.KlondikeSolitaire
+namespace SolitaireAvalonia.KlondikeSolitaire
 {
     /// <summary>
     /// The DrawMode, i.e. how many cards to draw.

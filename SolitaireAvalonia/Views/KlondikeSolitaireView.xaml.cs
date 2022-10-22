@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Data;
+using Avalonia.Documents;
+using Avalonia.Input;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Avalonia.Navigation;
+using Avalonia.Shapes;
 using System.Collections.ObjectModel;
 using Apex.DragAndDrop;
 
-namespace SolitaireGames.KlondikeSolitaire
+namespace SolitaireAvalonia.KlondikeSolitaire
 {
     /// <summary>
     /// Interaction logic for KlondikeSolitaireView.xaml
@@ -110,7 +110,7 @@ namespace SolitaireGames.KlondikeSolitaire
         /// Handles the MouseRightButtonDown event of the dragAndDropHost control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.Windows.Input.MouseButtonEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="Avalonia.Input.MouseButtonEventArgs"/> instance containing the event data.</param>
         private void dragAndDropHost_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             ViewModel.TryMoveAllCardsToAppropriateFoundations();
@@ -125,7 +125,7 @@ namespace SolitaireGames.KlondikeSolitaire
         /// Handles the MouseLeftButtonUp event of the CardStackControl control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.Windows.Input.MouseButtonEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="Avalonia.Input.MouseButtonEventArgs"/> instance containing the event data.</param>
         private void CardStackControl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             ViewModel.TurnStockCommand.DoExecute(null);

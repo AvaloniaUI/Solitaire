@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Controls;
-using System.Windows;
+using Avalonia.Controls;
+using Avalonia;
 
-namespace SolitaireGames
+namespace SolitaireAvalonia
 {
     /// <summary>
     /// The offset mode - how we offset individual cards in a stack.
@@ -50,11 +50,11 @@ namespace SolitaireGames
         private readonly Size infiniteSpace = new Size(Double.MaxValue, Double.MaxValue);
 
         /// <summary>
-        /// Measures the child elements of a <see cref="T:System.Windows.Controls.StackPanel"/> in anticipation of arranging them during the <see cref="M:System.Windows.Controls.StackPanel.ArrangeOverride(System.Windows.Size)"/> pass.
+        /// Measures the child elements of a <see cref="T:Avalonia.Controls.StackPanel"/> in anticipation of arranging them during the <see cref="M:Avalonia.Controls.StackPanel.ArrangeOverride(Avalonia.Size)"/> pass.
         /// </summary>
-        /// <param name="constraint">An upper limit <see cref="T:System.Windows.Size"/> that should not be exceeded.</param>
+        /// <param name="constraint">An upper limit <see cref="T:Avalonia.Size"/> that should not be exceeded.</param>
         /// <returns>
-        /// The <see cref="T:System.Windows.Size"/> that represents the desired size of the element.
+        /// The <see cref="T:Avalonia.Size"/> that represents the desired size of the element.
         /// </returns>
         protected override Size MeasureOverride(Size constraint)
         {
@@ -88,7 +88,7 @@ namespace SolitaireGames
         }
 
         /// <summary>
-        /// When overridden in a derived class, positions child elements and determines a size for a <see cref="T:System.Windows.FrameworkElement"/> derived class.
+        /// When overridden in a derived class, positions child elements and determines a size for a <see cref="T:Avalonia.FrameworkElement"/> derived class.
         /// </summary>
         /// <param name="finalSize">The final area within the parent that this element should use to arrange itself and its children.</param>
         /// <returns>The actual size used.</returns>

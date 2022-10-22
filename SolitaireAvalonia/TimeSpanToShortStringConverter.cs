@@ -1,6 +1,8 @@
 ﻿using System;
-using System.Windows.Data;
-namespace SolitaireGames
+using Avalonia.Data;
+using Avalonia.Data.Converters;
+
+namespace SolitaireAvalonia
 {
     /// <summary>
     /// A converter that turns a time span into a small string, only 

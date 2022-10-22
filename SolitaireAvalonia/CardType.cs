@@ -1,4 +1,4 @@
-﻿namespace SolitaireGames
+﻿namespace SolitaireAvalonia
 {
     /// <summary>
     /// The Card Types.

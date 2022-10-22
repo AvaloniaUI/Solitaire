@@ -1,4 +1,4 @@
-﻿namespace SolitaireGames
+﻿namespace SolitaireAvalonia
 {
     /// <summary>
     /// Represents a card's suit.

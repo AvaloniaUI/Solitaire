@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Data;
+using Avalonia.Documents;
+using Avalonia.Input;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Avalonia.Navigation;
+using Avalonia.Shapes;
 
-namespace SolitaireGames.Casino
+namespace SolitaireAvalonia.Casino
 {
     /// <summary>
     /// Interaction logic for CasinoView.xaml
@@ -88,7 +88,7 @@ namespace SolitaireGames.Casino
         /// Called when [casino view model changed].
         /// </summary>
         /// <param name="o">The o.</param>
-        /// <param name="args">The <see cref="System.Windows.DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        /// <param name="args">The <see cref="Avalonia.DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
         private static void OnCasinoViewModelChanged(DependencyObject o, DependencyPropertyChangedEventArgs args)
         {
             CasinoView me = o as CasinoView;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Apex.MVVM;
 
-namespace SolitaireGames
+namespace SolitaireAvalonia
 {
     /// <summary>
     /// A set of general statistics for a game.

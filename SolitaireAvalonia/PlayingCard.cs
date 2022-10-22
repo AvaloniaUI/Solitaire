@@ -1,6 +1,7 @@
 ﻿using Apex.MVVM;
+using SolitaireAvalonia.ViewModels;
 
-namespace SolitaireGames
+namespace SolitaireAvalonia
 {
     /// <summary>
     /// The Playing Card represents a Card played in a game - so as
