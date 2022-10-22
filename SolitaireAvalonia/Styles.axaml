@@ -20,9 +20,6 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             ClipToBounds="False"
                             BorderThickness="{TemplateBinding BorderThickness}">
-                        <!-- Items="{TemplateBinding Items}" -->
-                        <!-- apexDragAndDrop:DragAndDrop.IsDragSource="True" -->
-                        <!-- apexDragAndDrop:DragAndDrop.IsDropTarget="True" -->
                         <ItemsControl Items="{TemplateBinding Items}"
                                       ClipToBounds="False"
                                       Background="Transparent">

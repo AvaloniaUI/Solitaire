@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:controls="clr-namespace:SolitaireAvalonia.Controls"
     xmlns:viewModels="clr-namespace:SolitaireAvalonia.ViewModels"
+    xmlns:behaviors="clr-namespace:SolitaireAvalonia.Behaviors"
     mc:Ignorable="d"
     x:DataType="viewModels:KlondikeSolitaireViewModel"
     x:CompileBindings="True"
@@ -34,13 +35,19 @@
                     x:Name="dragStack" Grid.Row="0" Grid.Column="0" Margin="0,-2000,0,0"
                     Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
                 <!-- apexDragAndDrop:DragAndDrop.IsDragSource="False" -->
+                
                 <!-- The stock. -->
                 <Border
                     Grid.Row="0" Grid.Column="0" Classes="StackMarker" />
                 <controls:CardStackControl
                     Grid.Row="0" Grid.Column="0" Items="{Binding Stock}" Cursor="Hand"
-                    Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" />
-                <!-- MouseLeftButtonUp="CardStackControl_MouseLeftButtonUp"  -->
+                    Orientation="Horizontal">
+                    <Interaction.Behaviors>
+                        <BehaviorCollection>
+                            <behaviors:ExecuteOnPointerPressedBehavior Command="{Binding TurnStockCommand}"/>
+                        </BehaviorCollection>
+                    </Interaction.Behaviors>
+                </controls:CardStackControl>
 
 
                 <!-- The waste. -->
@@ -48,8 +55,7 @@
                     Grid.Row="0" Grid.Column="1" Classes="StackMarker" />
 
                 <controls:CardStackControl
-                    x:Name="wasteStack"
-                    Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Items="{Binding Waste}"
+                     Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Items="{Binding Waste}"
                     Orientation="Horizontal" OffsetMode="UseCardValues" />
 
                 <!-- The foundations. -->
