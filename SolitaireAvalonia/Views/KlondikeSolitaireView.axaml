@@ -19,16 +19,19 @@
         <!--  The cards etc are all in a Viewbox so that they resize in a sensible -->
         <!-- way when we resize the window. -->
         <Viewbox Grid.Row="0" Margin="10">
-
-            <!-- A DragAndDropHost allows us to perform more complicated logic when -->
-            <!-- we drag and drop. -->
-            <!-- <apexDragAndDrop:DragAndDropHost -->
-            <!--     x:Name="dragAndDropHost" MouseRightButtonDown="dragAndDropHost_MouseRightButtonDown" -->
-            <!--     MinimumHorizontalDragDistance="0.0" MinimumVerticalDragDistance="0.0"> -->
-
+ 
             <!-- This is the layout grid for the tableaus, foundations etc. -->
             <Grid Width="1200" Height="840" ColumnDefinitions="*,*,*,*,*,*,*" RowDefinitions="240,600">
 
+                <Interaction.Behaviors>
+                    <BehaviorCollection>
+                        <behaviors:ExecuteOnPointerPressedBehavior
+                            ActivateOnLeftMouse="False"
+                            ActivateOnRightMouse="True"
+                            Command="{Binding AppropriateFoundationsCommand}"/>
+                    </BehaviorCollection>
+                </Interaction.Behaviors>
+                
                 <!--   The drag stack, cards are stored here temporarily while they -->
                 <!-- are being dragged.  -->
                 <controls:CardStackControl
@@ -117,7 +120,6 @@
                     Grid.Row="1" Grid.Column="6" Items="{Binding Tableau7}"
                     Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
             </Grid>
-            <!-- </apexDragAndDrop:DragAndDropHost> -->
         </Viewbox>
 
         <!-- A padded grid is used to layout commands and info at the bottom of the screen. -->

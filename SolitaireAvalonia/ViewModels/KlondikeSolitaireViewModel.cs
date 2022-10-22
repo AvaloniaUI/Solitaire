@@ -52,7 +52,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
         //  Create the turn stock command.
         TurnStockCommand = new RelayCommand(DoTurnStock);
-        
+        AppropriateFoundationsCommand = new RelayCommand(TryMoveAllCardsToAppropriateFoundations);
 
         //  If we're in the designer deal a game.
         if (Design.IsDesignMode)
@@ -206,7 +206,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// <summary>
     /// Tries the move all cards to appropriate foundations.
     /// </summary>
-    public void TryMoveAllCardsToAppropriateFoundations()
+    private void TryMoveAllCardsToAppropriateFoundations()
     {
         //  Go through the top card in each tableau - keeping
         //  track of whether we moved one.
@@ -234,7 +234,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// </summary>
     /// <param name="card">The card.</param>
     /// <returns>True if card moved.</returns>
-    public bool TryMoveCardToAppropriateFoundation(PlayingCardViewModel card)
+    private bool TryMoveCardToAppropriateFoundation(PlayingCardViewModel card)
     {
         //  Try the top of the waste first.
         if (Waste.LastOrDefault() == card)
@@ -520,4 +520,5 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// The turn stock command.
     /// </summary> 
     public ICommand TurnStockCommand { get; }
+    public ICommand AppropriateFoundationsCommand { get; }
 }

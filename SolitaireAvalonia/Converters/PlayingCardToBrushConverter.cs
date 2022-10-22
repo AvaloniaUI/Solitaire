@@ -16,7 +16,7 @@ namespace SolitaireAvalonia.Converters
     /// <summary>
     /// Converter to get the brush for a playing card.
     /// </summary>
-    public class PlayingCardToBrushConverter : IValueConverter
+    public class PlayingCardToBrushConverter : IMultiValueConverter
     {
         /// <summary>
         /// Sets the deck folder.
@@ -40,22 +40,28 @@ namespace SolitaireAvalonia.Converters
         /// A dictionary of brushes for card types.
         /// </summary>
         static Dictionary<string, Brush> brushes = new Dictionary<string, Brush>();
-
+ 
         /// <inheritdoc />
-        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            return null;
+        }
+
+        public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
         {
             //  Cast the data.
-            if (value is not null && value is PlayingCardViewModel pc)
+            if (values[0] is CardType cardType && values[1] is bool isFaceDown)
             {
-                //  We're going to create an image source.
+                
+                 //  We're going to create an image source.
                 string imageSource = string.Empty;
 
                 //  If the card is face down, we're using the 'Rear' image.
                 //  Otherwise it's just the enum value (e.g. C3, SA).
-                if (pc.IsFaceDown)
+                if (isFaceDown)
                     imageSource = "Back";
                 else
-                    imageSource = pc.CardType.ToString();
+                    imageSource = cardType.ToString();
 
                 var assetLoader = AvaloniaLocator.Current.GetService<IAssetLoader>();
 
@@ -76,12 +82,6 @@ namespace SolitaireAvalonia.Converters
             }
 
             return null;
-        }
-
-        /// <inheritdoc />
-        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
         }
     }
 }
