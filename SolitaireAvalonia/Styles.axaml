@@ -120,7 +120,7 @@
         <Setter Property="CornerRadius" Value="15" />
         <Setter Property="BorderBrush">
             <Setter.Value>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
                     <GradientStop Color="#33FFFFFF" Offset="0" />
                     <GradientStop Color="#00FFFFFF" Offset="0.8" />
                 </LinearGradientBrush>
