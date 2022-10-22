@@ -11,11 +11,18 @@ namespace SolitaireAvalonia.ViewModels
     /// </summary>
     public partial class CardGameViewModel : ViewModelBase
     {
+        protected CasinoViewModel CasinoInstance { get; }
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="CardGameViewModel"/> class.
         /// </summary>
-        public CardGameViewModel()
+        public CardGameViewModel(CasinoViewModel casinoViewModel)
         {
+            CasinoInstance = casinoViewModel;
+
+            NavigateToCasinoCommand =
+                new RelayCommand(() => casinoViewModel.CurrentView = casinoViewModel.TitleInstance);
+            
             //  Set up the timer.
             timer.Interval = TimeSpan.FromMilliseconds(500);
             timer.Tick += new EventHandler(timer_Tick);
@@ -140,7 +147,7 @@ namespace SolitaireAvalonia.ViewModels
         /// Gets the go to casino command.
         /// </summary>
         /// <value>The go to casino command.</value>
-        public ICommand GoToCasinoCommand { get; }
+        public ICommand NavigateToCasinoCommand { get; }
 
 
         /// <summary>
