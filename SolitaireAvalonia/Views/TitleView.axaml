@@ -4,9 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:views="clr-namespace:SolitaireAvalonia.Views"
+             xmlns:viewModels="clr-namespace:SolitaireAvalonia.ViewModels"
              mc:Ignorable="d"
+             x:DataType="viewModels:TitleViewModel"
+             x:CompileBindings="True"
              d:DesignHeight="300" d:DesignWidth="300">
-    <Panel>
+    <StackPanel>
 
         <!-- The title of the game. -->
         <TextBlock
@@ -31,5 +34,21 @@
             <!-- GameStatistics="{Binding SpiderSolitaireStatistics}" -->
             <!-- apexCommands:ExtendedCommands.LeftClickCommand="{Binding GoToSpiderSolitaireCommand}" -->
         </Grid>
-    </Panel>
+        
+        
+            
+        <!-- The casino commands. -->
+        <Grid Grid.Row="4" ColumnDefinitions="*,Auto,Auto,Auto,*">
+
+            <Button
+                Grid.Column="1" Classes="CasinoButtonStyle" Width="120"
+                Margin="4" Content="Play Klondike" Command="{Binding NavigateToKlondikeCommand}" />
+            <Button
+                Grid.Column="2" Classes="CasinoButtonStyle" Width="120"
+                Margin="4" Content="Settings" Command="{Binding NavigateToSettingsCommand}" />
+            <Button
+                Grid.Column="3" Classes="CasinoButtonStyle" Width="120"
+                Margin="4" Content="Play Spider" Command="{Binding NavigateToSpiderCommand}" />
+        </Grid>
+    </StackPanel>
 </UserControl>

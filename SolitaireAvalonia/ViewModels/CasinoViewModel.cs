@@ -15,35 +15,25 @@ namespace SolitaireAvalonia.ViewModels
     /// </summary>
     public partial class CasinoViewModel : ViewModelBase
     {
-        public ICommand NavigateToKlondikeSolitaireCommand { get; }
-        public ICommand NavigateToSpiderSolitaireCommand { get; }
-        public ICommand NavigateToSettingsCommand { get; }
-        
-        [ObservableProperty] private object _currentView;
+        [ObservableProperty] private ViewModelBase? _currentView;  
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CasinoViewModel"/> class.
         /// </summary>
         public CasinoViewModel()
         {
-            NavigateToKlondikeSolitaireCommand = new RelayCommand(() =>
-            {
-                CurrentView = new KlondikeSolitaireViewModel(this);
-            });
-            
-            NavigateToSpiderSolitaireCommand = new RelayCommand(() =>
-            {
-                CurrentView = new SpiderSolitaireViewModel(this);
-            });
-            
-            NavigateToSettingsCommand = new RelayCommand(() =>
-            {
-                CurrentView = new SettingsViewModel(this);
-            });
-
-            CurrentView = new TitleViewModel(this);
+            KlondikeInstance = new KlondikeSolitaireViewModel(this);
+            SpiderInstance = new SpiderSolitaireViewModel(this);
+            SettingsInstance = new SettingsViewModel(this);
+            TitleInstance = new TitleViewModel(this);
+            CurrentView = TitleInstance;
         }
-        
+
+        public TitleViewModel TitleInstance { get; }
+        public SettingsViewModel SettingsInstance { get; }
+        public SpiderSolitaireViewModel SpiderInstance { get; }
+        public KlondikeSolitaireViewModel KlondikeInstance { get; }
+
         //
         // /// <summary>
         // /// Initialises this instance.

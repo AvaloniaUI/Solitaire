@@ -5,7 +5,7 @@
              xmlns:viewModels="clr-namespace:SolitaireAvalonia.ViewModels"
              mc:Ignorable="d"
              x:Class="SolitaireAvalonia.Views.SettingsView"
-             x:DataType="viewModels:SpiderSolitaireViewModel"
+             x:DataType="viewModels:SettingsViewModel"
              d:DesignHeight="300" d:DesignWidth="300">
 
     <!-- The main container for the settings. -->
@@ -69,7 +69,7 @@
 
         <Button
             Grid.Row="3" Classes="CasinoButtonStyle" Width="120"
-            Margin="4" Content="Casino" Command="{Binding GoToCasinoCommand}" />
+            Margin="4" Content="Casino" Command="{Binding NavigateToTitleCommand}" />
 
     </Grid>
 </UserControl>

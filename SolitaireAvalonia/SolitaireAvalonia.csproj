@@ -15,4 +15,7 @@
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
         <PackageReference Include="XamlNameReferenceGenerator" Version="1.3.4" />
     </ItemGroup>
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Assets\Backgrounds\Background.jpg" />
+    </ItemGroup>
 </Project>
