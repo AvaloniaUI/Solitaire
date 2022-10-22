@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -9,7 +11,7 @@ namespace SolitaireAvalonia.ViewModels
     /// <summary>
     /// Base class for a ViewModel for a card game.
     /// </summary>
-    public partial class CardGameViewModel : ViewModelBase
+    public abstract partial class CardGameViewModel : ViewModelBase
     {
         protected CasinoViewModel CasinoInstance { get; }
         
@@ -59,6 +61,13 @@ namespace SolitaireAvalonia.ViewModels
         {
         }
 
+        public abstract IList<PlayingCardViewModel> GetCardCollection(PlayingCardViewModel card);
+
+        public abstract void MoveCard(IList<PlayingCardViewModel> from,
+            IList<PlayingCardViewModel> to,
+            PlayingCardViewModel card);
+            
+            
         /// <summary>
         /// Deals a new game.
         /// </summary>
@@ -116,7 +125,7 @@ namespace SolitaireAvalonia.ViewModels
         /// <summary>
         /// The timer for recording the time spent in a game.
         /// </summary>
-        private DispatcherTimer timer = new DispatcherTimer();
+        private DispatcherTimer timer = new  ();
 
         /// <summary>
         /// The time of the last tick.
@@ -130,18 +139,7 @@ namespace SolitaireAvalonia.ViewModels
         [ObservableProperty] private int _moves;
 
         [ObservableProperty] private bool _isGameWon;
-
-        /// <summary>
-        /// Gets the left click card command.
-        /// </summary>
-        /// <value>The left click card command.</value>
-        public ICommand LeftClickCardCommand { get; }
-
-        /// <summary>
-        /// Gets the right click card command.
-        /// </summary>
-        /// <value>The right click card command.</value>
-        public ICommand RightClickCardCommand { get; }
+ 
 
         /// <summary>
         /// Gets the go to casino command.
@@ -160,5 +158,8 @@ namespace SolitaireAvalonia.ViewModels
         /// Occurs when the game is won.
         /// </summary>
         public event Action GameWon;
+        
+        public List<PlayingCardViewModel> TemporaryStore { get; } = new ();
+
     }
 }

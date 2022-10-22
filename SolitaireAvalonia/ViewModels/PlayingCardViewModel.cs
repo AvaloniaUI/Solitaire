@@ -9,6 +9,13 @@ namespace SolitaireAvalonia.ViewModels
     /// </summary>
     public partial class PlayingCardViewModel : ViewModelBase
     {
+        public CardGameViewModel CardGameInstance { get; }
+
+        public PlayingCardViewModel(CardGameViewModel cardGameInstance)
+        {
+            CardGameInstance = cardGameInstance;
+        }
+        
         /// <summary>
         /// Gets the card suit.
         /// </summary> 
