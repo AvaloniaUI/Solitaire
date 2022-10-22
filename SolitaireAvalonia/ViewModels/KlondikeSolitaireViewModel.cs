@@ -65,7 +65,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// </summary>
     /// <param name="card">The card.</param>
     /// <returns></returns>
-    public IList<PlayingCardViewModel> GetCardCollection(PlayingCardViewModel card)
+    public override IList<PlayingCardViewModel> GetCardCollection(PlayingCardViewModel card)
     {
         if (Stock.Contains(card)) return Stock;
         if (Waste.Contains(card)) return Waste;
@@ -105,7 +105,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         //  Create a playing card from each card type.
         List<PlayingCardViewModel> playingCards = new List<PlayingCardViewModel>();
         foreach (var cardType in eachCardType)
-            playingCards.Add(new PlayingCardViewModel() {CardType = cardType, IsFaceDown = true});
+            playingCards.Add(new PlayingCardViewModel(this) {CardType = cardType, IsFaceDown = true});
 
         //  Shuffle the playing cards.
         playingCards.Shuffle();
@@ -400,7 +400,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
         //  If we've got here we've passed all tests
         //  and move the card and update the score.
-        DoMoveCard(from, to, card);
+        MoveCard(from, to, card);
         Score += scoreModifier;
         Moves++;
 
@@ -421,11 +421,11 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// <param name="from">The stack to move from.</param>
     /// <param name="to">The stack to move to.</param>
     /// <param name="card">The card.</param>
-    private void DoMoveCard(ObservableCollection<PlayingCardViewModel> from,
-        ObservableCollection<PlayingCardViewModel> to,
+    public override void MoveCard(IList<PlayingCardViewModel> from,
+        IList<PlayingCardViewModel> to,
         PlayingCardViewModel card)
     {
-        //  Indentify the run of cards we're moving.
+        //  Identify the run of cards we're moving.
         List<PlayingCardViewModel> run = new List<PlayingCardViewModel>();
         for (int i = from.IndexOf(card); i < from.Count; i++)
             run.Add(from[i]);

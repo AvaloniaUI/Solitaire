@@ -373,5 +373,14 @@ namespace SolitaireAvalonia.ViewModels
         // {
         //     get { return dealCardsCommand; }
         // }
+        public override IList<PlayingCardViewModel> GetCardCollection(PlayingCardViewModel card)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void MoveCard(IList<PlayingCardViewModel> from, IList<PlayingCardViewModel> to, PlayingCardViewModel card)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
