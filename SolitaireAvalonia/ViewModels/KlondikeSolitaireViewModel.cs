@@ -103,7 +103,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
             eachCardType.Add(cardType);
 
         //  Create a playing card from each card type.
-        List<PlayingCard> playingCards = new List<PlayingCard>();
+        List<PlayingCardViewModel> playingCards = new List<PlayingCardViewModel>();
         foreach (var cardType in eachCardType)
             playingCards.Add(new PlayingCardViewModel() {CardType = cardType, IsFaceDown = true});
 
