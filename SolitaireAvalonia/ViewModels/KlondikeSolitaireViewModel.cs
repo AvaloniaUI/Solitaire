@@ -27,32 +27,35 @@ namespace SolitaireAvalonia.ViewModels
     /// </summary>
     public class KlondikeSolitaireViewModel : CardGameViewModel
     {
-    //     /// <summary>
-    //     /// Initializes a new instance of the <see cref="KlondikeSolitaireViewModel"/> class.
-    //     /// </summary>
-    //     public KlondikeSolitaireViewModel()
-    //     {
-    //         //  Create the quick access arrays.
-    //         foundations.Add(foundation1);
-    //         foundations.Add(foundation2);
-    //         foundations.Add(foundation3);
-    //         foundations.Add(foundation4);
-    //         tableaus.Add(tableau1);
-    //         tableaus.Add(tableau2);
-    //         tableaus.Add(tableau3);
-    //         tableaus.Add(tableau4);
-    //         tableaus.Add(tableau5);
-    //         tableaus.Add(tableau6);
-    //         tableaus.Add(tableau7);
-    //
-    //         //  Create the turn stock command.
-    //         turnStockCommand = new ViewModelCommand(DoTurnStock, true);
-    //
-    //         //  If we're in the designer deal a game.
-    //         if (Apex.Design.DesignTime.IsDesignTime)
-    //             DoDealNewGame(null);
-    //     }
-    //
+        private readonly CasinoViewModel _casinoViewModel;
+
+        public KlondikeSolitaireViewModel(CasinoViewModel casinoViewModel)
+        {
+            _casinoViewModel = casinoViewModel;
+            
+            
+            // //  Create the quick access arrays.
+            // foundations.Add(foundation1);
+            // foundations.Add(foundation2);
+            // foundations.Add(foundation3);
+            // foundations.Add(foundation4);
+            // tableaus.Add(tableau1);
+            // tableaus.Add(tableau2);
+            // tableaus.Add(tableau3);
+            // tableaus.Add(tableau4);
+            // tableaus.Add(tableau5);
+            // tableaus.Add(tableau6);
+            // tableaus.Add(tableau7);
+            //
+            // //  Create the turn stock command.
+            // turnStockCommand = new ViewModelCommand(DoTurnStock, true);
+            //
+            // //  If we're in the designer deal a game.
+            // if (Apex.Design.DesignTime.IsDesignTime)
+            //     DoDealNewGame(null);
+        }
+        
+         
     //     /// <summary>
     //     /// Gets the card collection for the specified card.
     //     /// </summary>

@@ -30,6 +30,12 @@ namespace SolitaireAvalonia.ViewModels
 
     public class SpiderSolitaireViewModel : CardGameViewModel
     {
+        private readonly CasinoViewModel _casinoViewModel;
+
+        public SpiderSolitaireViewModel(CasinoViewModel casinoViewModel)
+        {
+            _casinoViewModel = casinoViewModel;
+        }
         // public SpiderSolitaireViewModel()
         // {
         //     //  Create the quick access arrays.

@@ -28,19 +28,22 @@ namespace SolitaireAvalonia.ViewModels
         {
             NavigateToKlondikeSolitaireCommand = new RelayCommand(() =>
             {
-                CurrentView = new KlondikeSolitaireViewModel();
+                CurrentView = new KlondikeSolitaireViewModel(this);
             });
             
             NavigateToSpiderSolitaireCommand = new RelayCommand(() =>
             {
-                CurrentView = new SpiderSolitaireViewModel();
+                CurrentView = new SpiderSolitaireViewModel(this);
             });
             
             NavigateToSettingsCommand = new RelayCommand(() =>
             {
-                CurrentView = new SettingsViewModel();
+                CurrentView = new SettingsViewModel(this);
             });
+
+            CurrentView = new TitleViewModel(this);
         }
+        
         //
         // /// <summary>
         // /// Initialises this instance.

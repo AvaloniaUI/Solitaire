@@ -55,9 +55,9 @@
             <TextBlock
                 Grid.Row="7" Grid.Column="0" Text="Difficulty"
                 HorizontalAlignment="Right" Classes="CasinoTextStyle" />
-            <ComboBox
-                Grid.Row="7" Grid.Column="1" SelectedItem="{Binding SpiderSolitaireViewModel.Difficulty}"
-                Items="{Binding Source={StaticResource DifficultyValues}}" />
+            <!-- <ComboBox -->
+            <!--     Grid.Row="7" Grid.Column="1" SelectedItem="{Binding SpiderSolitaireViewModel.Difficulty}" -->
+            <!--     Items="{Binding Source={StaticResource DifficultyValues}}" /> -->
             <TextBlock
                 Grid.Row="8" Grid.Column="0" Text="Statistics"
                 HorizontalAlignment="Right" Classes="CasinoTextStyle" />

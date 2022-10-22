@@ -1,10 +1,10 @@
 namespace SolitaireAvalonia.ViewModels;
 
-public class SettingsViewModel : ViewModelBase
+public class TitleViewModel : ViewModelBase
 {
     private readonly CasinoViewModel _casinoViewModel;
 
-    public SettingsViewModel(CasinoViewModel casinoViewModel)
+    public TitleViewModel(CasinoViewModel casinoViewModel)
     {
         _casinoViewModel = casinoViewModel;
     }
