@@ -8,24 +8,20 @@ namespace SolitaireAvalonia.Behaviors;
 
 public class ExecuteOnPointerPressedBehavior : Behavior<Control>
 {
-    public static readonly StyledProperty<bool> ActivateOnLeftMouseProperty =
-        AvaloniaProperty.Register<ExecuteOnPointerPressedBehavior, bool>(
-            "ActivateOnLeftMouse", true);
-
-    public bool ActivateOnLeftMouse
+    public enum Buttons
     {
-        get => GetValue(ActivateOnLeftMouseProperty);
-        set => SetValue(ActivateOnLeftMouseProperty, value);
+        LeftButton,
+        RightButton
     }
 
-    public static readonly StyledProperty<bool> ActivateOnRightMouseProperty =
-        AvaloniaProperty.Register<ExecuteOnPointerPressedBehavior, bool>(
-            "ActivateOnRightMouse");
+    public static readonly StyledProperty<Buttons> ActivateOnProperty =
+        AvaloniaProperty.Register<ExecuteOnPointerPressedBehavior, Buttons>(
+            "ActivateOn");
 
-    public bool ActivateOnRightMouse
+    public Buttons ActivateOn
     {
-        get => GetValue(ActivateOnRightMouseProperty);
-        set => SetValue(ActivateOnRightMouseProperty, value);
+        get => GetValue(ActivateOnProperty);
+        set => SetValue(ActivateOnProperty, value);
     }
 
     public static readonly StyledProperty<ICommand> CommandProperty =
@@ -72,13 +68,10 @@ public class ExecuteOnPointerPressedBehavior : Behavior<Control>
 
         var properties = e.GetCurrentPoint(AssociatedObject).Properties;
 
-        if (ActivateOnLeftMouse && properties.IsLeftButtonPressed)
+        if ((ActivateOn == Buttons.LeftButton && properties.IsLeftButtonPressed) ||
+            (ActivateOn == Buttons.RightButton && properties.IsRightButtonPressed))
         {
-            Command?.Execute(CommandParameter);
-        }
-        else if (ActivateOnRightMouse && properties.IsRightButtonPressed)
-        {
-            Command?.Execute(CommandParameter);
+            Command.Execute(CommandParameter);
         }
     }
 }

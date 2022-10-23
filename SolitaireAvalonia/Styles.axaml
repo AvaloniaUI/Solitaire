@@ -16,7 +16,8 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:CardStackControl}">
-                    <Border Background="{TemplateBinding Background}"
+                    <!-- Transparent Background is important so that it catches the visual point selection -->
+                    <Border Background="Transparent"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             ClipToBounds="False"
                             behaviors:CardDragBehavior.DragTargetObject="{TemplateBinding Items}"

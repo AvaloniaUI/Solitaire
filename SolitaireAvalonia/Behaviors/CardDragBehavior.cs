@@ -158,10 +158,11 @@ public class CardDragBehavior : Behavior<Control>
 
         var gi = AssociatedDataContext.CardGameInstance;
         var fromList = gi.GetCardCollection(AssociatedDataContext);
-        
-        foreach (var x in AssociatedObject?.GetVisualRoot()?.GetVisualsAt(position)!)
+
+        foreach (var visual in AssociatedObject?.GetVisualRoot()?.GetVisualsAt(position)!)
         {
-            if (x is not Control s || GetDragTargetObject(s) is not IList<PlayingCardViewModel> toList) continue;
+            if (visual is not Control targetControl) continue;
+            if (GetDragTargetObject(targetControl) is not IList<PlayingCardViewModel> toList) continue;
             gi.CheckAndMoveCard(fromList, toList, AssociatedDataContext);
             break;
         }
