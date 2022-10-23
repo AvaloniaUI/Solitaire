@@ -9,7 +9,7 @@ namespace SolitaireAvalonia.Controls
 {
     public class CardStackControl : ItemsControl, IStyleable
     {
-        Type IStyleable.StyleKey => GetType();
+        Type IStyleable.StyleKey => typeof(CardStackControl);
 
         public static readonly StyledProperty<double> FaceDownOffsetProperty = AvaloniaProperty.Register<CardStackControl, double>(
             "FaceDownOffset");

@@ -1,14 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using Avalonia.Media;
 using Avalonia.Media.Transformation;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
@@ -32,6 +28,14 @@ public class CardDragBehavior : Behavior<Control>
 
     public static void SetIsDragSource(CardStackControl obj, bool value) => obj.SetValue(IsDragSourceProperty, value);
     public static bool GetIsDragSource(CardStackControl obj) => obj.GetValue(IsDragSourceProperty);
+
+
+    public static readonly AttachedProperty<object?> DragTargetObjectProperty =
+        AvaloniaProperty.RegisterAttached<CardDragBehavior, Control, object?>("DragTargetObject");
+
+    public static void SetDragTargetObject(Control obj, object? value) => obj.SetValue(DragTargetObjectProperty, value);
+    public static object? GetDragTargetObject(Control obj) => obj.GetValue(DragTargetObjectProperty);
+
 
     /// <summary>
     /// 
@@ -99,7 +103,7 @@ public class CardDragBehavior : Behavior<Control>
             RoutingStrategies.Tunnel);
     }
 
-    private PlayingCardViewModel AssociatedDataContext { get; set; }
+    private PlayingCardViewModel AssociatedDataContext { get; set; } = null!;
 
     /// <inheritdoc />
     protected override void OnDetachedFromVisualTree()
@@ -118,48 +122,13 @@ public class CardDragBehavior : Behavior<Control>
         var properties = e.GetCurrentPoint(AssociatedObject).Properties;
         if (properties.IsLeftButtonPressed || AssociatedObject is { })
         {
-            var itemsParent = AssociatedObject.GetVisualAncestors()
+            var itemsParent = AssociatedObject!.GetVisualAncestors()
                 .FirstOrOptional(x => x.GetType() == typeof(CardStackControl));
 
             if (itemsParent.HasValue && itemsParent.Value is CardStackControl ip && GetIsDragSource(ip))
             {
-                //  The data should be a playing card. 
-
-
-                // var gi = AssociatedDataContext.CardGameInstance;
-                //  If the card is draggable, we're going to want to drag the whole
-                //  stack.
-                // var cards = gi.GetCardCollection(AssociatedDataContext);
-
-
-                //
-                // gi.TemporaryStore.Clear();
-                // var start = cards.IndexOf(AssociatedDataContext);
-                // for (var i = start; i < cards.Count; i++)
-                // {
-                //     var onHold = cards[i];
-                //     cards.Remove(onHold);
-                //     gi.TemporaryStore.Add(onHold);
-                // }
-                //
-
-                //
-                // //  Clear the drag stack.
-                // dragStack.Items = draggingCards;
-                // dragStack.UpdateLayout();
-                // args.DragAdorner = new Apex.Adorners.VisualAdorner(dragStack);
-                //
-                // //  Hide each dragging card.
-                // ItemsControl sourceStack = args.DragSource as ItemsControl;
-                // foreach (var dragCard in draggingCards)
-                //     ((ObservableCollection<PlayingCardViewModel>)sourceStack.Items).Remove(dragCard);
-                //
-
-
                 _dragStarted = true;
-
-
-                _start = e.GetCurrentPoint(AssociatedObject.Parent).Position;
+                _start = e.GetCurrentPoint(AssociatedObject!.Parent).Position;
                 AddTransforms();
                 e.Pointer.Capture(AssociatedObject);
             }
@@ -172,7 +141,7 @@ public class CardDragBehavior : Behavior<Control>
 
         if (e.InitialPressMouseButton == MouseButton.Left)
         {
-            Released(e.GetCurrentPoint(AssociatedObject.GetVisualRoot()).Position);
+            Released(e.GetCurrentPoint(AssociatedObject?.GetVisualRoot()).Position);
         }
 
         e.Pointer.Capture(null);
@@ -187,26 +156,15 @@ public class CardDragBehavior : Behavior<Control>
     {
         _dragStarted = false;
 
-
-        var targetVisual = AssociatedObject?.GetVisualRoot()?.GetVisualsAt(position);
-
-        var targetCardStackControl =
-            targetVisual?.Where(x =>
-                    x is Control { DataContext: PlayingCardViewModel pv } && pv != AssociatedDataContext)
-                .Cast<Control>().FirstOrDefault();
-
-        if (targetCardStackControl is { } && targetCardStackControl.DataContext is PlayingCardViewModel target)
+        var gi = AssociatedDataContext.CardGameInstance;
+        var fromList = gi.GetCardCollection(AssociatedDataContext);
+        
+        foreach (var x in AssociatedObject?.GetVisualRoot()?.GetVisualsAt(position)!)
         {
-            var gi = AssociatedDataContext.CardGameInstance;
-            var fromList = gi.GetCardCollection(AssociatedDataContext);
-            var toList = gi.GetCardCollection(target);
-
+            if (x is not Control s || GetDragTargetObject(s) is not IList<PlayingCardViewModel> toList) continue;
             gi.CheckAndMoveCard(fromList, toList, AssociatedDataContext);
+            break;
         }
-        else
-        {
-        }
-
 
         RemoveTransforms();
     }
@@ -215,14 +173,14 @@ public class CardDragBehavior : Behavior<Control>
     {
         if (AssociatedObject is null) return;
         SetTranslateTransform(AssociatedObject, Vector.Zero);
-        ((IPseudoClasses)AssociatedObject.Classes).Add(":dragging");
+        ((IPseudoClasses) AssociatedObject.Classes).Add(":dragging");
     }
 
     private void RemoveTransforms()
     {
         if (AssociatedObject is null) return;
 
-        ((IPseudoClasses)AssociatedObject.Classes).Remove(":dragging");
+        ((IPseudoClasses) AssociatedObject.Classes).Remove(":dragging");
         SetTranslateTransform(AssociatedObject, Vector.Zero);
     }
 
@@ -245,7 +203,7 @@ public class CardDragBehavior : Behavior<Control>
         SetTranslateTransform(AssociatedObject, delta);
     }
 
-    private void SetTranslateTransform(IControl? control, Vector newVector)
+    private static void SetTranslateTransform(IControl? control, Vector newVector)
     {
         if (control is null) return;
         var transformBuilder = new TransformOperations.Builder(1);

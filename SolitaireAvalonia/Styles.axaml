@@ -19,6 +19,7 @@
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             ClipToBounds="False"
+                            behaviors:CardDragBehavior.DragTargetObject="{TemplateBinding Items}"
                             BorderThickness="{TemplateBinding BorderThickness}">
                         <ItemsControl Items="{TemplateBinding Items}"
                                       ClipToBounds="False"
