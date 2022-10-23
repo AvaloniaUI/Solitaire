@@ -41,23 +41,7 @@ public partial class CasinoViewModel : ViewModelBase
     /// </summary>
     public async void Save()
     {
-        await PlatformProviders.CasinoStorage.SaveObject(this);
-        return;
-
-
-        // Get a new isolated store for this user, domain, and assembly.
-        var isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User |
-                                                    IsolatedStorageScope.Domain |
-                                                    IsolatedStorageScope.Assembly, null, null);
-
-        //  Create data stream.
-        using var isoStream = new IsolatedStorageFileStream("Casino4.xml", FileMode.Create, isoStore);
-        using var writer = new StreamWriter(isoStream);
-        writer.Write(JsonConvert.SerializeObject(this, new JsonSerializerSettings()
-        {
-            PreserveReferencesHandling = PreserveReferencesHandling.None,
-            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-        }));
+         await PlatformProviders.CasinoStorage.SaveObject(this);
     }
 
     /// <summary>
@@ -66,41 +50,12 @@ public partial class CasinoViewModel : ViewModelBase
     /// <returns></returns>
     public static async Task<CasinoViewModel> Load()
     {
-        // // Get a new isolated store for this user, domain, and assembly.
-        // var isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User |
-        //                                             IsolatedStorageScope.Domain |
-        //                                             IsolatedStorageScope.Assembly, null, null);
-        //
-        // //  Create data stream.
-        // try
-        // {
-        //     //  Save the casino.
-        //     using var isoStream =
-        //         new IsolatedStorageFileStream("Casino4.xml", FileMode.Open, isoStore);
-        // }
-        // catch
-        // {
-        // }
-        // finally
-        // {
-        // }
-
-
         var ret = await PlatformProviders.CasinoStorage.LoadObject();
-        if (ret is CasinoViewModel loadedVM)
+        if (ret is { } loadedVm)
         {
-            Console.WriteLine($"Test: {loadedVM}");
-            return loadedVM;
+            return loadedVm;
         }
-
-        Console.WriteLine($"Testsdaasd");
-
-        return new CasinoViewModel();
+        else
+            return new CasinoViewModel();
     }
-}
-
-public interface IRuntimeStorageProvider<T>
-{
-    Task SaveObject(T obj);
-    Task<T?> LoadObject();
 }

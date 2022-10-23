@@ -11,11 +11,11 @@ namespace SolitaireAvalonia.Web;
 
 public partial class App
 {
-    private class SettingsStore<T> : IRuntimeStorageProvider<T>
+    private class BlazorSettingsStore<T> : IRuntimeStorageProvider<T>
     {
         private readonly IJSRuntime _js;
  
-        public SettingsStore(IJSRuntime js)
+        public BlazorSettingsStore(IJSRuntime js)
         {
             _js = js;
             
@@ -25,6 +25,7 @@ public partial class App
         public async Task SaveObject(T obj)
         {
            var _ident = typeof(T).FullName?.ToLowerInvariant().Replace(".", string.Empty) ?? "default";
+           
            Console.WriteLine(_ident);
 
             var serializedObjJson = JsonConvert.SerializeObject(obj, new JsonSerializerSettings

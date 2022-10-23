@@ -7,7 +7,7 @@
 
     protected override void OnInitialized()
     {
-        PlatformProviders.CasinoStorage = new SettingsStore<CasinoViewModel>(JS);
+        PlatformProviders.CasinoStorage = new BlazorSettingsStore<CasinoViewModel>(JS);
     }
  
 }
