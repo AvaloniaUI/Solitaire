@@ -12,6 +12,7 @@ namespace SolitaireAvalonia.ViewModels;
 /// </summary>
 public abstract partial class CardGameViewModel : ViewModelBase
 {
+    public abstract string GameName { get; }
     protected CasinoViewModel CasinoInstance { get; }
         
     /// <summary>
@@ -22,7 +23,11 @@ public abstract partial class CardGameViewModel : ViewModelBase
         CasinoInstance = casinoViewModel;
 
         NavigateToCasinoCommand =
-            new RelayCommand(() => casinoViewModel.CurrentView = casinoViewModel.TitleInstance);
+            new RelayCommand(() =>
+            {
+                _gameStats?.UpdateStatistics();
+                casinoViewModel.CurrentView = casinoViewModel.TitleInstance;
+            });
             
         //  Set up the timer.
         timer.Interval = TimeSpan.FromMilliseconds(500);
@@ -110,7 +115,8 @@ public abstract partial class CardGameViewModel : ViewModelBase
     [ObservableProperty] private int _moves;
 
     [ObservableProperty] private bool _isGameWon;
- 
+    private GameStatisticsViewModel _gameStats;
+
 
     /// <summary>
     /// Gets the go to casino command.
@@ -129,4 +135,9 @@ public abstract partial class CardGameViewModel : ViewModelBase
     /// Occurs when the game is won.
     /// </summary>
     public event Action GameWon;
+
+    public void RegisterStatsInstance(GameStatisticsViewModel gameStatsInstance)
+    {
+        _gameStats = gameStatsInstance;
+    }
 }

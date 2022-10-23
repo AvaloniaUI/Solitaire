@@ -34,6 +34,9 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         DealCardsCommand = new RelayCommand(DoDealCards, () => Stock.Count > 0);
     }
 
+    /// <inheritdoc />
+    public override string GameName => "Spider Solitaire";
+
     public override IList<PlayingCardViewModel> GetCardCollection(PlayingCardViewModel card)
     {
         if (Stock.Contains(card)) return Stock;

@@ -16,6 +16,9 @@ namespace SolitaireAvalonia.ViewModels;
 /// </summary>
 public partial class KlondikeSolitaireViewModel : CardGameViewModel
 {
+    /// <inheritdoc />
+    public override string GameName => "Klondike Solitaire";
+    
     private readonly CasinoViewModel _casinoViewModel;
     [ObservableProperty] private DrawMode _drawMode = DrawMode.DrawThree;
 
@@ -456,7 +459,10 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     //  For ease of access we have arrays of the foundations and tableaus.
     List<ObservableCollection<PlayingCardViewModel>> foundations = new();
     List<ObservableCollection<PlayingCardViewModel>> tableaus = new();
- 
+
+    /// <inheritdoc />
+    private string _gameName;
+
     public ObservableCollection<PlayingCardViewModel> Foundation1 { get; } = new();
 
     public ObservableCollection<PlayingCardViewModel> Foundation2 { get; } = new();

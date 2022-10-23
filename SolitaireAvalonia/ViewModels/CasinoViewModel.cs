@@ -188,16 +188,17 @@ public partial class CasinoViewModel : ViewModelBase
     // /// </summary>
     // private NotifyingProperty KlondikeSolitaireStatisticsProperty =
     //   new NotifyingProperty("KlondikeSolitaireStatistics", typeof(GameStatistics),
-    //       new GameStatistics() { GameName = "Klondike Solitaire" }); 
-    // public GameStatistics KlondikeSolitaireStatistics 
+    //       new GameStatistics() { GameName =  }); 
+    // public GameStatistics  
         
     // private NotifyingProperty SpiderSolitaireStatisticsProperty =
-    //   new NotifyingProperty("SpiderSolitaireStatistics", typeof(GameStatistics),
+    //   new NotifyingProperty("", typeof(GameStatistics),
     //       new GameStatistics() { GameName = "Spider Solitaire" });
     //GameStatistics SpiderSolitaireStatistics
     // public string DeckFolder
     // new NotifyingProperty("DeckFolder", typeof(string), "Classic");
-        
+
+
     /// <summary>
     /// The set of available deck folders.
     /// </summary>

@@ -1,10 +1,10 @@
 ﻿using Avalonia.Controls;
 
 namespace SolitaireAvalonia.Views;
-
-public partial class KlondikeSolitaireView : UserControl
-{
-    public KlondikeSolitaireView()
+ 
+public partial class GameStatisticsView : UserControl
+{ 
+    public GameStatisticsView()
     {
         InitializeComponent();
     }
