@@ -1,18 +1,17 @@
-﻿namespace SolitaireAvalonia.Models
+﻿namespace SolitaireAvalonia.Models;
+
+/// <summary>
+/// Represents a card colour.
+/// </summary>
+public enum CardColour
 {
     /// <summary>
-    /// Represents a card colour.
+    /// Black cards (spades or clubs).
     /// </summary>
-    public enum CardColour
-    {
-        /// <summary>
-        /// Black cards (spades or clubs).
-        /// </summary>
-        Black,
+    Black,
 
-        /// <summary>
-        /// Red cards (hearts or diamonds). 
-        /// </summary>
-        Red
-    }
+    /// <summary>
+    /// Red cards (hearts or diamonds). 
+    /// </summary>
+    Red
 }

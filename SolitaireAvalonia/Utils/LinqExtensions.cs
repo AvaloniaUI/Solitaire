@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SolitaireAvalonia.Utils;
 
 public static class LinqExtensions
 { 
     /// </summary>
-    private static Random random = new ();
+    private static readonly Random Random = new ();
 
     /// <summary>
     /// Shuffles the specified list.
@@ -18,7 +17,7 @@ public static class LinqExtensions
         while (n > 1)
         {
             n--;
-            var k = random.Next(n + 1);
+            var k = Random.Next(n + 1);
             (list[k], list[n]) = (list[n], list[k]);
         }
     }

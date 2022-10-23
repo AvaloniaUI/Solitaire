@@ -1,28 +1,27 @@
-﻿namespace SolitaireAvalonia.Models
+﻿namespace SolitaireAvalonia.Models;
+
+/// <summary>
+/// Represents a card's suit.
+/// </summary>
+public enum CardSuit
 {
     /// <summary>
-    /// Represents a card's suit.
+    /// Hearts. 
     /// </summary>
-    public enum CardSuit
-    {
-        /// <summary>
-        /// Hearts. 
-        /// </summary>
-        Hearts,
+    Hearts,
 
-        /// <summary>
-        /// Diamonds.
-        /// </summary>
-        Diamonds,
+    /// <summary>
+    /// Diamonds.
+    /// </summary>
+    Diamonds,
 
-        /// <summary>
-        /// Clubs.
-        /// </summary>
-        Clubs,
+    /// <summary>
+    /// Clubs.
+    /// </summary>
+    Clubs,
 
-        /// <summary>
-        /// Spades.
-        /// </summary>
-        Spades
-    }
+    /// <summary>
+    /// Spades.
+    /// </summary>
+    Spades
 }

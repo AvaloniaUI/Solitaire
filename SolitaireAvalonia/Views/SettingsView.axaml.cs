@@ -1,15 +1,14 @@
 ﻿using Avalonia.Controls;
 
-namespace SolitaireAvalonia.Views
+namespace SolitaireAvalonia.Views;
+
+/// <summary>
+/// Interaction logic for SpiderSolitaireView.xaml
+/// </summary>
+public partial class SettingsView : UserControl
 {
-    /// <summary>
-    /// Interaction logic for SpiderSolitaireView.xaml
-    /// </summary>
-    public partial class SettingsView : UserControl
+    public SettingsView()
     {
-        public SettingsView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

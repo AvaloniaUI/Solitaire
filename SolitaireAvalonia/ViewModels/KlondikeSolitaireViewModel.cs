@@ -12,22 +12,6 @@ using SolitaireAvalonia.Utils;
 namespace SolitaireAvalonia.ViewModels;
 
 /// <summary>
-/// The DrawMode, i.e. how many cards to draw.
-/// </summary>
-public enum DrawMode
-{
-    /// <summary>
-    /// Draw one card.
-    /// </summary>
-    DrawOne = 0,
-
-    /// <summary>
-    /// Draw three cards.
-    /// </summary>
-    DrawThree = 1
-}
-
-/// <summary>
 /// The Klondike Solitaire View Model.
 /// </summary>
 public partial class KlondikeSolitaireViewModel : CardGameViewModel
@@ -98,12 +82,12 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
             foundation.Clear();
 
         //  Create a list of card types.
-        List<CardType> eachCardType = new List<CardType>();
+        var eachCardType = new List<CardType>();
         foreach (CardType cardType in Enum.GetValues(typeof(CardType)))
             eachCardType.Add(cardType);
 
         //  Create a playing card from each card type.
-        List<PlayingCardViewModel> playingCards = new List<PlayingCardViewModel>();
+        var playingCards = new List<PlayingCardViewModel>();
         foreach (var cardType in eachCardType)
             playingCards.Add(new PlayingCardViewModel(this) {CardType = cardType, IsFaceDown = true});
 
@@ -111,19 +95,19 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         playingCards.Shuffle();
 
         //  Now distribute them - do the tableaus first.
-        for (int i = 0; i < 7; i++)
+        for (var i = 0; i < 7; i++)
         {
             //  We have i face down cards and 1 face up card.
-            for (int j = 0; j < i; j++)
+            for (var j = 0; j < i; j++)
             {
-                PlayingCardViewModel faceDownCardViewModel = playingCards.First();
+                var faceDownCardViewModel = playingCards.First();
                 playingCards.Remove(faceDownCardViewModel);
                 faceDownCardViewModel.IsFaceDown = true;
                 tableaus[i].Add(faceDownCardViewModel);
             }
 
             //  Add the face up card.
-            PlayingCardViewModel faceUpCardViewModel = playingCards.First();
+            var faceUpCardViewModel = playingCards.First();
             playingCards.Remove(faceUpCardViewModel);
             faceUpCardViewModel.IsFaceDown = false;
             faceUpCardViewModel.IsPlayable = true;
@@ -168,7 +152,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
                 wasteCard.FaceUpOffset = 0;
 
             //  Work out how many cards to draw.
-            int cardsToDraw = 0;
+            var cardsToDraw = 0;
             switch (DrawMode)
             {
                 case DrawMode.DrawOne:
@@ -183,11 +167,11 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
             }
 
             //  Put up to three cards in the waste.
-            for (int i = 0; i < cardsToDraw; i++)
+            for (var i = 0; i < cardsToDraw; i++)
             {
                 if (Stock.Count > 0)
                 {
-                    PlayingCardViewModel card = Stock.Last();
+                    var card = Stock.Last();
                     Stock.Remove(card);
                     card.IsFaceDown = false;
                     card.IsPlayable = false;
@@ -210,10 +194,10 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     {
         //  Go through the top card in each tableau - keeping
         //  track of whether we moved one.
-        bool keepTrying = true;
+        var keepTrying = true;
         while (keepTrying)
         {
-            bool movedACard = false;
+            var movedACard = false;
             if (Waste.Count > 0)
                 if (TryMoveCardToAppropriateFoundation(Waste.Last()))
                     movedACard = true;
@@ -243,8 +227,8 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
                     return true;
 
         //  Is the card in a tableau?
-        bool inTableau = false;
-        int i = 0;
+        var inTableau = false;
+        var i = 0;
         for (; i < tableaus.Count && inTableau == false; i++)
             inTableau = tableaus[i].Contains(card);
 
@@ -270,7 +254,6 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// <param name="card">The card we're moving.</param>
     /// <param name="checkOnly">if set to <c>true</c> we only check if we CAN move, but don't actually move.</param>
     /// <returns>True if a card was moved.</returns>
-
     public override bool CheckAndMoveCard(IList<PlayingCardViewModel> from,
         IList<PlayingCardViewModel> to,
         PlayingCardViewModel card,
@@ -281,7 +264,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
             return false;
 
         //  This is the complicated operation.
-        int scoreModifier = 0;
+        var scoreModifier = 0;
 
         //  Are we moving from the waste?
         if (from == Waste)
@@ -293,7 +276,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
                 //  1. It is empty and we are an ace.
                 //  2. It is card SN and we are suit S and Number N+1
                 if ((to.Count == 0 && card.Value == 0) ||
-                    (to.Count > 0 && to.Last().Suit == card.Suit && (to.Last()).Value == (card.Value - 1)))
+                    (to.Count > 0 && to.Last().Suit == card.Suit && to.Last().Value == card.Value - 1))
                 {
                     //  Move from waste to foundation.
                     scoreModifier = 10;
@@ -308,7 +291,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
                 //  1. It is empty and we are a king.
                 //  2. It is card CN and we are color !C and Number N-1
                 if ((to.Count == 0 && card.Value == 12) ||
-                    (to.Count > 0 && to.Last().Colour != card.Colour && (to.Last()).Value == (card.Value + 1)))
+                    (to.Count > 0 && to.Last().Colour != card.Colour && to.Last().Value == card.Value + 1))
                 {
                     //  Move from waste to tableau.
                     scoreModifier = 5;
@@ -330,7 +313,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
                 //  1. It is empty and we are an ace.
                 //  2. It is card SN and we are suit S and Number N+1
                 if ((to.Count == 0 && card.Value == 0) ||
-                    (to.Count > 0 && to.Last().Suit == card.Suit && (to.Last()).Value == (card.Value - 1)))
+                    (to.Count > 0 && to.Last().Suit == card.Suit && to.Last().Value == card.Value - 1))
                 {
                     //  Move from tableau to foundation.
                     scoreModifier = 10;
@@ -345,7 +328,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
                 //  1. It is empty and we are a king.
                 //  2. It is card CN and we are color !C and Number N-1
                 if ((to.Count == 0 && card.Value == 12) ||
-                    (to.Count > 0 && to.Last().Colour != card.Colour && (to.Last()).Value == (card.Value + 1)))
+                    (to.Count > 0 && to.Last().Colour != card.Colour && to.Last().Value == card.Value + 1))
                 {
                     //  Move from tableau to tableau.
                     scoreModifier = 0;
@@ -367,7 +350,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
                 //  1. It is empty and we are a king.
                 //  2. It is card CN and we are color !C and Number N-1
                 if ((to.Count == 0 && card.Value == 12) ||
-                    (to.Count > 0 && to.Last().Colour != card.Colour && (to.Last()).Value == (card.Value + 1)))
+                    (to.Count > 0 && to.Last().Colour != card.Colour && to.Last().Value == card.Value + 1))
                 {
                     //  Move from foundation to tableau.
                     scoreModifier = -15;
@@ -428,8 +411,8 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         PlayingCardViewModel card)
     {
         //  Identify the run of cards we're moving.
-        List<PlayingCardViewModel> run = new List<PlayingCardViewModel>();
-        for (int i = from.IndexOf(card); i < from.Count; i++)
+        var run = new List<PlayingCardViewModel>();
+        for (var i = from.IndexOf(card); i < from.Count; i++)
             run.Add(from[i]);
 
         //  This function will move the card, as well as setting the 
@@ -443,7 +426,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         if (from.Count > 0)
         {
             //  Reveal the top card and make it playable.
-            PlayingCardViewModel topCardViewModel = from.Last();
+            var topCardViewModel = from.Last();
 
             topCardViewModel.IsFaceDown = false;
             topCardViewModel.IsPlayable = true;
@@ -469,24 +452,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         //  Fire the won event.
         FireGameWonEvent();
     }
-
-    /// <summary>
-    /// The right click card command.
-    /// </summary>
-    /// <param name="parameter">The parameter (should be a playing card).</param>
-    protected override void DoRightClickCard(object parameter)
-    {
-        base.DoRightClickCard(parameter);
-
-        //  Cast the card.
-        PlayingCardViewModel card = parameter as PlayingCardViewModel;
-        if (card == null)
-            return;
-
-        //  Try and move it to the appropriate foundation.
-        TryMoveCardToAppropriateFoundation(card);
-    }
-
+ 
     //  For ease of access we have arrays of the foundations and tableaus.
     List<ObservableCollection<PlayingCardViewModel>> foundations = new();
     List<ObservableCollection<PlayingCardViewModel>> tableaus = new();

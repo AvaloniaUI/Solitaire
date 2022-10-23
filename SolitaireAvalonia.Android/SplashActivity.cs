@@ -2,16 +2,15 @@
 using Android.Content;
 using Application = Android.App.Application;
 
-namespace SolitaireAvalonia.Android
-{
-    [Activity(Theme = "@style/MyTheme.Splash", MainLauncher = true, NoHistory = true)]
-    public class SplashActivity : Activity
-    {
-        protected override void OnResume()
-        {
-            base.OnResume();
+namespace SolitaireAvalonia.Android;
 
-            StartActivity(new Intent(Application.Context, typeof(MainActivity)));
-        }
+[Activity(Theme = "@style/MyTheme.Splash", MainLauncher = true, NoHistory = true)]
+public class SplashActivity : Activity
+{
+    protected override void OnResume()
+    {
+        base.OnResume();
+
+        StartActivity(new Intent(Application.Context, typeof(MainActivity)));
     }
 }

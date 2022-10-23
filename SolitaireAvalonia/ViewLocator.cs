@@ -1,52 +1,50 @@
 using System;
-using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using SolitaireAvalonia.ViewModels;
 
-namespace SolitaireAvalonia
+namespace SolitaireAvalonia;
+
+public class ViewLocator : IDataTemplate
 {
-    public class ViewLocator : IDataTemplate
+    public IControl? Build(object? data)
     {
-        public IControl? Build(object? data)
+        if (data is null)
+            return null;
+
+        var name = data.GetType().FullName!.Replace("ViewModel", "View");
+        IControl? returnVal = null;
+        Exception? ex = null;
+
+        try
         {
-            if (data is null)
-                return null;
+            var type = Type.GetType(name);
 
-            var name = data.GetType().FullName!.Replace("ViewModel", "View");
-            IControl? returnVal = null;
-            Exception? ex = null;
-
-            try
+            if (type != null)
             {
-                var type = Type.GetType(name);
-
-                if (type != null)
+                returnVal = (Control) Activator.CreateInstance(type)!;
+            }
+        }
+        catch (Exception _)
+        {
+            ex = _;
+        }
+        finally
+        {
+            if (ex is { })
+            {
+                returnVal = new TextBlock
                 {
-                    returnVal = (Control) Activator.CreateInstance(type)!;
-                }
+                    Text = $"An exception occurred while trying to instantiate {name}: {ex}"
+                };
             }
-            catch (Exception _)
-            {
-                ex = _;
-            }
-            finally
-            {
-                if (ex is { })
-                {
-                    returnVal = new TextBlock
-                    {
-                        Text = $"An exception occurred while trying to instantiate {name}: {ex}"
-                    };
-                }
-            }
-
-            return returnVal;
         }
 
-        public bool Match(object? data)
-        {
-            return data is ViewModelBase;
-        }
+        return returnVal;
+    }
+
+    public bool Match(object? data)
+    {
+        return data is ViewModelBase;
     }
 }
