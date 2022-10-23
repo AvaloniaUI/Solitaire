@@ -1,6 +1,8 @@
+using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using SolitaireAvalonia.ViewModels;
 using SolitaireAvalonia.Views;
 
@@ -17,17 +19,21 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow
+            desktop.MainWindow = new MainWindow();
+
+            Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                DataContext = new CasinoViewModel()
-            };
+                desktop.MainWindow.DataContext = await CasinoViewModel.Load();
+            });
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
-            singleViewPlatform.MainView = new CasinoView()
+            singleViewPlatform.MainView = new CasinoView();
+            
+            Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                DataContext = new CasinoViewModel()
-            };
+                singleViewPlatform.MainView.DataContext = await CasinoViewModel.Load();
+            });
         }
 
         base.OnFrameworkInitializationCompleted();

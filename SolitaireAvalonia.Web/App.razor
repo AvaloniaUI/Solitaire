@@ -1,4 +1,18 @@
-﻿<Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
+﻿@using SolitaireAvalonia.Utils
+@using SolitaireAvalonia.ViewModels
+
+@inject IJSRuntime JS
+
+@code { 
+
+    protected override void OnInitialized()
+    {
+        PlatformProviders.CasinoStorage = new SettingsStore<CasinoViewModel>(JS);
+    }
+ 
+}
+
+<Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
     </Found>

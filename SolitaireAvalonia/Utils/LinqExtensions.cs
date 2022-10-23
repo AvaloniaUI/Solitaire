@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SolitaireAvalonia.ViewModels;
 
 namespace SolitaireAvalonia.Utils;
 
@@ -21,5 +22,10 @@ public static class LinqExtensions
             (list[k], list[n]) = (list[n], list[k]);
         }
     }
+}
+
+public static class PlatformProviders
+{
+    public static IRuntimeStorageProvider<CasinoViewModel> CasinoStorage;
 }
  

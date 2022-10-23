@@ -14,7 +14,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
 {
     public abstract string GameName { get; }
     protected CasinoViewModel CasinoInstance { get; }
-        
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CardGameViewModel"/> class.
     /// </summary>
@@ -25,14 +25,21 @@ public abstract partial class CardGameViewModel : ViewModelBase
         NavigateToCasinoCommand =
             new RelayCommand(() =>
             {
-                _gameStats?.UpdateStatistics();
+                if (Moves > 0)
+                {
+                    _gameStats?.UpdateStatistics();
+                    casinoViewModel.Save();
+                }
+
                 casinoViewModel.CurrentView = casinoViewModel.TitleInstance;
             });
-            
+        
+        
+
         //  Set up the timer.
         timer.Interval = TimeSpan.FromMilliseconds(500);
         timer.Tick += new EventHandler(timer_Tick);
- 
+
         DealNewGameCommand = new RelayCommand(DoDealNewGame);
     }
 
@@ -43,7 +50,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
         IList<PlayingCardViewModel> to,
         PlayingCardViewModel card,
         bool checkOnly = false);
-            
+
     /// <summary>
     /// Deals a new game.
     /// </summary>
@@ -93,6 +100,8 @@ public abstract partial class CardGameViewModel : ViewModelBase
     /// </summary>
     protected void FireGameWonEvent()
     {
+        _gameStats?.UpdateStatistics();
+        
         var wonEvent = GameWon;
         if (wonEvent != null)
             wonEvent();
@@ -101,13 +110,13 @@ public abstract partial class CardGameViewModel : ViewModelBase
     /// <summary>
     /// The timer for recording the time spent in a game.
     /// </summary>
-    private DispatcherTimer timer = new  ();
+    private DispatcherTimer timer = new();
 
     /// <summary>
     /// The time of the last tick.
     /// </summary>
     private DateTime lastTick;
- 
+
     [ObservableProperty] private int _score;
 
     [ObservableProperty] private TimeSpan _elapsedTime;

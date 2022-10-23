@@ -17,7 +17,7 @@
             Foreground="#99FFFFFF" Text="Solitaire" />
 
         <!-- The container for the statistics. -->
-        <Grid Grid.Row="1" RowDefinitions="Auto" ColumnDefinitions="*,300,300,*">
+        <Grid Grid.Row="1" RowDefinitions="Auto" ColumnDefinitions="*,Auto,Auto,*">
             <ContentControl Grid.Column="1" Grid.Row="0" Content="{Binding KlondikeStatsInstance}" />
             <ContentControl Grid.Column="2" Grid.Row="0" Content="{Binding  SpiderStatsInstance}" />
         </Grid>
