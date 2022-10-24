@@ -4,6 +4,7 @@
 
   <assembly fullname="Solitaire" preserve="All" />
   <assembly fullname="Solitaire.Browser" preserve="All" />
+  <assembly fullname="Avalonia.Xaml.Interactions" preserve="All" />
 
   <!-- Avalonia Themes -->
 
