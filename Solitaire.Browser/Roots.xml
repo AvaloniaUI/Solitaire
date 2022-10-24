@@ -2,7 +2,7 @@
 
   <!-- App -->
 
-  <assembly fullname="SolitaireAvalonia" preserve="All" />
+  <assembly fullname="Solitaire" preserve="All" />
   <assembly fullname="Solitaire.Browser" preserve="All" />
 
   <!-- Avalonia Themes -->
