@@ -52,7 +52,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SolitaireAvalonia\SolitaireAvalonia.csproj" />
+    <ProjectReference Include="..\Solitaire\Solitaire.csproj" />
   </ItemGroup>
 
 </Project>

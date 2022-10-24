@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using SolitaireAvalonia.ViewModels;
+using Solitaire.ViewModels;
 
 namespace Solitaire.Browser;
 

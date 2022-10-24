@@ -2,8 +2,8 @@ using System.Runtime.Versioning;
 using Avalonia;
 using Avalonia.Web;
 using Solitaire.Browser;
-using SolitaireAvalonia.Utils;
-using SolitaireAvalonia.ViewModels;
+using Solitaire.Utils;
+using Solitaire.ViewModels;
 
 [assembly:SupportedOSPlatform("browser")]
 
@@ -18,5 +18,5 @@ internal partial class Program
     }
 
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<SolitaireAvalonia.App>();
+        => AppBuilder.Configure<Solitaire.App>();
 }

@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="Solitaire.Views.CasinoView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:Solitaire.ViewModels"
+             xmlns:controls="clr-namespace:Solitaire.Controls"
+             x:DataType="viewModels:CasinoViewModel"
+             x:CompileBindings="True"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Panel>
+        <Panel>
+            <Border>
+                <Border.Background>
+                    <RadialGradientBrush GradientOrigin="50%,50%">
+                        <RadialGradientBrush.GradientStops>
+                            <GradientStop Color="#16A757" Offset="0" />
+                            <GradientStop Color="#116336" Offset="1" />
+                        </RadialGradientBrush.GradientStops>
+                    </RadialGradientBrush>
+                </Border.Background>
+            </Border>
+            <Border BorderThickness="0" Opacity="0.05">
+                <Border.Background>
+                    <VisualBrush TileMode="Tile" SourceRect="0,0,300,300" DestinationRect="0,0,200,200" BitmapInterpolationMode="HighQuality">
+                        <VisualBrush.Visual>
+                            <controls:RandomNoiseTextureControl/>
+                        </VisualBrush.Visual>
+                    </VisualBrush>
+                </Border.Background>
+            </Border> 
+        </Panel>
+        <ContentControl Content="{Binding CurrentView, Mode=OneWay}" />
+        
+        
+    </Panel>
+</UserControl>
