@@ -13,10 +13,10 @@ public partial class BrowserSettingsStore<T> : IRuntimeStorageProvider<T>
     {
     }
     
-    [JSImport("localStorage.setItem")]
+    [JSImport("globalThis.localStorage.setItem")]
     private static partial void SetItem(string key, string value);
     
-    [JSImport("localStorage.getItem")]
+    [JSImport("globalThis.localStorage.getItem")]
     private static partial string GetItem(string key);
 
     /// <inheritdoc />
