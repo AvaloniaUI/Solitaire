@@ -175,15 +175,27 @@ public class CardDragBehavior : Behavior<Control>
     private void AddTransforms()
     {
         if (AssociatedObject is null) return;
+        
         SetTranslateTransform(AssociatedObject, Vector.Zero);
+
+        if(AssociatedObject.FindAncestorOfType<CardStackControl>() is { } csp)
+        {
+            csp.ZIndex = 100;
+        }
+        
         ((IPseudoClasses)AssociatedObject.Classes).Add(":dragging");
     }
 
     private void RemoveTransforms()
     {
         if (AssociatedObject is null) return;
-
+        
+        if(AssociatedObject.FindAncestorOfType<CardStackControl>() is { } csp)
+        {
+            csp.ZIndex = 0;
+        }
         ((IPseudoClasses)AssociatedObject.Classes).Remove(":dragging");
+        
         SetTranslateTransform(AssociatedObject, Vector.Zero);
     }
 
