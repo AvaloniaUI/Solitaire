@@ -125,14 +125,12 @@ public abstract partial class CardGameViewModel : ViewModelBase
 
     [ObservableProperty] private bool _isGameWon;
     private GameStatisticsViewModel _gameStats;
-
-
+    
     /// <summary>
     /// Gets the go to casino command.
     /// </summary>
     /// <value>The go to casino command.</value>
     public ICommand NavigateToCasinoCommand { get; }
-
 
     /// <summary>
     /// Gets the deal new game command.
@@ -144,6 +142,8 @@ public abstract partial class CardGameViewModel : ViewModelBase
     /// Occurs when the game is won.
     /// </summary>
     public event Action GameWon;
+
+    public abstract void ResetGame();
 
     public void RegisterStatsInstance(GameStatisticsViewModel gameStatsInstance)
     {

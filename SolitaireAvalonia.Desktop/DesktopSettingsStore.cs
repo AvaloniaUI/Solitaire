@@ -15,8 +15,6 @@ internal class DesktopSettingsStore<T> : IRuntimeStorageProvider<T>
     {
         var _ident = typeof(T).FullName?.ToLowerInvariant().Replace(".", string.Empty) ?? "default";
 
-        Console.WriteLine(_ident);
-
         var serializedObjJson = JsonConvert.SerializeObject(obj, new JsonSerializerSettings
         {
             PreserveReferencesHandling = PreserveReferencesHandling.None,

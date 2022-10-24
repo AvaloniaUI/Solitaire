@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections.ObjectModel;
+using System.Reactive.Linq;
 using System.Windows.Input;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ReactiveUI;
 using SolitaireAvalonia.Models;
 using SolitaireAvalonia.Utils;
 
@@ -18,9 +20,9 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 {
     /// <inheritdoc />
     public override string GameName => "Klondike Solitaire";
-    
+
     private readonly CasinoViewModel _casinoViewModel;
-    [ObservableProperty] private DrawMode _drawMode = DrawMode.DrawOne;
+    [ObservableProperty] private DrawMode _drawMode;
 
     public KlondikeSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel)
     {
@@ -44,6 +46,10 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         //  If we're in the designer deal a game.
         if (Design.IsDesignMode)
             DoDealNewGame();
+
+        casinoViewModel.SettingsInstance.WhenAnyValue(x => x.DrawMode)
+            .Do(x => DrawMode = x)
+            .Subscribe();
     }
 
 
@@ -72,17 +78,8 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// <param name="parameter">The parameter.</param>
     protected override void DoDealNewGame()
     {
-        //  Call the base, which stops the timer, clears
-        //  the score etc.
-        base.DoDealNewGame();
+        ResetGame();
 
-        //  Clear everything.
-        Stock.Clear();
-        Waste.Clear();
-        foreach (var tableau in tableaus)
-            tableau.Clear();
-        foreach (var foundation in foundations)
-            foundation.Clear();
 
         //  Create a list of card types.
         var eachCardType = new List<CardType>();
@@ -92,7 +89,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         //  Create a playing card from each card type.
         var playingCards = new List<PlayingCardViewModel>();
         foreach (var cardType in eachCardType)
-            playingCards.Add(new PlayingCardViewModel(this) {CardType = cardType, IsFaceDown = true});
+            playingCards.Add(new PlayingCardViewModel(this) { CardType = cardType, IsFaceDown = true });
 
         //  Shuffle the playing cards.
         playingCards.Shuffle();
@@ -129,6 +126,21 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
         //  And we're done.
         StartTimer();
+    }
+
+    public override void ResetGame()
+    {
+        //  Call the base, which stops the timer, clears
+        //  the score etc.
+        base.DoDealNewGame();
+
+        //  Clear everything.
+        Stock.Clear();
+        Waste.Clear();
+        foreach (var tableau in tableaus)
+            tableau.Clear();
+        foreach (var foundation in foundations)
+            foundation.Clear();
     }
 
     /// <summary>
@@ -455,7 +467,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         //  Fire the won event.
         FireGameWonEvent();
     }
- 
+
     //  For ease of access we have arrays of the foundations and tableaus.
     List<ObservableCollection<PlayingCardViewModel>> foundations = new();
     List<ObservableCollection<PlayingCardViewModel>> tableaus = new();
@@ -494,5 +506,6 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// The turn stock command.
     /// </summary> 
     public ICommand TurnStockCommand { get; }
+
     public ICommand AppropriateFoundationsCommand { get; }
 }

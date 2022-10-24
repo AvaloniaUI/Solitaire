@@ -53,6 +53,9 @@ public partial class CasinoViewModel : ViewModelBase
         var ret = await PlatformProviders.CasinoStorage.LoadObject();
         if (ret is { } loadedVm)
         {
+            // Refresh game logics.
+            loadedVm.KlondikeInstance.ResetGame();
+            loadedVm.SpiderInstance.ResetGame();
             return loadedVm;
         }
         else

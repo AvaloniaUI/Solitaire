@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Windows.Input;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ReactiveUI;
 using SolitaireAvalonia.Models;
 using SolitaireAvalonia.Utils;
 
@@ -32,6 +34,10 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
             DealNewGameCommand?.Execute(null);
 
         DealCardsCommand = new RelayCommand(DoDealCards, () => Stock.Count > 0);
+
+        casinoViewModel.SettingsInstance.WhenAnyValue(x => x.Difficulty)
+            .Do(x => Difficulty = x)
+            .Subscribe();
     }
 
     /// <inheritdoc />
@@ -49,18 +55,7 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
 
     protected override void DoDealNewGame()
     {
-        //  Call the base, which stops the timer, clears
-        //  the score etc.
-        base.DoDealNewGame();
-
-        //  Spider solitaire starts with a score of 500.
-        Score = 500;
-
-        //  Clear everything.
-        Stock.Clear();
-        Foundation.Clear();
-        foreach (var tableau in tableaus)
-            tableau.Clear();
+        ResetGame();
 
         //  Create a list of card types.
         List<CardType> eachCardType = new List<CardType>();
@@ -78,11 +73,11 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         List<PlayingCardViewModel> playingCards = new List<PlayingCardViewModel>();
         foreach (var cardType in eachCardType)
         {
-            PlayingCardViewModel card = new PlayingCardViewModel(this) {CardType = cardType, IsFaceDown = true};
+            PlayingCardViewModel card = new PlayingCardViewModel(this) { CardType = cardType, IsFaceDown = true };
 
             switch (Difficulty)
             {
-                case  Difficulty.Easy:
+                case Difficulty.Easy:
                     //  In easy mode, we have hearts only.
                     if (card.Suit != CardSuit.Hearts)
                         continue;
@@ -135,9 +130,25 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         StartTimer();
     }
 
+    public override void ResetGame()
+    {
+        //  Call the base, which stops the timer, clears
+        //  the score etc.
+        base.DoDealNewGame();
+
+        //  Spider solitaire starts with a score of 500.
+        Score = 500;
+
+        //  Clear everything.
+        Stock.Clear();
+        Foundation.Clear();
+        foreach (var tableau in tableaus)
+            tableau.Clear();
+    }
+
     public ICommand DealCardsCommand { get; }
-    
-    
+
+
     private void DoDealCards()
     {
         //  As a sanity check if the stock is empty we cannot deal cards.
@@ -328,5 +339,5 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
     public ObservableCollection<PlayingCardViewModel> Foundation { get; } = new();
 
 
-    [ObservableProperty] private Difficulty _difficulty = Difficulty.Easy;
+    [ObservableProperty] private Difficulty _difficulty;
 }
