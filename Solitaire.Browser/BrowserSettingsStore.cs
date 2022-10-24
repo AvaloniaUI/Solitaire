@@ -1,19 +1,26 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Solitaire.ViewModels;
 
 namespace Solitaire.Browser;
 
-public class BrowserSettingsStore<T> : IRuntimeStorageProvider<T>
+public partial class BrowserSettingsStore<T> : IRuntimeStorageProvider<T>
 {
     public BrowserSettingsStore()
     {
     }
+    
+    [JSImport("localStorage.setItem")]
+    private static partial void SetItem(string key, string value);
+    
+    [JSImport("localStorage.getItem")]
+    private static partial string GetItem(string key);
 
     /// <inheritdoc />
-    public async Task SaveObject(T obj)
+    public Task SaveObject(T obj)
     {
         var _ident = typeof(T).FullName?.ToLowerInvariant().Replace(".", string.Empty) ?? "default";
 
@@ -26,7 +33,10 @@ public class BrowserSettingsStore<T> : IRuntimeStorageProvider<T>
         });
 
         Console.WriteLine(serializedObjJson);
-        //await _js.InvokeVoidAsync("localStorage.setItem", _ident, serializedObjJson);
+        
+        SetItem(_ident, serializedObjJson);
+        
+        return Task.CompletedTask;
     }
 
     /// <inheritdoc />
@@ -37,15 +47,13 @@ public class BrowserSettingsStore<T> : IRuntimeStorageProvider<T>
             var _ident = typeof(T).FullName?.ToLowerInvariant().Replace(".", string.Empty) ?? "default";
             Console.WriteLine(_ident);
 
-            /*var t = await _js.InvokeAsync<string>("localStorage.getItem", _ident);
+            var t = GetItem(_ident);
             if (string.IsNullOrEmpty(t)) return default;
 
             var x = JsonConvert.DeserializeObject<T>(t);
 
             Console.WriteLine(t);
-            return x ?? default;*/
-
-            return default;
+            return x ?? default;
         }
         catch (Exception e)
         {
