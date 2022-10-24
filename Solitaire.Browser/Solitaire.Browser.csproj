@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
+    <WasmMainJSPath>AppBundle\main.js</WasmMainJSPath>
+    <OutputType>Exe</OutputType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <MSBuildEnableWorkloadResolver>true</MSBuildEnableWorkloadResolver>
+    <WasmBuildNative>true</WasmBuildNative>
+    <EmccFlags>-sERROR_ON_UNDEFINED_SYMBOLS=0</EmccFlags>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>full</TrimMode>
+    <WasmBuildNative>true</WasmBuildNative>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <EmccCompileOptimizationFlag>-Oz</EmccCompileOptimizationFlag>
+    <EmccLinkOptimizationFlag>-Oz</EmccLinkOptimizationFlag>
+    <WasmEmitSymbolMap>false</WasmEmitSymbolMap>
+    <WasmNativeDebugSymbols>false</WasmNativeDebugSymbols>
+    <WasmDebugLevel>0</WasmDebugLevel>
+    <WasmEnableExceptionHandling>false</WasmEnableExceptionHandling>
+    <TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
+    <DebuggerSupport>false</DebuggerSupport>
+    <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
+    <EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
+    <EventSourceSupport>false</EventSourceSupport>
+    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
+    <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
+    <UseNativeHttpHandler>true</UseNativeHttpHandler>
+    <UseSystemResourceKeys>true</UseSystemResourceKeys>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <TrimmerRootDescriptor Include="Roots.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <WasmExtraFilesToDeploy Include="AppBundle\app.css" />
+    <WasmExtraFilesToDeploy Include="AppBundle\favicon.ico" />
+    <WasmExtraFilesToDeploy Include="AppBundle\index.html" />
+    <WasmExtraFilesToDeploy Include="AppBundle\Logo.svg" />
+    <WasmExtraFilesToDeploy Include="AppBundle\main.js" />
+    <WasmExtraFilesToDeploy Include="AppBundle\staticwebapp.config.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Web" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SolitaireAvalonia\SolitaireAvalonia.csproj" />
+  </ItemGroup>
+
+</Project>

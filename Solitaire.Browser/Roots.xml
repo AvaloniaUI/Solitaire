@@ -1,0 +1,16 @@
+<linker>
+
+  <!-- App -->
+
+  <assembly fullname="Calc" preserve="All" />
+  <assembly fullname="Calc.Browser" preserve="All" />
+
+  <!-- Avalonia Themes -->
+
+  <assembly fullname="Material.Avalonia" preserve="All" />
+  <assembly fullname="Material.Styles" preserve="All" />
+  <assembly fullname="Material.Colors" preserve="All" />
+  <assembly fullname="Material.Ripple" preserve="All" />
+  <assembly fullname="Material.Icons.Avalonia" preserve="All" />
+
+</linker>
