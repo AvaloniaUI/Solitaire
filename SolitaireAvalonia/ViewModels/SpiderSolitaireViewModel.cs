@@ -328,5 +328,5 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
     public ObservableCollection<PlayingCardViewModel> Foundation { get; } = new();
 
 
-    [ObservableProperty] private Difficulty _difficulty = Difficulty.Medium;
+    [ObservableProperty] private Difficulty _difficulty = Difficulty.Easy;
 }

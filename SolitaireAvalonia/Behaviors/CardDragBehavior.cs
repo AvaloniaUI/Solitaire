@@ -120,19 +120,18 @@ public class CardDragBehavior : Behavior<Control>
         if (!AssociatedDataContext.IsPlayable) return;
 
         var properties = e.GetCurrentPoint(AssociatedObject).Properties;
-        if (properties.IsLeftButtonPressed || AssociatedObject is { })
-        {
-            var itemsParent = AssociatedObject!.GetVisualAncestors()
-                .FirstOrOptional(x => x.GetType() == typeof(CardStackControl));
+        
+        if (!properties.IsLeftButtonPressed && AssociatedObject is null) return;
+        
+        var itemsParent = AssociatedObject!.GetVisualAncestors()
+            .FirstOrOptional(x => x.GetType() == typeof(CardStackControl));
 
-            if (itemsParent.HasValue && itemsParent.Value is CardStackControl ip && GetIsDragSource(ip))
-            {
-                _dragStarted = true;
-                _start = e.GetCurrentPoint(AssociatedObject!.Parent).Position;
-                AddTransforms();
-                e.Pointer.Capture(AssociatedObject);
-            }
-        }
+        if (!itemsParent.HasValue || itemsParent.Value is not CardStackControl ip || !GetIsDragSource(ip)) return;
+        
+        _dragStarted = true;
+        _start = e.GetCurrentPoint(AssociatedObject!.Parent).Position;
+        AddTransforms();
+        e.Pointer.Capture(AssociatedObject);
     }
 
     private void PointerReleased(object? sender, PointerReleasedEventArgs e)
@@ -156,15 +155,18 @@ public class CardDragBehavior : Behavior<Control>
     {
         _dragStarted = false;
 
-        var gi = AssociatedDataContext.CardGameInstance;
-        var fromList = gi.GetCardCollection(AssociatedDataContext);
-
-        foreach (var visual in AssociatedObject?.GetVisualRoot()?.GetVisualsAt(position)!)
+        if (position != new Point())
         {
-            if (visual is not Control targetControl) continue;
-            if (GetDragTargetObject(targetControl) is not IList<PlayingCardViewModel> toList) continue;
-            gi.CheckAndMoveCard(fromList, toList, AssociatedDataContext);
-            break;
+            var gi = AssociatedDataContext.CardGameInstance;
+            var fromList = gi.GetCardCollection(AssociatedDataContext);
+
+            foreach (var visual in AssociatedObject?.GetVisualRoot()?.GetVisualsAt(position)!)
+            {
+                if (visual is not Control targetControl) continue;
+                if (GetDragTargetObject(targetControl) is not IList<PlayingCardViewModel> toList) continue;
+                gi.CheckAndMoveCard(fromList, toList, AssociatedDataContext);
+                break;
+            }
         }
 
         RemoveTransforms();
@@ -174,14 +176,14 @@ public class CardDragBehavior : Behavior<Control>
     {
         if (AssociatedObject is null) return;
         SetTranslateTransform(AssociatedObject, Vector.Zero);
-        ((IPseudoClasses) AssociatedObject.Classes).Add(":dragging");
+        ((IPseudoClasses)AssociatedObject.Classes).Add(":dragging");
     }
 
     private void RemoveTransforms()
     {
         if (AssociatedObject is null) return;
 
-        ((IPseudoClasses) AssociatedObject.Classes).Remove(":dragging");
+        ((IPseudoClasses)AssociatedObject.Classes).Remove(":dragging");
         SetTranslateTransform(AssociatedObject, Vector.Zero);
     }
 
@@ -202,6 +204,18 @@ public class CardDragBehavior : Behavior<Control>
         }
 
         SetTranslateTransform(AssociatedObject, delta);
+        
+        
+        var gi = AssociatedDataContext.CardGameInstance;
+        var fromList = gi.GetCardCollection(AssociatedDataContext);
+
+        if (AssociatedObject?.Parent is CardStackControl cardStackControl)
+        {
+        }
+         
+        
+        
+        
     }
 
     private static void SetTranslateTransform(IControl? control, Vector newVector)

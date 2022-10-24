@@ -23,6 +23,6 @@ class Program
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
-            .With(new X11PlatformOptions() {UseGpu = false})
+            .With(new X11PlatformOptions() { UseGpu = false })
             .LogToTrace();
 }

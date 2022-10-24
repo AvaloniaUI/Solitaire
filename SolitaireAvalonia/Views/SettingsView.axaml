@@ -6,6 +6,7 @@
              mc:Ignorable="d"
              x:Class="SolitaireAvalonia.Views.SettingsView"
              x:DataType="viewModels:SettingsViewModel"
+             x:CompileBindings="True"
              d:DesignHeight="300" d:DesignWidth="300">
 
     <!-- The main container for the settings. -->
@@ -39,9 +40,9 @@
             <TextBlock
                 Grid.Row="4" Grid.Column="0" Text="Draw Mode"
                 HorizontalAlignment="Right" Classes="CasinoTextStyle" />
-            <!-- <ComboBox -->
-            <!--     Grid.Row="4" Grid.Column="1" SelectedItem="{Binding KlondikeSolitaireViewModel.DrawMode}" -->
-            <!--     Items="{Binding Source={StaticResource DrawModeValues}}" /> -->
+            <ComboBox
+                Grid.Row="4" Grid.Column="1" SelectedItem="{Binding KlondikeSolitaireViewModel.DrawMode}"
+                Items="{Binding Source={StaticResource DrawModeValues}}" />
             <TextBlock
                 Grid.Row="5" Grid.Column="0" Text="Statistics"
                 HorizontalAlignment="Right" Classes="CasinoTextStyle" />

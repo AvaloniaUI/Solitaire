@@ -12,21 +12,16 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
     <!-- The main grid - the game is at the top and the commands are at the bottom. -->
-    <Grid RowDefinitions="*,Auto">
+    <Grid RowDefinitions="*,Auto"  ClipToBounds="False">
 
         <!-- The cards etc are all in a Viewbox so that they resize in a sensible -->
         <!-- way when we resize the window.  -->
-        <Viewbox Grid.Row="0" Margin="10">
+        <Viewbox Grid.Row="0" Margin="10" ClipToBounds="False">
  
 
                 <!-- This is the layout grid for the tableaus, foundations etc. -->
-                <Grid Width="1600" Height="840" ColumnDefinitions="*,*,*,*,*,*,*,*,*,*" RowDefinitions="640,200">
-
-                    <!--  The drag stack, cards are stored here temporarily while they -->
-                    <!-- are being dragged.  -->
-                    <controls:CardStackControl
-                        x:Name="dragStack" Grid.Row="0" Grid.Column="0" Margin="0,-2000,0,0"
-                        Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
+                <Grid Width="1600" Height="840" ColumnDefinitions="*,*,*,*,*,*,*,*,*,*" RowDefinitions="640,200" ClipToBounds="False">
+ 
 
                     <!-- The tableaus. -->
                     <Border
@@ -87,18 +82,23 @@
                         Orientation="Horizontal" FaceDownOffset="30" FaceUpOffset="30"
                         OffsetMode="EveryNthCard" NValue="13" />
 
-                    <!-- The stock. -->
-                    <controls:CardStackControl
-                        Grid.Row="1" Grid.Column="8" Items="{Binding Stock}"
-                        Grid.ColumnSpan="2" HorizontalAlignment="Right"
-                        Orientation="Horizontal" FaceDownOffset="30" FaceUpOffset="0"
-                        OffsetMode="EveryNthCard" NValue="10">
-                            <Interaction.Behaviors>
-                                    <BehaviorCollection>
-                                            <behaviors:ExecuteOnPointerPressedBehavior Command="{Binding DealCardsCommand}"/>
-                                    </BehaviorCollection>
-                            </Interaction.Behaviors>
-                    </controls:CardStackControl>
+                    
+                    <Panel  Grid.Row="1" Grid.Column="8" Grid.ColumnSpan="2" Background="Yellow">
+                            
+                            <!-- The stock. -->
+                            <controls:CardStackControl
+                                    Items="{Binding Stock}"
+                                    HorizontalAlignment="Right"
+                                    Orientation="Horizontal" FaceDownOffset="30" FaceUpOffset="0"  Background="Yellow"
+                                    OffsetMode="EveryNthCard" NValue="10">
+                                    <Interaction.Behaviors>
+                                            <BehaviorCollection>
+                                                    <behaviors:ExecuteOnPointerPressedBehavior Command="{Binding DealCardsCommand}"/>
+                                            </BehaviorCollection>
+                                    </Interaction.Behaviors>
+                            </controls:CardStackControl>
+                            
+                    </Panel>
  
                 </Grid>
          </Viewbox>

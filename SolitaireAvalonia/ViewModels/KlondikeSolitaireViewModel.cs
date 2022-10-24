@@ -20,7 +20,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     public override string GameName => "Klondike Solitaire";
     
     private readonly CasinoViewModel _casinoViewModel;
-    [ObservableProperty] private DrawMode _drawMode = DrawMode.DrawThree;
+    [ObservableProperty] private DrawMode _drawMode = DrawMode.DrawOne;
 
     public KlondikeSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel)
     {
