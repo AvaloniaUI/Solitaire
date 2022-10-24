@@ -41,7 +41,7 @@ public partial class CasinoViewModel : ViewModelBase
     /// </summary>
     public async void Save()
     {
-         await PlatformProviders.CasinoStorage.SaveObject(this);
+        await PlatformProviders.CasinoStorage.SaveObject(this);
     }
 
     /// <summary>
@@ -51,14 +51,10 @@ public partial class CasinoViewModel : ViewModelBase
     public static async Task<CasinoViewModel> Load()
     {
         var ret = await PlatformProviders.CasinoStorage.LoadObject();
-        if (ret is { } loadedVm)
-        {
-            // Refresh game logics.
-            loadedVm.KlondikeInstance.ResetGame();
-            loadedVm.SpiderInstance.ResetGame();
-            return loadedVm;
-        }
-        else
-            return new CasinoViewModel();
+        if (ret is null) return new CasinoViewModel();
+        // Refresh game logics.
+        ret.KlondikeInstance.ResetGame();
+        ret.SpiderInstance.ResetGame();
+        return ret;
     }
 }
