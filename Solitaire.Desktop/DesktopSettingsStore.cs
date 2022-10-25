@@ -38,8 +38,6 @@ internal class DesktopSettingsStore<T> : IRuntimeStorageProvider<T>
         try
         {
             var _ident = typeof(T).FullName?.ToLowerInvariant().Replace(".", string.Empty) ?? "default";
-            Console.WriteLine(_ident);
-
 
             // Get a new isolated store for this user, domain, and assembly.
             var isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User |
@@ -56,8 +54,6 @@ internal class DesktopSettingsStore<T> : IRuntimeStorageProvider<T>
             if (string.IsNullOrEmpty(t)) return default;
 
             var x = JsonConvert.DeserializeObject<T>(t);
-
-            Console.WriteLine(t);
 
             return x ?? default;
         }

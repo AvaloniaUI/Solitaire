@@ -9,10 +9,6 @@ namespace Solitaire.Browser;
 
 public partial class BrowserSettingsStore<T> : IRuntimeStorageProvider<T>
 {
-    public BrowserSettingsStore()
-    {
-    }
-    
     [JSImport("globalThis.localStorage.setItem")]
     private static partial void SetItem(string key, string value);
     
@@ -24,16 +20,12 @@ public partial class BrowserSettingsStore<T> : IRuntimeStorageProvider<T>
     {
         var _ident = typeof(T).FullName?.ToLowerInvariant().Replace(".", string.Empty) ?? "default";
 
-        Console.WriteLine(_ident);
-
         var serializedObjJson = JsonConvert.SerializeObject(obj, new JsonSerializerSettings
         {
             PreserveReferencesHandling = PreserveReferencesHandling.None,
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
         });
 
-        Console.WriteLine(serializedObjJson);
-        
         SetItem(_ident, serializedObjJson);
         
         return Task.CompletedTask;
@@ -45,7 +37,6 @@ public partial class BrowserSettingsStore<T> : IRuntimeStorageProvider<T>
         try
         {
             var _ident = typeof(T).FullName?.ToLowerInvariant().Replace(".", string.Empty) ?? "default";
-            Console.WriteLine(_ident);
 
             var t = GetItem(_ident);
             if (string.IsNullOrEmpty(t)) return default;
