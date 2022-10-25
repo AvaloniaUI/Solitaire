@@ -18,7 +18,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:CardStackControl}">
                     <!-- Transparent Background is important so that it catches the visual point selection -->
-                    <Border 
+                    <Border Background="Transparent"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             ClipToBounds="False"
                             behaviors:CardDragBehavior.DragTargetObject="{TemplateBinding Items}"
@@ -42,7 +42,6 @@
                                                 </MultiBinding>
                                             </Image.Source>
                                         </Image>
-
                                         <Interaction.Behaviors>
                                             <BehaviorCollection>
                                                 <behaviors:CardDragBehavior HorizontalDragThreshold="3"
