@@ -35,7 +35,7 @@
                 <!-- are being dragged.  -->
                 <controls:CardStackControl behaviors:CardDragBehavior.IsDragSource="False"
                     x:Name="dragStack" Grid.Row="0" Grid.Column="0" Margin="0,-2000,0,0"
-                    Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" /> 
+                    Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" /> 
                 
                 <!-- The stock. -->
                 <Border
@@ -85,37 +85,37 @@
                     Grid.Row="1" Grid.Column="0" Classes="RunMarker" />
                 <controls:CardStackControl
                     Grid.Row="1" Grid.Column="0" Items="{Binding Tableau1}"
-                    Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
+                    Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
                 <Border
                     Grid.Row="1" Grid.Column="1" Classes="RunMarker" />
                 <controls:CardStackControl
                     Grid.Row="1" Grid.Column="1" Items="{Binding Tableau2}"
-                    Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
+                    Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
                 <Border
                     Grid.Row="1" Grid.Column="2" Classes="RunMarker" />
                 <controls:CardStackControl
                     Grid.Row="1" Grid.Column="2" Items="{Binding Tableau3}"
-                    Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
+                    Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
                 <Border
                     Grid.Row="1" Grid.Column="3" Classes="RunMarker" />
                 <controls:CardStackControl
                     Grid.Row="1" Grid.Column="3" Items="{Binding Tableau4}"
-                    Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
+                    Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
                 <Border
                     Grid.Row="1" Grid.Column="4" Classes="RunMarker" />
                 <controls:CardStackControl
                     Grid.Row="1" Grid.Column="4" Items="{Binding Tableau5}"
-                    Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
+                    Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
                 <Border
                     Grid.Row="1" Grid.Column="5" Classes="RunMarker" />
                 <controls:CardStackControl
                     Grid.Row="1" Grid.Column="5" Items="{Binding Tableau6}"
-                    Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
+                    Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
                 <Border
                     Grid.Row="1" Grid.Column="6" Classes="RunMarker" />
                 <controls:CardStackControl
                     Grid.Row="1" Grid.Column="6" Items="{Binding Tableau7}"
-                    Orientation="Vertical" FaceDownOffset="10" FaceUpOffset="30" />
+                    Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
             </Grid>
         </Viewbox>
 
