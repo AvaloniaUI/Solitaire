@@ -1,4 +1,4 @@
-namespace Solitaire.ViewModels;
+namespace Solitaire.Models;
 
 /// <summary>
 /// The different difficulties offered.

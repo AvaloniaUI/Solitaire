@@ -4,13 +4,14 @@ using System.IO;
 using System.IO.IsolatedStorage;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Solitaire.Models;
 using Solitaire.ViewModels;
 
 namespace Solitaire.Utils;
 
 public static class PlatformProviders
 {
-    internal class DefaultSettingsStore<T> : IRuntimeStorageProvider<T>
+    private class DefaultSettingsStore<T> : IRuntimeStorageProvider<T>
     {
         private static string Identifier { get; } = typeof(T).FullName?.Replace(".", string.Empty) ?? "default";
 

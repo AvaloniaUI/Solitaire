@@ -1,14 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Xml.Serialization;
-using System.Text.Json;
 
 namespace Solitaire.Utils;
 
 public static class LinqExtensions
 {
-    /// </summary>
     private static readonly Random Random = new();
 
     /// <summary>

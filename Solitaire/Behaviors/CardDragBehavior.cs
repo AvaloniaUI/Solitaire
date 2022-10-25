@@ -36,10 +36,7 @@ public class CardDragBehavior : Behavior<Control>
     public static void SetDragTargetObject(Control obj, object? value) => obj.SetValue(DragTargetObjectProperty, value);
     public static object? GetDragTargetObject(Control obj) => obj.GetValue(DragTargetObjectProperty);
 
-
-    /// <summary>
-    /// 
-    /// </summary>
+    // ReSharper disable once MemberCanBePrivate.Global
     public static readonly StyledProperty<Orientation> OrientationProperty =
         AvaloniaProperty.Register<CardDragBehavior, Orientation>(nameof(Orientation));
 
@@ -87,14 +84,14 @@ public class CardDragBehavior : Behavior<Control>
     {
         if (AssociatedObject is null) return;
 
-        if (AssociatedObject.DataContext is not PlayingCardViewModel pcvm)
+        if (AssociatedObject.DataContext is not PlayingCardViewModel playingCardViewModel)
         {
             throw new InvalidOperationException(
                 $"This behavior cannot be used if the {nameof(AssociatedObject)} doesn't have" +
                 $"{nameof(PlayingCardViewModel)} as DataContext");
         }
 
-        AssociatedDataContext = pcvm;
+        AssociatedDataContext = playingCardViewModel;
 
         AssociatedObject.AddHandler(InputElement.PointerReleasedEvent, PointerReleased, RoutingStrategies.Tunnel);
         AssociatedObject.AddHandler(InputElement.PointerPressedEvent, PointerPressed, RoutingStrategies.Tunnel);
@@ -159,12 +156,17 @@ public class CardDragBehavior : Behavior<Control>
         {
             var gi = AssociatedDataContext.CardGameInstance;
             var fromList = gi.GetCardCollection(AssociatedDataContext);
-
+            
+            if (fromList is null)
+            {
+                return;
+            }
+            
             foreach (var visual in AssociatedObject?.GetVisualRoot()?.GetVisualsAt(position)!)
             {
                 if (visual is not Control targetControl) continue;
                 if (GetDragTargetObject(targetControl) is not IList<PlayingCardViewModel> toList) continue;
-                gi.CheckAndMoveCard(fromList, toList, AssociatedDataContext);
+               gi.CheckAndMoveCard(fromList, toList, AssociatedDataContext);
                 break;
             }
         }
@@ -218,13 +220,13 @@ public class CardDragBehavior : Behavior<Control>
         SetTranslateTransform(AssociatedObject, delta);
         
         
-        var gi = AssociatedDataContext.CardGameInstance;
-        var fromList = gi.GetCardCollection(AssociatedDataContext);
-
-        if (AssociatedObject?.Parent is CardStackControl cardStackControl)
-        {
-        }
-         
+        // var gi = AssociatedDataContext.CardGameInstance;
+        // var fromList = gi.GetCardCollection(AssociatedDataContext);
+        //
+        // if (AssociatedObject?.Parent is CardStackControl cardStackControl)
+        // {
+        // }
+        //  
         
         
         

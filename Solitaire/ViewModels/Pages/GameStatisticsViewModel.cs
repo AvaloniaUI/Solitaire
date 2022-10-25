@@ -3,13 +3,19 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace Solitaire.ViewModels;
+namespace Solitaire.ViewModels.Pages;
 
 /// <summary>
 /// A set of general statistics for a game.
 /// </summary>
 public partial class GameStatisticsViewModel : ViewModelBase
-{ 
+{
+#if DEBUG
+    public GameStatisticsViewModel()
+    {
+    }
+#endif
+
     public GameStatisticsViewModel(CardGameViewModel cardGameInstance)
     {
         _cardGameInstance = cardGameInstance;
@@ -19,7 +25,7 @@ public partial class GameStatisticsViewModel : ViewModelBase
         ResetCommand = new RelayCommand(DoReset);
     }
 
-    public ICommand ResetCommand { get; }
+    public ICommand? ResetCommand { get; }
 
     /// <summary>
     /// Resets the statistics.
@@ -38,18 +44,18 @@ public partial class GameStatisticsViewModel : ViewModelBase
         CumulativeGameTime = TimeSpan.FromSeconds(0);
         AverageGameTime = TimeSpan.FromSeconds(0);
     }
- 
+
     public void UpdateStatistics()
     {
         //  Update the games won or lost.
         GamesPlayed++;
-        if (_cardGameInstance.IsGameWon)
+        if (_cardGameInstance?.IsGameWon ?? false)
             GamesWon++;
         else
             GamesLost++;
 
         //  Update the current streak.
-        if (_cardGameInstance.IsGameWon)
+        if (_cardGameInstance?.IsGameWon ?? false)
             CurrentStreak = CurrentStreak < 0 ? 1 : CurrentStreak + 1;
         else
             CurrentStreak = CurrentStreak > 0 ? -1 : CurrentStreak - 1;
@@ -61,24 +67,24 @@ public partial class GameStatisticsViewModel : ViewModelBase
             HighestLosingStreak = Math.Abs(CurrentStreak);
 
         //  Update the highest score.
-        if (_cardGameInstance.Score > HighestScore)
+        if (_cardGameInstance?.Score > HighestScore)
             HighestScore = _cardGameInstance.Score;
 
         //  Update the average score. Only won games
         //  contribute to the running average.
-        if (_cardGameInstance.IsGameWon)
+        if (_cardGameInstance?.IsGameWon ?? false)
         {
             CumulativeScore += _cardGameInstance.Score;
-            AverageScore = CumulativeScore / (double)GamesWon;
+            AverageScore = CumulativeScore / (double) GamesWon;
         }
 
         //  Update the average game time.
-        CumulativeGameTime += _cardGameInstance.ElapsedTime;
+        CumulativeGameTime += _cardGameInstance?.ElapsedTime ?? TimeSpan.Zero;
         AverageGameTime = TimeSpan.FromTicks(CumulativeGameTime.Ticks / (GamesWon + GamesLost));
     }
 
-    public string GameName { get; }
-    
+    public string? GameName { get; }
+
     [ObservableProperty] private int _gamesPlayed;
     [ObservableProperty] private int _gamesWon;
     [ObservableProperty] private int _gamesLost;
@@ -90,5 +96,5 @@ public partial class GameStatisticsViewModel : ViewModelBase
     [ObservableProperty] private double _averageScore;
     [ObservableProperty] private TimeSpan _cumulativeGameTime;
     [ObservableProperty] private TimeSpan _averageGameTime;
-    private readonly CardGameViewModel _cardGameInstance;
+    private readonly CardGameViewModel? _cardGameInstance;
 }

@@ -1,14 +1,17 @@
-﻿<UserControl x:Class="Solitaire.Views.GameStatisticsView"
+﻿<UserControl x:Class="Solitaire.Views.Pages.GameStatisticsView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:viewModels="clr-namespace:Solitaire.ViewModels"
+             xmlns:pages="clr-namespace:Solitaire.ViewModels.Pages"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             x:DataType="viewModels:GameStatisticsViewModel"
+             x:DataType="pages:GameStatisticsViewModel"
              x:CompileBindings="True" 
              Cursor="Hand" >
+    <Design.DataContext>
+        <pages:GameStatisticsViewModel />
+    </Design.DataContext>
     
     <!-- Point to the main resource dictionary for the assembly. --> 
     

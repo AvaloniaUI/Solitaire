@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.IsolatedStorage;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
+﻿using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Newtonsoft.Json;
 using Solitaire.Utils;
+using Solitaire.ViewModels.Pages;
 
 namespace Solitaire.ViewModels;
 
@@ -33,8 +26,8 @@ public partial class CasinoViewModel : ViewModelBase
 
     public TitleViewModel TitleInstance { get; }
     public SettingsViewModel SettingsInstance { get; }
-    public SpiderSolitaireViewModel SpiderInstance { get; }
-    public KlondikeSolitaireViewModel KlondikeInstance { get; }
+    public SpiderSolitaireViewModel? SpiderInstance { get; }
+    public KlondikeSolitaireViewModel? KlondikeInstance { get; }
 
     /// <summary>
     /// Saves this instance.

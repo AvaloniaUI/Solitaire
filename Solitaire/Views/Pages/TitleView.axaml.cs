@@ -1,10 +1,7 @@
 ﻿using Avalonia.Controls;
 
-namespace Solitaire.Views;
+namespace Solitaire.Views.Pages;
 
-/// <summary>
-/// Interaction logic for StatisticsView.xaml
-/// </summary>
 public partial class TitleView : UserControl
 {
     public TitleView()

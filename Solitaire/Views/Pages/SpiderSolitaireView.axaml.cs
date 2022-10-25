@@ -1,10 +1,7 @@
 ﻿using Avalonia.Controls;
 
-namespace Solitaire.Views;
+namespace Solitaire.Views.Pages;
 
-/// <summary>
-/// Interaction logic for SpiderSolitaireView.xaml
-/// </summary>
 public partial class SpiderSolitaireView : UserControl
 {
     public SpiderSolitaireView()

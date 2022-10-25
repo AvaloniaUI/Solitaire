@@ -1,5 +1,5 @@
-using Foundation;
 using Avalonia.iOS;
+using Foundation;
 
 namespace Solitaire.iOS;
 
@@ -7,7 +7,7 @@ namespace Solitaire.iOS;
 // User Interface of the application, as well as listening (and optionally responding) to 
 // application events from iOS.
 [Register("AppDelegate")]
-public partial class AppDelegate : AvaloniaAppDelegate<App>
+public class AppDelegate : AvaloniaAppDelegate<App>
 {
         
 }

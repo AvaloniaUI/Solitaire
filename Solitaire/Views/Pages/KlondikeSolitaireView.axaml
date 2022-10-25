@@ -1,17 +1,20 @@
 ﻿<UserControl
-    x:Class="Solitaire.Views.KlondikeSolitaireView"
-
+    x:Class="Solitaire.Views.Pages.KlondikeSolitaireView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:controls="clr-namespace:Solitaire.Controls"
-    xmlns:viewModels="clr-namespace:Solitaire.ViewModels"
     xmlns:behaviors="clr-namespace:Solitaire.Behaviors"
+    xmlns:pages="clr-namespace:Solitaire.ViewModels.Pages"
     mc:Ignorable="d"
-    x:DataType="viewModels:KlondikeSolitaireViewModel"
+    x:DataType="pages:KlondikeSolitaireViewModel"
     x:CompileBindings="True"
-    d:DesignHeight="300" d:DesignWidth="300">
+    d:DesignWidth="700"
+    d:DesignHeight="400">
+    <Design.DataContext>
+        <pages:KlondikeSolitaireViewModel/>
+    </Design.DataContext>
 
     <!-- The main grid - the game is at the top and the commands are at the bottom. -->
     <Grid RowDefinitions="*,Auto">
@@ -124,7 +127,7 @@
             Grid.Row="1" ColumnDefinitions="Auto,*,Auto,Auto,Auto,*,Auto">
             <Button Margin="4"
                     Classes="CasinoButtonStyle" Grid.Column="0" Width="120" Content="Deal New Game"
-                    Command="{Binding DealNewGameCommand}" />
+                    Command="{Binding NewGameCommand}" />
 
             <RichTextBlock Margin="4" Grid.Column="2" Classes="CasinoTextStyle" VerticalAlignment="Center">
                 <Run Text="Score:" />
@@ -164,7 +167,7 @@
                 Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button
                     Classes="CasinoButtonStyle" Width="120"
-                    Margin="4" Content="Play Again" Command="{Binding DealNewGameCommand}" />
+                    Margin="4" Content="Play Again" Command="{Binding NewGameCommand}" />
                 <Button
                     Classes="CasinoButtonStyle" Width="120"
                     Margin="4" Content="Back to Casino" Command="{Binding NavigateToCasinoCommand}" />

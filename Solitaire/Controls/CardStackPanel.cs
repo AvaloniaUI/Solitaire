@@ -14,11 +14,6 @@ namespace Solitaire.Controls;
 public class CardStackPanel : StackPanel
 {
     /// <summary>
-    /// Infinite size, useful later.
-    /// </summary>
-    private readonly Size infiniteSpace = new(Double.MaxValue, Double.MaxValue);
-
-    /// <summary>
     /// Measures the child elements of a <see cref="T:Avalonia.Controls.StackPanel"/> in anticipation of arranging them during the <see cref="M:Avalonia.Controls.StackPanel.ArrangeOverride(Avalonia.Size)"/> pass.
     /// </summary>
     /// <param name="constraint">An upper limit <see cref="T:Avalonia.Size"/> that should not be exceeded.</param>
@@ -27,9 +22,6 @@ public class CardStackPanel : StackPanel
     /// </returns>
     protected override Size MeasureOverride(Size constraint)
     {
-        //  Keep track of the overall size required.
-        var resultSize = new Size(0, 0);
-
         //  Get the offsets that each element will need.
         var offsets = CalculateOffsets();
 
@@ -42,7 +34,7 @@ public class CardStackPanel : StackPanel
         foreach (var child in Children.Cast<Control?>())
         {
             //  Measure the child against infinite space.
-            child?.Measure(infiniteSpace);
+            child?.Measure(Size.Infinity);
         }
 
         //  Add the size of the last element.
@@ -64,7 +56,6 @@ public class CardStackPanel : StackPanel
     {
         double x = 0, y = 0;
         var n = 0;
-        var total = Children.Count;
 
         //  Get the offsets that each element will need.
         var offsets = CalculateOffsets();
@@ -92,10 +83,10 @@ public class CardStackPanel : StackPanel
         }
 
         //  Arrange each child.
-        foreach (Control child in Children)
+        foreach (var child in Children.Cast<Control>())
         {
             //  Get the card. If we don't have one, skip.
-            if (child.DataContext is not PlayingCardViewModel card)
+            if (child.DataContext is not PlayingCardViewModel)
                 continue;
 
             //  Arrange the child at x,y (the first will be at 0,0)
@@ -172,8 +163,6 @@ public class CardStackPanel : StackPanel
                     faceDownOffset = card.FaceDownOffset;
                     faceUpOffset = card.FaceUpOffset;
                     break;
-                default:
-                    break;
             }
 
             n++;
@@ -192,8 +181,6 @@ public class CardStackPanel : StackPanel
                 case Orientation.Vertical:
                     offset = new Size(offset.Width, offsetsX);
                     break;
-                default:
-                    break;
             }
 
             //  Add to the list.
@@ -207,7 +194,7 @@ public class CardStackPanel : StackPanel
     /// Gets the last child.
     /// </summary>
     /// <value>The last child.</value>
-    private IControl? LastChild => Children.Count > 0 ? Children[Children.Count - 1] : null;
+    private IControl? LastChild => Children.Count > 0 ? Children[^1] : null;
 
     static CardStackPanel()
     {

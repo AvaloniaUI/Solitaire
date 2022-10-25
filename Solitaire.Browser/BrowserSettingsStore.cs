@@ -3,18 +3,24 @@ using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Solitaire.ViewModels;
+using Solitaire.Models;
 
 namespace Solitaire.Browser;
 
-public partial class BrowserSettingsStore<T> : IRuntimeStorageProvider<T>
+public class BrowserSettingsStore<T> : IRuntimeStorageProvider<T>
 {
     [JSImport("globalThis.localStorage.setItem")]
-    private static partial void SetItem(string key, string value);
+    private static void SetItem(string key, string value)
+    {
+        throw new NotImplementedException();
+    }
 
     [JSImport("globalThis.localStorage.getItem")]
-    private static partial string GetItem(string key);
-    
+    private static string GetItem(string key)
+    {
+        throw new NotImplementedException();
+    }
+
     private static string Identifier { get; } = typeof(T).FullName?.Replace(".", string.Empty) ?? "default";
 
     /// <inheritdoc />

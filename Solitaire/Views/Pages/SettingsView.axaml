@@ -2,11 +2,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:viewModels="clr-namespace:Solitaire.ViewModels"
-             xmlns:converters="clr-namespace:Solitaire.Converters"
+             xmlns:pages="clr-namespace:Solitaire.ViewModels.Pages"
+             xmlns:models="clr-namespace:Solitaire.Models"
              mc:Ignorable="d"
-             x:Class="Solitaire.Views.SettingsView"
-             x:DataType="viewModels:SettingsViewModel"
+             x:Class="Solitaire.Views.Pages.SettingsView"
+             x:DataType="pages:SettingsViewModel"
              x:CompileBindings="True"
              d:DesignHeight="300" d:DesignWidth="300">
 
@@ -37,7 +37,7 @@
                       Grid.Row="4" Grid.Column="1" SelectedItem="{Binding DrawMode}"
                       Items="{Binding ., 
                 Converter={StaticResource EnumToListConverter}, 
-                ConverterParameter={x:Type viewModels:DrawMode}}" />
+                ConverterParameter={x:Type models:DrawMode}}" />
             <TextBlock Margin="4"
                        Grid.Row="5" Grid.Column="0" Text="Statistics"
                        HorizontalAlignment="Right" Classes="CasinoTextStyle" />
@@ -55,7 +55,7 @@
                       Grid.Row="7" Grid.Column="1" SelectedItem="{Binding Difficulty}"
                       Items="{Binding ., 
                 Converter={StaticResource EnumToListConverter}, 
-                ConverterParameter={x:Type viewModels:Difficulty}}" />
+                ConverterParameter={x:Type models:Difficulty}}" />
             <TextBlock Margin="4"
                        Grid.Row="8" Grid.Column="0" Text="Statistics"
                        HorizontalAlignment="Right" Classes="CasinoTextStyle" />

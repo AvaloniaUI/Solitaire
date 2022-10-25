@@ -4,62 +4,66 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Input;
-using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ReactiveUI;
 using Solitaire.Models;
 using Solitaire.Utils;
 
-namespace Solitaire.ViewModels;
+namespace Solitaire.ViewModels.Pages;
 
 public partial class SpiderSolitaireViewModel : CardGameViewModel
 {
+#if DEBUG
+    public SpiderSolitaireViewModel()
+    {
+        InitializeTableauSet();
+        NewGameCommand?.Execute(null);
+    }
+#endif
+
     public SpiderSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel)
     {
-        //  Create the quick access arrays.
-        tableaus.Add(Tableau1);
-        tableaus.Add(Tableau2);
-        tableaus.Add(Tableau3);
-        tableaus.Add(Tableau4);
-        tableaus.Add(Tableau5);
-        tableaus.Add(Tableau6);
-        tableaus.Add(Tableau7);
-        tableaus.Add(Tableau8);
-        tableaus.Add(Tableau9);
-        tableaus.Add(Tableau10);
-
-        //  If we're in the designer deal a game.
-        if (Design.IsDesignMode)
-            DealNewGameCommand?.Execute(null);
+        InitializeTableauSet();
 
         DealCardsCommand = new RelayCommand(DoDealCards, () => Stock.Count > 0);
+        NewGameCommand = new RelayCommand(DoDealNewGame);
 
         casinoViewModel.SettingsInstance.WhenAnyValue(x => x.Difficulty)
             .Do(x => Difficulty = x)
             .Subscribe();
     }
 
+    private void InitializeTableauSet()
+    {
+        //  Create the quick access arrays.
+        _tableauSet.Add(Tableau1);
+        _tableauSet.Add(Tableau2);
+        _tableauSet.Add(Tableau3);
+        _tableauSet.Add(Tableau4);
+        _tableauSet.Add(Tableau5);
+        _tableauSet.Add(Tableau6);
+        _tableauSet.Add(Tableau7);
+        _tableauSet.Add(Tableau8);
+        _tableauSet.Add(Tableau9);
+        _tableauSet.Add(Tableau10);
+    }
+
     /// <inheritdoc />
     public override string GameName => "Spider Solitaire";
 
-    public override IList<PlayingCardViewModel> GetCardCollection(PlayingCardViewModel card)
+    public override IList<PlayingCardViewModel>? GetCardCollection(PlayingCardViewModel card)
     {
-        if (Stock.Contains(card)) return Stock;
-        foreach (var tableau in tableaus)
-            if (tableau.Contains(card))
-                return tableau;
-
-        return null;
+        return Stock.Contains(card) ? Stock : _tableauSet.FirstOrDefault(tableau => tableau.Contains(card));
     }
 
-    protected override void DoDealNewGame()
+    private void DoDealNewGame()
     {
         ResetGame();
 
         //  Create a list of card types.
-        List<CardType> eachCardType = new List<CardType>();
-        for (int i = 0; i < 8; i++)
+        var eachCardType = new List<CardType>();
+        for (var i = 0; i < 8; i++)
         {
             foreach (CardType cardType in Enum.GetValues(typeof(CardType)))
             {
@@ -70,10 +74,10 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         //  Create a playing card from each card type.
         //  We just keep on adding cards of suits that depend on the
         //  difficulty setting until we have the required 104.
-        List<PlayingCardViewModel> playingCards = new List<PlayingCardViewModel>();
+        var playingCards = new List<PlayingCardViewModel>();
         foreach (var cardType in eachCardType)
         {
-            PlayingCardViewModel card = new PlayingCardViewModel(this) { CardType = cardType, IsFaceDown = true };
+            var card = new PlayingCardViewModel(this) {CardType = cardType, IsFaceDown = true};
 
             switch (Difficulty)
             {
@@ -103,19 +107,19 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         //  Shuffle the playing cards.
         playingCards.Shuffle();
 
-        //  Now distribute them - do the tableaus first.
-        for (int i = 0; i < 54; i++)
+        //  Now distribute them - do the tableau set first.
+        for (var i = 0; i < 54; i++)
         {
-            PlayingCardViewModel card = playingCards.First();
+            var card = playingCards.First();
             playingCards.Remove(card);
             card.IsFaceDown = true;
-            tableaus[i % 10].Add(card);
+            _tableauSet[i % 10].Add(card);
         }
 
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
         {
-            tableaus[i].Last().IsFaceDown = false;
-            tableaus[i].Last().IsPlayable = true;
+            _tableauSet[i].Last().IsFaceDown = false;
+            _tableauSet[i].Last().IsPlayable = true;
         }
 
         //  Finally we add every card that's left over to the stock.
@@ -134,7 +138,7 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
     {
         //  Call the base, which stops the timer, clears
         //  the score etc.
-        base.DoDealNewGame();
+        ResetInternalState();
 
         //  Spider solitaire starts with a score of 500.
         Score = 500;
@@ -142,12 +146,11 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         //  Clear everything.
         Stock.Clear();
         Foundation.Clear();
-        foreach (var tableau in tableaus)
+        foreach (var tableau in _tableauSet)
             tableau.Clear();
     }
 
-    public ICommand DealCardsCommand { get; }
-
+    public ICommand? DealCardsCommand { get; }
 
     private void DoDealCards()
     {
@@ -156,17 +159,17 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
             return;
 
         //  If any tableau is empty we cannot deal cards.
-        foreach (var tableau in tableaus)
+        foreach (var tableau in _tableauSet)
             if (tableau.Count == 0)
                 return;
 
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
         {
-            PlayingCardViewModel card = Stock.Last();
+            var card = Stock.Last();
             Stock.Remove(card);
             card.IsFaceDown = false;
             card.IsPlayable = true;
-            tableaus[i].Add(card);
+            _tableauSet[i].Add(card);
         }
 
         //  Check each tableau for sequences - then check for victory.
@@ -178,11 +181,11 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         PlayingCardViewModel card, bool checkOnly = false)
     {
         //  The trivial case is where from and to are the same.
-        if (from == to)
+        if (from.SequenceEqual(to))
             return false;
 
         //  This is the complicated operation.
-        int scoreModifier = 0;
+        int scoreModifier;
 
         //  We can move to a tableau only if:
         //  1. It is empty 
@@ -218,9 +221,9 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         IList<PlayingCardViewModel> to,
         PlayingCardViewModel card)
     {
-        //  Indentify the run of cards we're moving.
-        List<PlayingCardViewModel> run = new List<PlayingCardViewModel>();
-        for (int i = from.IndexOf(card); i < from.Count; i++)
+        //  Identify the run of cards we're moving.
+        var run = new List<PlayingCardViewModel>();
+        for (var i = from.IndexOf(card); i < from.Count; i++)
             run.Add(from[i]);
 
         //  This function will move the card, as well as setting the 
@@ -231,14 +234,12 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
             to.Add(runCard);
 
         //  Are there any cards left in the from pile?
-        if (from.Count > 0)
-        {
-            //  Reveal the top card and make it playable.
-            PlayingCardViewModel topCard = from.Last();
+        if (from.Count <= 0) return;
+        //  Reveal the top card and make it playable.
+        var topCard = from.Last();
 
-            topCard.IsFaceDown = false;
-            topCard.IsPlayable = true;
-        }
+        topCard.IsFaceDown = false;
+        topCard.IsPlayable = true;
     }
 
     /// <summary>
@@ -249,10 +250,10 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
     private void CheckEachTableau()
     {
         //  Go through each tableau.
-        foreach (var tableau in tableaus)
+        foreach (var tableau in _tableauSet)
         {
             //  Go through each card in the tableau from top to bottom.   
-            bool sequence = true;
+            var sequence = true;
             for (int i = tableau.Count - 1, count = 0; i >= 0; i--, count++)
             {
                 //  The first card is always face up and playable.
@@ -279,9 +280,9 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
                         {
                             //  Clearing a set gives us an extra 100 points.
                             Score += 100;
-                            for (int j = 0; j < 13; j++)
+                            for (var j = 0; j < 13; j++)
                             {
-                                PlayingCardViewModel card = tableau[i];
+                                var card = tableau[i];
                                 tableau.Remove(card);
                                 Foundation.Add(card);
                             }
@@ -305,7 +306,7 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         }
     }
 
-    public void CheckForVictory()
+    private void CheckForVictory()
     {
         //  Every card must be in the foundation for the game to be won.
         if (Foundation.Count < 104)
@@ -321,8 +322,8 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         FireGameWonEvent();
     }
 
-    //  For ease of access we have an array of tableaus.
-    List<ObservableCollection<PlayingCardViewModel>> tableaus = new();
+    //  For ease of access we have an array of tableau set.
+   private readonly List<ObservableCollection<PlayingCardViewModel>> _tableauSet = new();
 
     //  Accessors for the various card stacks.
     public ObservableCollection<PlayingCardViewModel> Tableau1 { get; } = new();

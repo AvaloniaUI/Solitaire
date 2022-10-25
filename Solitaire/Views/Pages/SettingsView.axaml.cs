@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
 
-namespace Solitaire.Views;
+namespace Solitaire.Views.Pages;
 
 public partial class SettingsView : UserControl
 {

@@ -1,14 +1,15 @@
-using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Solitaire.ViewModels;
 using Solitaire.Views;
+using Solitaire.Views.Pages;
+using MainWindow = Solitaire.Views.MainWindow;
 
 namespace Solitaire;
 
-public partial class App : Application
+public class App : Application
 {
     public override void Initialize()
     {

@@ -53,8 +53,8 @@ public partial class PlayingCardViewModel : ViewModelBase
         (int)CardType < 26 ? CardColour.Red : CardColour.Black;
 
     [ObservableProperty] private CardType _cardType  = CardType.SA;
-    [ObservableProperty] private bool _isFaceDown = false;
-    [ObservableProperty] private bool _isPlayable = false;
-    [ObservableProperty] private double _faceDownOffset = default;
-    [ObservableProperty] private double _faceUpOffset = default;
+    [ObservableProperty] private bool _isFaceDown;
+    [ObservableProperty] private bool _isPlayable;
+    [ObservableProperty] private double _faceDownOffset;
+    [ObservableProperty] private double _faceUpOffset;
 }

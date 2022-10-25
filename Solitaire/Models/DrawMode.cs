@@ -1,4 +1,4 @@
-namespace Solitaire.ViewModels;
+namespace Solitaire.Models;
 
 /// <summary>
 /// The DrawMode, i.e. how many cards to draw.

@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Solitaire.ViewModels;
 

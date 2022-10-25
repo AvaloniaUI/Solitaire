@@ -8,7 +8,7 @@ namespace Solitaire.Converters;
 
 public class EnumToListConverter : IValueConverter
 {
-    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         var retList = new List<object>();
         if (parameter is not Type { IsEnum: true } typeObj) return retList;

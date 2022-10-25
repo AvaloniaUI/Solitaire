@@ -1,6 +1,5 @@
 ﻿using Android.App;
 using Android.Content.PM;
-using Avalonia.Android;
 using Avalonia;
 
 namespace Solitaire.Android;

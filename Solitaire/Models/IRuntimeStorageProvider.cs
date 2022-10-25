@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Solitaire.ViewModels;
+namespace Solitaire.Models;
 
 public interface IRuntimeStorageProvider<T>
 {

@@ -24,4 +24,30 @@
     <ItemGroup>
       <Folder Include="Assets\Fonts" />
     </ItemGroup>
+    <ItemGroup>
+      <Compile Update="Views\Pages\GameStatisticsView.axaml.cs">
+        <DependentUpon>GameStatisticsView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Pages\KlondikeSolitaireView.axaml.cs">
+        <DependentUpon>KlondikeSolitaireView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Pages\SettingsView.axaml.cs">
+        <DependentUpon>SettingsView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Pages\SpiderSolitaireView.axaml.cs">
+        <DependentUpon>SpiderSolitaireView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Pages\TitleView.axaml.cs">
+        <DependentUpon>TitleView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\MainWindow.axaml.cs">
+        <DependentUpon>MainWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
 </Project>

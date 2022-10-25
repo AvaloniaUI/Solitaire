@@ -1,8 +1,4 @@
 using System;
-using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -14,9 +10,9 @@ public class RandomNoiseTextureControl : Control
 {
     private const int DesiredWidth = 300;
     private const int DesiredHeight = 300;
-    private RenderTargetBitmap? _texture = default;
+    private RenderTargetBitmap? _texture;
 
-    private static Random rng = new();
+    private static readonly Random Rng = new();
 
     public RandomNoiseTextureControl()
     {
@@ -33,9 +29,8 @@ public class RandomNoiseTextureControl : Control
 
     public override void Render(DrawingContext context)
     {
+        if (_texture is not { }) return;
         context.DrawImage(_texture, new Rect(0, 0, DesiredWidth, DesiredHeight));
-
-
         base.Render(context);
     }
 
@@ -49,7 +44,7 @@ public class RandomNoiseTextureControl : Control
         for (var j = 0; j < DesiredWidth; j++)
         {
             var k = new RoundedRect(new Rect(i, j, 1, 1));
-            var c = rng.NextDouble() > 0.5 ? Brushes.White : Brushes.Black;
+            var c = Rng.NextDouble() > 0.5 ? Brushes.White : Brushes.Black;
             dc.DrawRectangle(c, null, k);
         }
     }

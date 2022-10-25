@@ -67,7 +67,7 @@
                                             </Style>
 
                                             <Style Selector="Border.playingCard:dragging">
-                                                <Setter Property="Opacity" Value="0.5"></Setter>
+                                                <Setter Property="Opacity" Value="0.5" />
                                             </Style>
                                         </Border.Styles>
                                     </Border>

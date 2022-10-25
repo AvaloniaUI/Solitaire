@@ -1,13 +1,3 @@
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.IO.IsolatedStorage;
-using System.Threading.Tasks;
-using Foundation;
-using Microsoft.VisualBasic;
-using Newtonsoft.Json;
-using Solitaire.Utils;
-using Solitaire.ViewModels;
 using UIKit;
 
 namespace Solitaire.iOS;

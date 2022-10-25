@@ -1,17 +1,13 @@
-using System.ComponentModel;
-using System.Reactive.Linq;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ReactiveUI;
+using Solitaire.Models;
 using Solitaire.Utils;
 
-namespace Solitaire.ViewModels;
+namespace Solitaire.ViewModels.Pages;
 
 public partial class SettingsViewModel : ViewModelBase
 {
-    private readonly CasinoViewModel _casinoViewModel;
-    
     [ObservableProperty] private Difficulty _difficulty = Difficulty.Easy;
     [ObservableProperty] private DrawMode _drawMode = DrawMode.DrawOne;
     
@@ -20,20 +16,20 @@ public partial class SettingsViewModel : ViewModelBase
     public ICommand ResetSpiderStatsCommand { get; }
     public SettingsViewModel(CasinoViewModel casinoViewModel)
     {
-        _casinoViewModel = casinoViewModel;
+        var casinoViewModel1 = casinoViewModel;
 
         NavigateToTitleCommand = new RelayCommand(() =>
         {
-            _casinoViewModel.CurrentView = _casinoViewModel.TitleInstance;
-            PlatformProviders.CasinoStorage.SaveObject(_casinoViewModel, "mainSettings");
+            casinoViewModel1.CurrentView = casinoViewModel1.TitleInstance;
+            PlatformProviders.CasinoStorage.SaveObject(casinoViewModel1, "mainSettings");
         });
         ResetKlondikeStatsCommand = new RelayCommand(() =>
         {
-            _casinoViewModel.TitleInstance.KlondikeStatsInstance.ResetCommand.Execute(null);
+            casinoViewModel1.TitleInstance.KlondikeStatsInstance?.ResetCommand?.Execute(null);
         });
         ResetSpiderStatsCommand = new RelayCommand(() =>
         {
-            _casinoViewModel.TitleInstance.SpiderStatsInstance.ResetCommand.Execute(null);
+            casinoViewModel1.TitleInstance.SpiderStatsInstance?.ResetCommand?.Execute(null);
         });
 
  

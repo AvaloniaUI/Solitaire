@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Input;
-using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ReactiveUI;
 using Solitaire.Models;
 using Solitaire.Utils;
 
-namespace Solitaire.ViewModels;
+namespace Solitaire.ViewModels.Pages;
 
 /// <summary>
 /// The Klondike Solitaire View Model.
@@ -21,80 +20,80 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// <inheritdoc />
     public override string GameName => "Klondike Solitaire";
 
-    private readonly CasinoViewModel _casinoViewModel;
     [ObservableProperty] private DrawMode _drawMode;
+
+#if DEBUG
+    public KlondikeSolitaireViewModel()
+    {
+        InitializeFoundationsAndTableauSet();
+        DoDealNewGame();
+    }
+#endif
 
     public KlondikeSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel)
     {
-        //  Create the quick access arrays.
-        foundations.Add(Foundation1);
-        foundations.Add(Foundation2);
-        foundations.Add(Foundation3);
-        foundations.Add(Foundation4);
-        tableaus.Add(Tableau1);
-        tableaus.Add(Tableau2);
-        tableaus.Add(Tableau3);
-        tableaus.Add(Tableau4);
-        tableaus.Add(Tableau5);
-        tableaus.Add(Tableau6);
-        tableaus.Add(Tableau7);
+        InitializeFoundationsAndTableauSet();
 
         //  Create the turn stock command.
         TurnStockCommand = new RelayCommand(DoTurnStock);
         AppropriateFoundationsCommand = new RelayCommand(TryMoveAllCardsToAppropriateFoundations);
-
-        //  If we're in the designer deal a game.
-        if (Design.IsDesignMode)
-            DoDealNewGame();
+        NewGameCommand = new RelayCommand(DoDealNewGame);
 
         casinoViewModel.SettingsInstance.WhenAnyValue(x => x.DrawMode)
             .Do(x => DrawMode = x)
             .Subscribe();
     }
 
+    private void InitializeFoundationsAndTableauSet()
+    {
+        //  Create the quick access arrays.
+        _foundations.Add(Foundation1);
+        _foundations.Add(Foundation2);
+        _foundations.Add(Foundation3);
+        _foundations.Add(Foundation4);
+        _tableauSet.Add(Tableau1);
+        _tableauSet.Add(Tableau2);
+        _tableauSet.Add(Tableau3);
+        _tableauSet.Add(Tableau4);
+        _tableauSet.Add(Tableau5);
+        _tableauSet.Add(Tableau6);
+        _tableauSet.Add(Tableau7);
+    }
 
     /// <summary>
     /// Gets the card collection for the specified card.
     /// </summary>
     /// <param name="card">The card.</param>
     /// <returns></returns>
-    public override IList<PlayingCardViewModel> GetCardCollection(PlayingCardViewModel card)
+    public override IList<PlayingCardViewModel>? GetCardCollection(PlayingCardViewModel card)
     {
         if (Stock.Contains(card)) return Stock;
         if (Waste.Contains(card)) return Waste;
-        foreach (var foundation in foundations)
-            if (foundation.Contains(card))
-                return foundation;
-        foreach (var tableau in tableaus)
-            if (tableau.Contains(card))
-                return tableau;
 
-        return null;
+        foreach (var foundation in _foundations.Where(foundation => foundation.Contains(card)))
+            return foundation;
+
+        return _tableauSet.FirstOrDefault(tableau => tableau.Contains(card));
     }
 
     /// <summary>
     /// Deals a new game.
     /// </summary>
-    /// <param name="parameter">The parameter.</param>
-    protected override void DoDealNewGame()
+    private void DoDealNewGame()
     {
         ResetGame();
 
-
         //  Create a list of card types.
-        var eachCardType = new List<CardType>();
-        foreach (CardType cardType in Enum.GetValues(typeof(CardType)))
-            eachCardType.Add(cardType);
+        var eachCardType = Enum.GetValues(typeof(CardType)).Cast<CardType>().ToList();
 
         //  Create a playing card from each card type.
-        var playingCards = new List<PlayingCardViewModel>();
-        foreach (var cardType in eachCardType)
-            playingCards.Add(new PlayingCardViewModel(this) { CardType = cardType, IsFaceDown = true });
+        var playingCards = eachCardType
+            .Select(cardType => new PlayingCardViewModel(this) {CardType = cardType, IsFaceDown = true}).ToList();
 
         //  Shuffle the playing cards.
         playingCards.Shuffle();
 
-        //  Now distribute them - do the tableaus first.
+        //  Now distribute them - do the tableau sets first.
         for (var i = 0; i < 7; i++)
         {
             //  We have i face down cards and 1 face up card.
@@ -103,7 +102,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
                 var faceDownCardViewModel = playingCards.First();
                 playingCards.Remove(faceDownCardViewModel);
                 faceDownCardViewModel.IsFaceDown = true;
-                tableaus[i].Add(faceDownCardViewModel);
+                _tableauSet[i].Add(faceDownCardViewModel);
             }
 
             //  Add the face up card.
@@ -111,7 +110,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
             playingCards.Remove(faceUpCardViewModel);
             faceUpCardViewModel.IsFaceDown = false;
             faceUpCardViewModel.IsPlayable = true;
-            tableaus[i].Add(faceUpCardViewModel);
+            _tableauSet[i].Add(faceUpCardViewModel);
         }
 
         //  Finally we add every card that's left over to the stock.
@@ -132,14 +131,14 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     {
         //  Call the base, which stops the timer, clears
         //  the score etc.
-        base.DoDealNewGame();
+        ResetInternalState();
 
         //  Clear everything.
         Stock.Clear();
         Waste.Clear();
-        foreach (var tableau in tableaus)
+        foreach (var tableau in _tableauSet)
             tableau.Clear();
-        foreach (var foundation in foundations)
+        foreach (var foundation in _foundations)
             foundation.Clear();
     }
 
@@ -167,32 +166,23 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
                 wasteCard.FaceUpOffset = 0;
 
             //  Work out how many cards to draw.
-            var cardsToDraw = 0;
-            switch (DrawMode)
+            var cardsToDraw = DrawMode switch
             {
-                case DrawMode.DrawOne:
-                    cardsToDraw = 1;
-                    break;
-                case DrawMode.DrawThree:
-                    cardsToDraw = 3;
-                    break;
-                default:
-                    cardsToDraw = 1;
-                    break;
-            }
+                DrawMode.DrawOne => 1,
+                DrawMode.DrawThree => 3,
+                _ => 1
+            };
 
             //  Put up to three cards in the waste.
             for (var i = 0; i < cardsToDraw; i++)
             {
-                if (Stock.Count > 0)
-                {
-                    var card = Stock.Last();
-                    Stock.Remove(card);
-                    card.IsFaceDown = false;
-                    card.IsPlayable = false;
-                    card.FaceUpOffset = 30;
-                    Waste.Add(card);
-                }
+                if (Stock.Count <= 0) continue;
+                var card = Stock.Last();
+                Stock.Remove(card);
+                card.IsFaceDown = false;
+                card.IsPlayable = false;
+                card.FaceUpOffset = 30;
+                Waste.Add(card);
             }
         }
 
@@ -216,7 +206,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
             if (Waste.Count > 0)
                 if (TryMoveCardToAppropriateFoundation(Waste.Last()))
                     movedACard = true;
-            foreach (var tableau in tableaus)
+            foreach (var tableau in _tableauSet)
             {
                 if (tableau.Count > 0)
                     if (TryMoveCardToAppropriateFoundation(tableau.Last()))
@@ -237,24 +227,24 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     {
         //  Try the top of the waste first.
         if (Waste.LastOrDefault() == card)
-            foreach (var foundation in foundations)
+            foreach (var foundation in _foundations)
                 if (CheckAndMoveCard(Waste, foundation, card))
                     return true;
 
         //  Is the card in a tableau?
         var inTableau = false;
         var i = 0;
-        for (; i < tableaus.Count && inTableau == false; i++)
-            inTableau = tableaus[i].Contains(card);
+        for (; i < _tableauSet.Count && inTableau == false; i++)
+            inTableau = _tableauSet[i].Contains(card);
 
-        //  It's if its not in a tablea and it's not the top
+        //  It's if its not in a tableau and it's not the top
         //  of the waste, we cannot move it.
         if (inTableau == false)
             return false;
 
         //  Try and move to each foundation.
-        foreach (var foundation in foundations)
-            if (CheckAndMoveCard(tableaus[i - 1], foundation, card))
+        foreach (var foundation in _foundations)
+            if (CheckAndMoveCard(_tableauSet[i - 1], foundation, card))
                 return true;
 
         //  We couldn't move the card.
@@ -275,17 +265,17 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         bool checkOnly = false)
     {
         //  The trivial case is where from and to are the same.
-        if (from == to)
+        if (from.SequenceEqual(to))
             return false;
 
         //  This is the complicated operation.
-        var scoreModifier = 0;
+        int scoreModifier;
 
         //  Are we moving from the waste?
-        if (from == Waste)
+        if (from.SequenceEqual(Waste))
         {
             //  Are we moving to a foundation?
-            if (foundations.Contains(to))
+            if (_foundations.Contains(to))
             {
                 //  We can move to a foundation only if:
                 //  1. It is empty and we are an ace.
@@ -300,7 +290,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
                     return false;
             }
             //  Are we moving to a tableau?
-            else if (tableaus.Contains(to))
+            else if (_tableauSet.Contains(to))
             {
                 //  We can move to a tableau only if:
                 //  1. It is empty and we are a king.
@@ -319,10 +309,10 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
                 return false;
         }
         //  Are we moving from a tableau?
-        else if (tableaus.Contains(from))
+        else if (_tableauSet.Contains(from))
         {
             //  Are we moving to a foundation?
-            if (foundations.Contains(to))
+            if (_foundations.Contains(to))
             {
                 //  We can move to a foundation only if:
                 //  1. It is empty and we are an ace.
@@ -337,7 +327,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
                     return false;
             }
             //  Are we moving to another tableau?
-            else if (tableaus.Contains(to))
+            else if (_tableauSet.Contains(to))
             {
                 //  We can move to a tableau only if:
                 //  1. It is empty and we are a king.
@@ -356,10 +346,10 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
                 return false;
         }
         //  Are we moving from a foundation?
-        else if (foundations.Contains(from))
+        else if (_foundations.Contains(from))
         {
             //  Are we moving to a tableau?
-            if (tableaus.Contains(to))
+            if (_tableauSet.Contains(to))
             {
                 //  We can move to a tableau only if:
                 //  1. It is empty and we are a king.
@@ -374,7 +364,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
                     return false;
             }
             //  Are we moving to another foundation?
-            else if (foundations.Contains(to))
+            else if (_foundations.Contains(to))
             {
                 //  We can move from a foundation to a foundation only 
                 //  if the source foundation has one card (the ace) and the
@@ -406,7 +396,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
         //  If we have moved from the waste, we must 
         //  make sure that the top of the waste is playable.
-        if (from == Waste && Waste.Count > 0)
+        if (from.SequenceEqual(Waste) && Waste.Count > 0)
             Waste.Last().IsPlayable = true;
 
         //  Check for victory.
@@ -451,10 +441,10 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// <summary>
     /// Checks for victory.
     /// </summary>
-    public void CheckForVictory()
+    private void CheckForVictory()
     {
         //  We've won if every foundation is full.
-        foreach (var foundation in foundations)
+        foreach (var foundation in _foundations)
             if (foundation.Count < 13)
                 return;
 
@@ -468,12 +458,9 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         FireGameWonEvent();
     }
 
-    //  For ease of access we have arrays of the foundations and tableaus.
-    List<ObservableCollection<PlayingCardViewModel>> foundations = new();
-    List<ObservableCollection<PlayingCardViewModel>> tableaus = new();
-
-    /// <inheritdoc />
-    private string _gameName;
+    //  For ease of access we have arrays of the foundations and tableau set.
+    private readonly List<ObservableCollection<PlayingCardViewModel>> _foundations = new();
+    private readonly List<ObservableCollection<PlayingCardViewModel>> _tableauSet = new();
 
     public ObservableCollection<PlayingCardViewModel> Foundation1 { get; } = new();
 
@@ -505,7 +492,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// <summary>
     /// The turn stock command.
     /// </summary> 
-    public ICommand TurnStockCommand { get; }
+    public ICommand? TurnStockCommand { get; }
 
-    public ICommand AppropriateFoundationsCommand { get; }
+    public ICommand? AppropriateFoundationsCommand { get; }
 }

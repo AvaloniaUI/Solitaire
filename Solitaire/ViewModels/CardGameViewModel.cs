@@ -4,6 +4,7 @@ using System.Windows.Input;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Solitaire.ViewModels.Pages;
 
 namespace Solitaire.ViewModels;
 
@@ -12,38 +13,37 @@ namespace Solitaire.ViewModels;
 /// </summary>
 public abstract partial class CardGameViewModel : ViewModelBase
 {
-    public abstract string GameName { get; }
-    protected CasinoViewModel CasinoInstance { get; }
+    public abstract string? GameName { get; }
+    
+    #if DEBUG
+    protected CardGameViewModel()
+    {
+    }
+    #endif 
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CardGameViewModel"/> class.
     /// </summary>
-    public CardGameViewModel(CasinoViewModel casinoViewModel)
+    protected CardGameViewModel(CasinoViewModel casinoViewModel)
     {
-        CasinoInstance = casinoViewModel;
-
         NavigateToCasinoCommand =
             new RelayCommand(() =>
             {
                 if (Moves > 0)
                 {
-                    _gameStats?.UpdateStatistics();
+                    _gameStats.UpdateStatistics();
                     casinoViewModel.Save();
                 }
 
                 casinoViewModel.CurrentView = casinoViewModel.TitleInstance;
             });
-        
-        
 
         //  Set up the timer.
-        timer.Interval = TimeSpan.FromMilliseconds(500);
-        timer.Tick += new EventHandler(timer_Tick);
-
-        DealNewGameCommand = new RelayCommand(DoDealNewGame);
+        _timer.Interval = TimeSpan.FromMilliseconds(500);
+        _timer.Tick += timer_Tick;
     }
 
-    public abstract IList<PlayingCardViewModel> GetCardCollection(PlayingCardViewModel card);
+    public abstract IList<PlayingCardViewModel>? GetCardCollection(PlayingCardViewModel card);
 
 
     public abstract bool CheckAndMoveCard(IList<PlayingCardViewModel> from,
@@ -54,8 +54,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
     /// <summary>
     /// Deals a new game.
     /// </summary>
-    /// <param name="parameter">The parameter.</param>
-    protected virtual void DoDealNewGame()
+    protected void ResetInternalState()
     {
         //  Stop the timer and reset the game data.
         StopTimer();
@@ -68,18 +67,18 @@ public abstract partial class CardGameViewModel : ViewModelBase
     /// <summary>
     /// Starts the timer.
     /// </summary>
-    public void StartTimer()
+    protected void StartTimer()
     {
-        lastTick = DateTime.Now;
-        timer.Start();
+        _lastTick = DateTime.Now;
+        _timer.Start();
     }
 
     /// <summary>
     /// Stops the timer.
     /// </summary>
-    public void StopTimer()
+    protected void StopTimer()
     {
-        timer.Stop();
+        _timer.Stop();
     }
 
     /// <summary>
@@ -87,12 +86,12 @@ public abstract partial class CardGameViewModel : ViewModelBase
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-    private void timer_Tick(object sender, EventArgs e)
+    private void timer_Tick(object? sender, EventArgs e)
     {
         //  Get the time, update the elapsed time, record the last tick.
         var timeNow = DateTime.Now;
-        ElapsedTime += timeNow - lastTick;
-        lastTick = timeNow;
+        ElapsedTime += timeNow - _lastTick;
+        _lastTick = timeNow;
     }
 
     /// <summary>
@@ -100,22 +99,22 @@ public abstract partial class CardGameViewModel : ViewModelBase
     /// </summary>
     protected void FireGameWonEvent()
     {
-        _gameStats?.UpdateStatistics();
-        
+        _gameStats.UpdateStatistics();
+
         var wonEvent = GameWon;
-        if (wonEvent != null)
-            wonEvent();
+        if (wonEvent is not { })
+            wonEvent?.Invoke();
     }
 
     /// <summary>
     /// The timer for recording the time spent in a game.
     /// </summary>
-    private DispatcherTimer timer = new();
+    private readonly DispatcherTimer _timer = new();
 
     /// <summary>
     /// The time of the last tick.
     /// </summary>
-    private DateTime lastTick;
+    private DateTime _lastTick;
 
     [ObservableProperty] private int _score;
 
@@ -124,24 +123,24 @@ public abstract partial class CardGameViewModel : ViewModelBase
     [ObservableProperty] private int _moves;
 
     [ObservableProperty] private bool _isGameWon;
-    private GameStatisticsViewModel _gameStats;
-    
+    private GameStatisticsViewModel _gameStats = null!;
+
     /// <summary>
     /// Gets the go to casino command.
     /// </summary>
     /// <value>The go to casino command.</value>
-    public ICommand NavigateToCasinoCommand { get; }
+    public ICommand? NavigateToCasinoCommand { get; }
 
     /// <summary>
     /// Gets the deal new game command.
     /// </summary>
     /// <value>The deal new game command.</value>
-    public ICommand DealNewGameCommand { get; }
+    public ICommand? NewGameCommand { get; protected set; }
 
     /// <summary>
     /// Occurs when the game is won.
     /// </summary>
-    public event Action GameWon;
+    public event Action GameWon = null!;
 
     public abstract void ResetGame();
 
