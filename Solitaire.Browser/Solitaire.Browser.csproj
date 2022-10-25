@@ -7,30 +7,7 @@
     <OutputType>Exe</OutputType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <MSBuildEnableWorkloadResolver>true</MSBuildEnableWorkloadResolver>
-    <WasmBuildNative>true</WasmBuildNative>
     <EmccFlags>-sERROR_ON_UNDEFINED_SYMBOLS=0</EmccFlags>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <PublishTrimmed>true</PublishTrimmed>
-    <TrimMode>full</TrimMode>
-    <WasmBuildNative>true</WasmBuildNative>
-    <InvariantGlobalization>true</InvariantGlobalization>
-    <EmccCompileOptimizationFlag>-Oz</EmccCompileOptimizationFlag>
-    <EmccLinkOptimizationFlag>-Oz</EmccLinkOptimizationFlag>
-    <WasmEmitSymbolMap>false</WasmEmitSymbolMap>
-    <WasmNativeDebugSymbols>false</WasmNativeDebugSymbols>
-    <WasmDebugLevel>0</WasmDebugLevel>
-    <WasmEnableExceptionHandling>false</WasmEnableExceptionHandling>
-    <TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
-    <DebuggerSupport>false</DebuggerSupport>
-    <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
-    <EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
-    <EventSourceSupport>false</EventSourceSupport>
-    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
-    <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
-    <UseNativeHttpHandler>true</UseNativeHttpHandler>
-    <UseSystemResourceKeys>true</UseSystemResourceKeys>
   </PropertyGroup>
 
   <ItemGroup>
