@@ -7,10 +7,15 @@
         <Nullable>enable</Nullable>
         <RuntimeIdentifier>iossimulator-x64</RuntimeIdentifier>
         <RootNamespace>Solitaire.iOS</RootNamespace>
+        <UseInterpreter>True</UseInterpreter>
+
 
         <!-- These properties need to be set in order to run on a real iDevice -->
         <!--<RuntimeIdentifier>ios-arm64</RuntimeIdentifier>-->
         <!--<CodesignKey></CodesignKey>-->
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <CodesignKey>Apple Development: jumar@macato.net (S66Z98PJ8N)</CodesignKey>
     </PropertyGroup>
 
     <ItemGroup>

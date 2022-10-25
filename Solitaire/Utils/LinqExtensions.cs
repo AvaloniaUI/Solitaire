@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
-using Solitaire.ViewModels;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Serialization;
+using System.Text.Json;
 
 namespace Solitaire.Utils;
 
 public static class LinqExtensions
-{ 
+{
     /// </summary>
-    private static readonly Random Random = new ();
+    private static readonly Random Random = new();
 
     /// <summary>
     /// Shuffles the specified list.
@@ -23,9 +25,3 @@ public static class LinqExtensions
         }
     }
 }
-
-public static class PlatformProviders
-{
-    public static IRuntimeStorageProvider<CasinoViewModel> CasinoStorage;
-}
- 
