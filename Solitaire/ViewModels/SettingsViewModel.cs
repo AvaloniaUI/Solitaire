@@ -25,7 +25,7 @@ public partial class SettingsViewModel : ViewModelBase
         NavigateToTitleCommand = new RelayCommand(() =>
         {
             _casinoViewModel.CurrentView = _casinoViewModel.TitleInstance;
-            PlatformProviders.CasinoStorage.SaveObject(_casinoViewModel);
+            PlatformProviders.CasinoStorage.SaveObject(_casinoViewModel, "mainSettings");
         });
         ResetKlondikeStatsCommand = new RelayCommand(() =>
         {

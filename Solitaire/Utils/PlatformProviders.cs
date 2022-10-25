@@ -12,11 +12,12 @@ public static class PlatformProviders
 {
     internal class DefaultSettingsStore<T> : IRuntimeStorageProvider<T>
     {
-        /// <inheritdoc />
-        public async Task SaveObject(T obj)
-        {
-            var _ident = typeof(T).FullName?.ToLowerInvariant().Replace(".", string.Empty) ?? "default";
+        private static string Identifier { get; } = typeof(T).FullName?.Replace(".", string.Empty) ?? "default";
 
+        
+        /// <inheritdoc />
+        public async Task SaveObject(T obj, string key)
+        {
             var serializedObjJson = JsonConvert.SerializeObject(obj, new JsonSerializerSettings
             {
                 PreserveReferencesHandling = PreserveReferencesHandling.None,
@@ -29,35 +30,25 @@ public static class PlatformProviders
                                                         IsolatedStorageScope.Assembly, null, null);
 
             //  Create data stream.
-            await using var isoStream = new IsolatedStorageFileStream($"{_ident}.xml", FileMode.Create, isoStore);
+            await using var isoStream = new IsolatedStorageFileStream(Identifier + key, FileMode.Create, isoStore);
             await using var writer = new StreamWriter(isoStream);
             await writer.WriteAsync(serializedObjJson);
         }
 
         /// <inheritdoc />
-        public async Task<T?> LoadObject()
+        public async Task<T?> LoadObject(string key)
         {
             try
             {
-                var _ident = typeof(T).FullName?.ToLowerInvariant().Replace(".", string.Empty) ?? "default";
-
-                // Get a new isolated store for this user, domain, and assembly.
                 var isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User |
                                                             IsolatedStorageScope.Domain |
                                                             IsolatedStorageScope.Assembly, null, null);
-
-                //  Save the casino.
-                await using var isoStream =
-                    new IsolatedStorageFileStream($"{_ident}.xml", FileMode.Open, isoStore);
-
-
+                await using var isoStream = new IsolatedStorageFileStream(Identifier + key, FileMode.Open, isoStore);
                 using var reader = new StreamReader(isoStream);
-                var t = await reader.ReadToEndAsync();
-                if (string.IsNullOrEmpty(t)) return default;
-
-                var x = JsonConvert.DeserializeObject<T>(t);
-
-                return x ?? default;
+                var savedString = await reader.ReadToEndAsync();
+                if (string.IsNullOrEmpty(savedString)) return default;
+                var storedObj = JsonConvert.DeserializeObject<T>(savedString);
+                return storedObj ?? default;
             }
             catch (Exception e)
             {
