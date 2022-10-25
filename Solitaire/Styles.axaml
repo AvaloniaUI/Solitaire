@@ -9,6 +9,8 @@
         <converters:PlayingCardToBrushConverter x:Key="PlayingCardToBrushConverter" />
         <converters:EnumToListConverter x:Key="EnumToListConverter" />
     </Styles.Resources>
+
+
     <StyleInclude Source="avares://Avalonia.Xaml.Interactions/Draggable/Styles.axaml" />
     <Style Selector="controls|CardStackControl">
         <Setter Property="ClipToBounds" Value="False" />
@@ -16,7 +18,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:CardStackControl}">
                     <!-- Transparent Background is important so that it catches the visual point selection -->
-                    <Border Background="Transparent"
+                    <Border 
                             BorderBrush="{TemplateBinding BorderBrush}"
                             ClipToBounds="False"
                             behaviors:CardDragBehavior.DragTargetObject="{TemplateBinding Items}"
@@ -27,34 +29,19 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type solitaireGames:PlayingCardViewModel}">
                                     <Border
+                                        Background="White"
                                         Classes="playingCard"
                                         Classes.isFaceDown="{Binding IsFaceDown}"
-                                         Width="140" Height="190" Cursor="Hand"
+                                        Width="140" Height="203.33" Cursor="Hand"
                                         BorderThickness="1" CornerRadius="6">
-                                        <Border.Styles>
-                                            <Style Selector=""></Style>
-                                        </Border.Styles>
-                                        
-                                        <Border.Background>
-                                            <MultiBinding Converter="{StaticResource PlayingCardToBrushConverter}">
-                                                <Binding Path="CardType" />
-                                                <Binding Path="IsFaceDown" />
-                                            </MultiBinding>
-                                        </Border.Background>
-                                        
-                                        <!-- apexDragAndDrop:DragAndDrop.IsDraggable="True" -->
-                                        <!-- apexCommands:ExtendedCommands.RightClickCommand="{Binding RelativeSource={RelativeSource  -->
-                                        <!-- FindAncestor, AncestorType={x:Type UserControl}}, Path=ViewModel.RightClickCardCommand}" -->
-                                        <!-- apexCommands:ExtendedCommands.RightClickCommandParameter="{Binding }"> -->
-                                        <!-- <apexCommands:EventBindings.EventBindings> -->
-                                        <!--     <apexCommands:EventBindingCollection> -->
-                                        <!--         <apexCommands:EventBinding -->
-                                        <!--             EventName="MouseLeftButtonUp" -->
-                                        <!--             Command="{Binding RelativeSource={RelativeSource  -->
-                                        <!-- FindAncestor, AncestorType={x:Type UserControl}}, Path=ViewModel.LeftClickCardCommand}" -->
-                                        <!--             CommandParameter="{Binding}" /> -->
-                                        <!--     </apexCommands:EventBindingCollection> -->
-                                        <!-- </apexCommands:EventBindings.EventBindings> -->
+                                        <Image Margin="4">
+                                            <Image.Source>
+                                                <MultiBinding Converter="{StaticResource PlayingCardToBrushConverter}">
+                                                    <Binding Path="CardType" />
+                                                    <Binding Path="IsFaceDown" />
+                                                </MultiBinding>
+                                            </Image.Source>
+                                        </Image>
 
                                         <Interaction.Behaviors>
                                             <BehaviorCollection>

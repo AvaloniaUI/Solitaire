@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Data.Converters;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -36,8 +37,8 @@ public class PlayingCardToBrushConverter : IMultiValueConverter
     /// <summary>
     /// A dictionary of brushes for card types.
     /// </summary>
-    static Dictionary<string, Brush> brushes = new();
- 
+    static Dictionary<string, object> brushes = new();
+
     /// <inheritdoc />
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
@@ -47,35 +48,19 @@ public class PlayingCardToBrushConverter : IMultiValueConverter
     public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
     {
         //  Cast the data.
-        if (values[0] is CardType cardType && values[1] is bool isFaceDown)
+        if (values[0] is not CardType cardType || values[1] is not bool isFaceDown) return null;
+ 
+
+        if (isFaceDown && Application.Current!.Styles.TryGetResource($"CardBack", out var test1)
+                       && test1 is DrawingImage c1)
         {
-                
-            //  We're going to create an image source.
-            var imageSource = string.Empty;
+            return c1;
+        }
 
-            //  If the card is face down, we're using the 'Rear' image.
-            //  Otherwise it's just the enum value (e.g. C3, SA).
-            if (isFaceDown)
-                imageSource = "Back";
-            else
-                imageSource = cardType.ToString();
-
-            var assetLoader = AvaloniaLocator.Current.GetService<IAssetLoader>();
-
-            //  Turn this string into a proper path.
-            imageSource = $"avares://{nameof(Solitaire)}/Assets/Decks/{deckFolder}/{imageSource}.png";
-
-            //  Do we need to add this brush to the static dictionary?
-            if (brushes.ContainsKey(imageSource) == false)
-            {
-                var image = assetLoader.Open(new Uri(imageSource));
-
-                var k = new ImageBrush(new Bitmap(image));
-                brushes.Add(imageSource, k);
-            }
-
-            //  Return the brush.
-            return brushes[imageSource];
+        if (Application.Current!.Styles.TryGetResource($"{cardType.ToString()}", out var test)
+            && test is DrawingImage c)
+        {
+            return c;
         }
 
         return null;

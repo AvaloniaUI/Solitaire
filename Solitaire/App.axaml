@@ -9,8 +9,6 @@
     <Application.Styles>
         <FluentTheme Mode="Dark"/>
         <StyleInclude Source="/Styles.axaml" />
-
+        <StyleInclude Source="/CardsStyle.axaml" />
     </Application.Styles>
-    
-     
 </Application>
