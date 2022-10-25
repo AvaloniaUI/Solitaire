@@ -14,7 +14,6 @@ class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        PlatformProviders.CasinoStorage = new DesktopSettingsStore<CasinoViewModel>();
         BuildAvaloniaApp()
             .StartWithClassicDesktopLifetime(args);
     }
