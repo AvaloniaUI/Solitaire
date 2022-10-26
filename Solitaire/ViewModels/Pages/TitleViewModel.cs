@@ -17,6 +17,8 @@ public partial class TitleViewModel : ViewModelBase
     public ICommand? NavigateToKlondikeCommand { get; }
 
     public ICommand? NavigateToSpiderCommand { get; }
+    
+    public ICommand? NavigateToFreeCellCommand { get; }
 
     public ICommand? NavigateToSettingsCommand { get; }
 
@@ -33,6 +35,12 @@ public partial class TitleViewModel : ViewModelBase
         {
             casinoViewModel.CurrentView = casinoViewModel.SpiderInstance;
             casinoViewModel.SpiderInstance?.NewGameCommand?.Execute(default);
+        });
+
+        NavigateToFreeCellCommand = new RelayCommand(() =>
+        {
+            casinoViewModel.CurrentView = casinoViewModel.FreeCellInstance;
+            casinoViewModel.FreeCellInstance?.NewGameCommand.Execute(default);
         });
 
         NavigateToSettingsCommand = new RelayCommand(() =>
