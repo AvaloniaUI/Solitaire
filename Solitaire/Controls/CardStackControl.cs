@@ -14,6 +14,7 @@ using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Rendering.Composition;
+using Avalonia.Rendering.Composition.Animations;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
 using ReactiveUI;
@@ -40,6 +41,42 @@ public class CardStackControl : Border, IStyleable
                     x.CollectionChanged += XOnCollectionChanged;
             })
             .Subscribe();
+    }
+
+
+    private void EnsureImplicitAnimations()
+    {
+        if (ImplicitAnimations != null)
+        {
+            return;
+        }
+
+        var compositor = ElementComposition.GetElementVisual(this)!.Compositor;
+
+        var offsetAnimation = compositor.CreateVector3KeyFrameAnimation();
+        offsetAnimation.Target = "Offset";
+        offsetAnimation.InsertExpressionKeyFrame(1.0f, "this.FinalValue");
+        offsetAnimation.Duration = TimeSpan.FromMilliseconds(400);
+
+        // var rotationAnimation = compositor.CreateScalarKeyFrameAnimation();
+        // rotationAnimation.Target = "RotationAngle";
+        // rotationAnimation.InsertKeyFrame(0.0f, 0.0f);
+        // rotationAnimation.InsertKeyFrame(1.0f, (float) (Math.PI * 2.0));
+        // rotationAnimation.Duration = TimeSpan.FromMilliseconds(400);
+
+        var animationGroup = compositor.CreateAnimationGroup();
+        animationGroup.Add(offsetAnimation);
+        // animationGroup.Add(rotationAnimation);
+
+        ImplicitAnimations = compositor.CreateImplicitAnimationCollection();
+        ImplicitAnimations["Offset"] = animationGroup;
+    }
+
+    /// <inheritdoc />
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        EnsureImplicitAnimations();
+        base.OnAttachedToVisualTree(e);
     }
 
     protected override void OnLoaded()
@@ -128,68 +165,92 @@ public class CardStackControl : Border, IStyleable
 
     private void RegisterEvents(ContentControl container)
     {
+        container.AttachedToVisualTree += ContainerOnAttachedToVisualTree;
         container.PointerPressed += ContainerOnPointerPressed;
         container.PointerMoved += ContainerOnPointerMoved;
         container.PointerReleased += ContainerOnPointerReleased;
+        container.PointerCaptureLost += ContainerOnPointerCaptureLost;
     }
 
     private void UnregisterEvents(ContentControl container)
     {
+        container.AttachedToVisualTree -= ContainerOnAttachedToVisualTree;
         container.PointerPressed -= ContainerOnPointerPressed;
         container.PointerMoved -= ContainerOnPointerMoved;
         container.PointerReleased -= ContainerOnPointerReleased;
+        container.PointerCaptureLost -= ContainerOnPointerCaptureLost;
     }
 
+    private void ContainerOnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
+    {
+        if (sender is ContentControl container && ElementComposition.GetElementVisual(container) is
+                { } compositionVisual)
+        {
+            AddImplicitAnimations(container);
+        }
+    }
+
+    private void AddImplicitAnimations(ContentControl container)
+    {
+        if (ElementComposition.GetElementVisual(container) is { } compositionVisual)
+        {
+            compositionVisual.ImplicitAnimations = ImplicitAnimations;
+        }
+    }
+
+    private void RemoveImplicitAnimations(ContentControl container)
+    {
+        if (ElementComposition.GetElementVisual(container) is { } compositionVisual)
+        {
+            compositionVisual.ImplicitAnimations = null;
+        }
+    }
+
+    private void ContainerOnPointerCaptureLost(object? sender, PointerCaptureLostEventArgs e)
+    {
+        if (!IsDragging) return;
+
+        var container = sender as ContentControl;
+        var card = container.Content as PlayingCardViewModel;
+
+        container.ZIndex = _startZIndex;
+        AddImplicitAnimations(container);
+        Canvas.SetLeft(container, _startVector.X);
+        Canvas.SetTop(container, _startVector.Y);
+
+        IsDragging = false;
+    }
 
     private void ContainerOnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
+        if (!IsDragging) return;
 
+        var container = sender as ContentControl;
+        var card = container.Content as PlayingCardViewModel;
 
-        if (!_isDragging) return;
+        container.ZIndex = _startZIndex;
+        AddImplicitAnimations(container);
+        Canvas.SetLeft(container, _startVector.X);
+        Canvas.SetTop(container, _startVector.Y);
 
-
-        var ssd = sender as ContentControl;
-        var sdd = ssd.Content as PlayingCardViewModel;
-
-
-        var position = e.GetCurrentPoint(ssd.Parent).Position;
-
-        var delta = position - _start;
-
-
-        var compositionVisual = ElementComposition.GetElementVisual(ssd);
-        if (compositionVisual is null)
-        {
-            return;
-        }
-
-        var compositor = compositionVisual.Compositor;
-        var animation = compositor.CreateVector3KeyFrameAnimation();
-        animation.InsertKeyFrame(1f,
-            new Vector3((float) _startVector.X, (float) _startVector.Y, 0f));
-        animation.Duration = TimeSpan.FromSeconds(1);
-
-        compositionVisual.StartAnimation("Offset", animation);
-        _isDragging = false;
+        IsDragging = false;
 
         e.Pointer.Capture(null);
     }
 
     private void ContainerOnPointerMoved(object? sender, PointerEventArgs e)
     {
-        if (!_isDragging) return;
+        if (!IsDragging) return;
+
+        var container = sender as ContentControl;
+        var card = container.Content as PlayingCardViewModel;
 
 
-        var ssd = sender as ContentControl;
-        var sdd = ssd.Content as PlayingCardViewModel;
+        var properties = e.GetCurrentPoint(container).Properties;
 
+        if (!Equals(e.Pointer.Captured, container) || !properties.IsLeftButtonPressed || !IsDragging) return;
 
-        var properties = e.GetCurrentPoint(ssd).Properties;
-
-        if (!Equals(e.Pointer.Captured, ssd) || !properties.IsLeftButtonPressed || !_isDragging ||
-            ssd is null) return;
-
-        var position = e.GetCurrentPoint(ssd.Parent).Position;
+        var position = e.GetCurrentPoint(container.Parent).Position;
 
         var delta = position - _start;
 
@@ -198,41 +259,35 @@ public class CardStackControl : Border, IStyleable
             return;
         }
 
-
-        var compositionVisual = ElementComposition.GetElementVisual(ssd);
-        if (compositionVisual is null)
-        {
-            return;
-        }
-
-        var compositor = compositionVisual.Compositor;
-        var animation = compositor.CreateVector3KeyFrameAnimation();
-
-        animation.InsertKeyFrame(1f,
-            new Vector3((float) (_startVector.X + delta.X), (float) (_startVector.Y + delta.Y), 0f));
-        animation.Duration = TimeSpan.FromSeconds(0.01);
-
-        compositionVisual.StartAnimation("Offset", animation);
+        Canvas.SetLeft(container, (_startVector.X + delta.X));
+        Canvas.SetTop(container, (_startVector.Y + delta.Y));
     }
 
     private void ContainerOnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         ExecuteCardClickCommand();
 
-        var ssd = sender as ContentControl;
-        var sdd = ssd.Content as PlayingCardViewModel;
+        if (IsDragging) return;
+
+        var container = sender as ContentControl;
+        var card = container.Content as PlayingCardViewModel;
 
 
-        if (!sdd.IsPlayable) return;
+        if (!card.IsPlayable) return;
 
 
-        var properties = e.GetCurrentPoint(ssd).Properties;
+        var properties = e.GetCurrentPoint(container).Properties;
 
-        if (!properties.IsLeftButtonPressed && ssd is null) return;
+        if (!properties.IsLeftButtonPressed) return;
 
-        _start = e.GetCurrentPoint(ssd!.Parent).Position;
-        e.Pointer.Capture(ssd);
-        _isDragging = true;
+        _start = e.GetCurrentPoint(container!.Parent).Position;
+        e.Pointer.Capture(container);
+        RemoveImplicitAnimations(container);
+        _startZIndex = container.ZIndex;
+
+        container.ZIndex = int.MaxValue;
+
+        IsDragging = true;
     }
 
 
@@ -323,7 +378,7 @@ public class CardStackControl : Border, IStyleable
                 break;
             case OffsetMode.TopNCards:
                 //  Offset only if (Total - N) <= n < Total
-                if (total - NValue < n && n < total)
+                if (n > (total - NValue))
                 {
                     faceDownOffset = FaceDownOffset;
                     faceUpOffset = FaceUpOffset;
@@ -420,9 +475,11 @@ public class CardStackControl : Border, IStyleable
     public static readonly StyledProperty<ICommand?> CommandOnCardClickProperty =
         AvaloniaProperty.Register<CardStackControl, ICommand?>("CommandOnCardClick");
 
-    private bool _isDragging;
+    private static bool IsDragging;
     private Point _start;
     private Vector _startVector;
+    private static ImplicitAnimationCollection? ImplicitAnimations;
+    private int _startZIndex;
 
     public int NValue
     {
