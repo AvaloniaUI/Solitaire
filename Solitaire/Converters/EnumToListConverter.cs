@@ -21,3 +21,23 @@ public class EnumToListConverter : IValueConverter
         return null;
     }
 }
+
+
+public class EnumToIntConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value?.GetType() is { IsEnum: true })
+        {
+            return (int)value;
+        }
+        return 0;
+    }
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        return null;
+    }
+}
+
+

@@ -8,19 +8,16 @@ using System.Reactive.Linq;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Styling;
 using ReactiveUI;
-using Solitaire.Utils;
 using Solitaire.ViewModels;
 
 namespace Solitaire.Controls;
 
-public class CardStackControl : TemplatedControl, IStyleable
+public class CardStackControl : Border, IStyleable
 {
     public CardStackControl()
     {
@@ -55,12 +52,13 @@ public class CardStackControl : TemplatedControl, IStyleable
     private void XOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         if (TargetCanvas is null || _dataTemplate is null) return;
-        
+
         switch (e.Action)
         {
             case NotifyCollectionChangedAction.Add:
 
                 if (e.NewItems is { })
+                {
                     foreach (var newItem in e.NewItems.Cast<PlayingCardViewModel>())
                     {
                         var cachedContainer = new ContentControl()
@@ -71,14 +69,20 @@ public class CardStackControl : TemplatedControl, IStyleable
 
                         newItem.PropertyChanged += NewItemOnPropertyChanged;
 
-                        SetContainerLayout(newItem, cachedContainer);
 
-                        _containers.Add(newItem, cachedContainer);
+                        _containers.TryAdd(newItem, cachedContainer);
 
                         RegisterEvents(cachedContainer);
 
                         TargetCanvas.Children.Add(cachedContainer);
                     }
+                    
+                    foreach (var keyValues in _containers)
+                    {
+                        SetContainerLayout(keyValues.Key, keyValues.Value);
+                    }
+                }
+                
 
                 break;
             case NotifyCollectionChangedAction.Remove:
@@ -99,6 +103,20 @@ public class CardStackControl : TemplatedControl, IStyleable
             case NotifyCollectionChangedAction.Move:
                 break;
             case NotifyCollectionChangedAction.Reset:
+
+                foreach (var container in TargetCanvas.Children.Cast<ContentControl>().ToList())
+                {
+                    if (container is null) continue;
+                    var card = _containers.FirstOrDefault(x => x.Value.Equals(container)).Key;
+                    if (card is not { }) continue;
+
+                    card.PropertyChanged -= NewItemOnPropertyChanged;
+                    TargetCanvas.Children.Remove(container);
+                    _containers.Remove(card);
+                    UnregisterEvents(container);
+                }
+
+
                 break;
         }
     }
@@ -115,14 +133,20 @@ public class CardStackControl : TemplatedControl, IStyleable
 
     private void ContainerOnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (CommandOnCardClick is { } && CommandOnCardClick.CanExecute(null))
-        {
-            CommandOnCardClick.Execute(null);
-            return;
-        }
-        
-        
-        
+        ExecuteCardClickCommand();
+    }
+
+
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        ExecuteCardClickCommand();
+        base.OnPointerPressed(e);
+    }
+
+    private void ExecuteCardClickCommand()
+    {
+        if (CommandOnCardClick is null || !CommandOnCardClick.CanExecute(null)) return;
+        CommandOnCardClick.Execute(null);
     }
 
     private void NewItemOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -139,21 +163,20 @@ public class CardStackControl : TemplatedControl, IStyleable
 
         var cardIndex = SourceItems.IndexOf(card);
         var totalItems = SourceItems.Count;
-        GetOffsets(card, cardIndex, totalItems, out var faceDownOffset, out var faceUpOffset);
-
-        var selectedOffset = card.IsFaceDown ? faceDownOffset : faceUpOffset;
-
-        double totalOffset;
-
-        if (cardIndex > 0)
-        {
-            totalOffset = 1;
-        }
-        else
-        {
-            totalOffset = selectedOffset;
-        }
         
+        double totalOffset = 0;
+        
+        for (var i = 0; i <= cardIndex; i++)
+        {
+            if(i - 1 < 0) continue;
+            
+            var z = SourceItems[i - 1];
+            GetOffsets(z, i, totalItems, out var a, out var b);
+            var c = z.IsFaceDown ? a : b;
+            totalOffset += c;
+        }
+
+
         if (Orientation == Orientation.Horizontal)
         {
             Canvas.SetLeft(cachedContainer, Bounds.Left + totalOffset);
@@ -193,13 +216,13 @@ public class CardStackControl : TemplatedControl, IStyleable
                 break;
             case OffsetMode.TopNCards:
                 //  Offset only if (Total - N) <= n < Total
-                if (total - NValue <= n && n < total)
+                if (total - NValue < n && n < total)
                 {
                     faceDownOffset = FaceDownOffset;
                     faceUpOffset = FaceUpOffset;
                 }
-
                 break;
+ 
             case OffsetMode.BottomNCards:
                 //  Offset only if 0 < n < N
                 if (n < NValue)

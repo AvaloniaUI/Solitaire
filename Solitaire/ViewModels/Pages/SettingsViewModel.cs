@@ -31,8 +31,5 @@ public partial class SettingsViewModel : ViewModelBase
         {
             casinoViewModel1.TitleInstance.SpiderStatsInstance?.ResetCommand?.Execute(null);
         });
-
- 
-         
     }
 }

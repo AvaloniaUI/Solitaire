@@ -32,16 +32,13 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
     public KlondikeSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel)
     {
+        _casinoViewModel = casinoViewModel;
         InitializeFoundationsAndTableauSet();
 
         //  Create the turn stock command.
         TurnStockCommand = new RelayCommand(DoTurnStock);
         AppropriateFoundationsCommand = new RelayCommand(TryMoveAllCardsToAppropriateFoundations);
         NewGameCommand = new RelayCommand(DoDealNewGame);
-
-        casinoViewModel.SettingsInstance.WhenAnyValue(x => x.DrawMode)
-            .Do(x => DrawMode = x)
-            .Subscribe();
     }
 
     private void InitializeFoundationsAndTableauSet()
@@ -82,6 +79,8 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     private void DoDealNewGame()
     {
         ResetGame();
+
+        DrawMode = _casinoViewModel.SettingsInstance.DrawMode;
 
         //  Create a list of card types.
         var eachCardType = Enum.GetValues(typeof(CardType)).Cast<CardType>().ToList();
@@ -161,27 +160,14 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         }
         else
         {
-            //  Everything in the waste so far must now have no offset.
-            foreach (var wasteCard in Waste)
-                wasteCard.FaceUpOffset = 0;
-
-            //  Work out how many cards to draw.
-            var cardsToDraw = DrawMode switch
-            {
-                DrawMode.DrawOne => 1,
-                DrawMode.DrawThree => 3,
-                _ => 1
-            };
-
             //  Put up to three cards in the waste.
-            for (var i = 0; i < cardsToDraw; i++)
+            for (var i = 0; i < (int)DrawMode; i++)
             {
                 if (Stock.Count <= 0) continue;
                 var card = Stock.Last();
                 Stock.Remove(card);
                 card.IsFaceDown = false;
                 card.IsPlayable = false;
-                card.FaceUpOffset = 30;
                 Waste.Add(card);
             }
         }
@@ -461,6 +447,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     //  For ease of access we have arrays of the foundations and tableau set.
     private readonly List<ObservableCollection<PlayingCardViewModel>> _foundations = new();
     private readonly List<ObservableCollection<PlayingCardViewModel>> _tableauSet = new();
+    private readonly CasinoViewModel _casinoViewModel;
 
     public ObservableCollection<PlayingCardViewModel> Foundation1 { get; } = new();
 
