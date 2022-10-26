@@ -36,7 +36,5 @@
             </Border> 
         </Panel>
         <ContentControl Content="{Binding CurrentView, Mode=OneWay}" />
-        
-        
     </Panel>
 </UserControl>
