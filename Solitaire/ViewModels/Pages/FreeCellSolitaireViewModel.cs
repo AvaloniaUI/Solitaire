@@ -214,6 +214,22 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
         //  The trivial case is where from and to are the same.
         if (from.SequenceEqual(to))
             return false;
+        
+        //  Identify the run of cards we're moving.
+        var run = new List<PlayingCardViewModel>();
+        for (var i = from.IndexOf(card); i < from.Count; i++)
+            run.Add(from[i]);
+
+        if (run.Count > 1)
+        {
+            for (int i = 0; i < run.Count - 1; i++)
+            {
+                if (run[i].Value - 1 != run[i + 1].Value)
+                {
+                    return false;
+                }
+            }
+        }
 
         //  This is the complicated operation.
         int scoreModifier;
