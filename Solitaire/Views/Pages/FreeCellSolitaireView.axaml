@@ -147,6 +147,10 @@
             <Button Margin="4"
                     Classes="CasinoButtonStyle" Grid.Column="0" Width="120" Content="Deal New Game"
                     Command="{Binding NewGameCommand}" />
+            
+            <Button Grid.Column="1"
+                Classes="CasinoButtonStyle" Width="120"
+                Margin="4" Content="Undo" Command="{Binding UndoCommand}" />
 
             <RichTextBlock Margin="4" Grid.Column="2" Classes="CasinoTextStyle" VerticalAlignment="Center">
                 <Run Text="Score:" />

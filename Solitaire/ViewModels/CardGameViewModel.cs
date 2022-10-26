@@ -13,13 +13,31 @@ namespace Solitaire.ViewModels;
 /// </summary>
 public abstract partial class CardGameViewModel : ViewModelBase
 {
-    public abstract string? GameName { get; }
+    private Stack<Move> _moveStack = new();
     
-    #if DEBUG
-    protected CardGameViewModel()
+    public abstract string? GameName { get; }
+
+    protected void RecordMove(IList<PlayingCardViewModel> from, IList<PlayingCardViewModel> to, IList<PlayingCardViewModel> range, int score)
     {
+        _moveStack.Push(new Move(from, to, range, score));
     }
-    #endif 
+
+    protected void UndoMove()
+    {
+        if (_moveStack.Count > 0)
+        {
+            var move = _moveStack.Pop();
+
+            Score -= move.Score;
+            
+            foreach (var runCard in move.Run)
+                move.From.Add(runCard);
+            foreach (var runCard in move.Run)
+                move.To.Remove(runCard);
+
+            Moves--;
+        }
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CardGameViewModel"/> class.
@@ -37,11 +55,15 @@ public abstract partial class CardGameViewModel : ViewModelBase
 
                 casinoViewModel.CurrentView = casinoViewModel.TitleInstance;
             });
+        
+        UndoCommand = new RelayCommand(UndoMove);
 
         //  Set up the timer.
         _timer.Interval = TimeSpan.FromMilliseconds(500);
         _timer.Tick += timer_Tick;
     }
+    
+    
 
     public abstract IList<PlayingCardViewModel>? GetCardCollection(PlayingCardViewModel card);
 
@@ -136,6 +158,8 @@ public abstract partial class CardGameViewModel : ViewModelBase
     /// </summary>
     /// <value>The deal new game command.</value>
     public ICommand? NewGameCommand { get; protected set; }
+    
+    public ICommand? UndoCommand { get; protected set; }
 
     /// <summary>
     /// Occurs when the game is won.
@@ -147,5 +171,25 @@ public abstract partial class CardGameViewModel : ViewModelBase
     public void RegisterStatsInstance(GameStatisticsViewModel gameStatsInstance)
     {
         _gameStats = gameStatsInstance;
+    }
+    
+    private class Move
+    {
+        public Move(IList<PlayingCardViewModel> from, IList<PlayingCardViewModel> to, IList<PlayingCardViewModel> run, int score)
+        {
+            From = from;
+            To = to;
+            Run = run;
+            Score = score;
+        }
+    
+        public IList<PlayingCardViewModel> From { get; }
+    
+        public IList<PlayingCardViewModel> To { get; }
+    
+        public IList<PlayingCardViewModel> Run { get; }
+
+        public int Score { get; }
+
     }
 }

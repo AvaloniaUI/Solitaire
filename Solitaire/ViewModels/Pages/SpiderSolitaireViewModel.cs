@@ -14,14 +14,6 @@ namespace Solitaire.ViewModels.Pages;
 
 public partial class SpiderSolitaireViewModel : CardGameViewModel
 {
-#if DEBUG
-    public SpiderSolitaireViewModel()
-    {
-        InitializeTableauSet();
-        NewGameCommand?.Execute(null);
-    }
-#endif
-
     public SpiderSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel)
     {
         InitializeTableauSet();
