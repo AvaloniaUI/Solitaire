@@ -26,7 +26,7 @@
             <!-- This is the layout grid for the tableaus, foundations etc. -->
             <Grid Width="1550" Height="840" ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*" RowDefinitions="240,600">
                 <Grid.Styles>
-                    <Style Selector="Border.StackMarker, controls|CardStackControl">
+                    <Style Selector="Border.RunMarker, Border.StackMarker, controls|CardStackControl">
                         <Setter Property="Grid.ColumnSpan" Value="2" />
                     </Style>
                 </Grid.Styles>
@@ -47,37 +47,31 @@
                 
                 <!-- The stock. -->
                 <Border
-                    Grid.Row="0" Grid.Column="0" Classes="StackMarker" />
+                    Grid.Row="0" Grid.Column="0"  Classes="StackMarker" />
                 <controls:CardStackControl
-                    Grid.Row="0" Grid.Column="0" Items="{Binding Stock}" Cursor="Hand"
-                    Orientation="Horizontal">
-                    <Interaction.Behaviors>
-                        <BehaviorCollection>
-                            <behaviors:ExecuteOnPointerPressedBehavior Command="{Binding TurnStockCommand}"/>
-                        </BehaviorCollection>
-                    </Interaction.Behaviors>
-                </controls:CardStackControl>
+                    Grid.Row="0" Grid.Column="0" Items="{Binding Cell1}" Cursor="Hand"
+                    Orientation="Horizontal" />
 
                 <!-- The waste. -->
                 <Border
                     Grid.Row="0" Grid.Column="2" Classes="StackMarker" />
 
                 <controls:CardStackControl
-                     Grid.Row="0" Grid.Column="2" Items="{Binding Waste}"
+                     Grid.Row="0" Grid.Column="2" Items="{Binding Cell2}"
                     Orientation="Horizontal" OffsetMode="UseCardValues" />
                 
                 <Border
                     Grid.Row="0" Grid.Column="4" Classes="StackMarker" />
 
                 <controls:CardStackControl
-                    Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" Items="{Binding Waste}"
+                    Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" Items="{Binding Cell3}"
                     Orientation="Horizontal" OffsetMode="UseCardValues" />
                 
                 <Border
                     Grid.Row="0" Grid.Column="6" Classes="StackMarker" />
 
                 <controls:CardStackControl
-                    Grid.Row="0" Grid.Column="6" Grid.ColumnSpan="2" Items="{Binding Waste}"
+                    Grid.Row="0" Grid.Column="6" Grid.ColumnSpan="2" Items="{Binding Cell4}"
                     Orientation="Horizontal" OffsetMode="UseCardValues" />
 
                 <!-- The foundations. -->

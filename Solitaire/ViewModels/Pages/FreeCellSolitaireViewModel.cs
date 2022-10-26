@@ -34,8 +34,6 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
     {
         InitializeFoundationsAndTableauSet();
 
-        //  Create the turn stock command.
-        TurnStockCommand = new RelayCommand(DoTurnStock);
         AppropriateFoundationsCommand = new RelayCommand(TryMoveAllCardsToAppropriateFoundations);
         NewGameCommand = new RelayCommand(DoDealNewGame);
 
@@ -47,6 +45,11 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
     private void InitializeFoundationsAndTableauSet()
     {
         //  Create the quick access arrays.
+        _cells.Add(Cell1);
+        _cells.Add(Cell2);
+        _cells.Add(Cell3);
+        _cells.Add(Cell4);
+        
         _foundations.Add(Foundation1);
         _foundations.Add(Foundation2);
         _foundations.Add(Foundation3);
@@ -69,8 +72,10 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
     /// <returns></returns>
     public override IList<PlayingCardViewModel>? GetCardCollection(PlayingCardViewModel card)
     {
-        if (Stock.Contains(card)) return Stock;
-        if (Waste.Contains(card)) return Waste;
+        if (Cell1.Contains(card)) return Cell1;
+        if (Cell2.Contains(card)) return Cell2;
+        if (Cell3.Contains(card)) return Cell3;
+        if (Cell4.Contains(card)) return Cell4;
 
         foreach (var foundation in _foundations.Where(foundation => foundation.Contains(card)))
             return foundation;
@@ -126,62 +131,15 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
         ResetInternalState();
 
         //  Clear everything.
-        Stock.Clear();
-        Waste.Clear();
+        Cell1.Clear();
+        Cell2.Clear();
+        Cell3.Clear();
+        Cell4.Clear();
+        
         foreach (var tableau in _tableauSet)
             tableau.Clear();
         foreach (var foundation in _foundations)
             foundation.Clear();
-    }
-
-    /// <summary>
-    /// Turns cards from the stock into the waste.
-    /// </summary>
-    private void DoTurnStock()
-    {
-        //  If the stock is empty, put every card from the waste back into the stock.
-        if (Stock.Count == 0)
-        {
-            foreach (var card in Waste)
-            {
-                card.IsFaceDown = true;
-                card.IsPlayable = false;
-                Stock.Insert(0, card);
-            }
-
-            Waste.Clear();
-        }
-        else
-        {
-            //  Everything in the waste so far must now have no offset.
-            foreach (var wasteCard in Waste)
-                wasteCard.FaceUpOffset = 0;
-
-            //  Work out how many cards to draw.
-            var cardsToDraw = DrawMode switch
-            {
-                DrawMode.DrawOne => 1,
-                DrawMode.DrawThree => 3,
-                _ => 1
-            };
-
-            //  Put up to three cards in the waste.
-            for (var i = 0; i < cardsToDraw; i++)
-            {
-                if (Stock.Count <= 0) continue;
-                var card = Stock.Last();
-                Stock.Remove(card);
-                card.IsFaceDown = false;
-                card.IsPlayable = false;
-                card.FaceUpOffset = 30;
-                Waste.Add(card);
-            }
-        }
-
-        //  Everything in the waste must be not playable,
-        //  apart from the top card.
-        foreach (var wasteCard in Waste)
-            wasteCard.IsPlayable = wasteCard == Waste.Last();
     }
 
     /// <summary>
@@ -195,9 +153,9 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
         while (keepTrying)
         {
             var movedACard = false;
-            if (Waste.Count > 0)
-                if (TryMoveCardToAppropriateFoundation(Waste.Last()))
-                    movedACard = true;
+            
+            // TODO ? appropriate from cells?
+
             foreach (var tableau in _tableauSet)
             {
                 if (tableau.Count > 0)
@@ -217,11 +175,8 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
     /// <returns>True if card moved.</returns>
     private bool TryMoveCardToAppropriateFoundation(PlayingCardViewModel card)
     {
-        //  Try the top of the waste first.
-        if (Waste.LastOrDefault() == card)
-            foreach (var foundation in _foundations)
-                if (CheckAndMoveCard(Waste, foundation, card))
-                    return true;
+        // TODO try and move the cells.
+        
 
         //  Is the card in a tableau?
         var inTableau = false;
@@ -263,8 +218,8 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
         //  This is the complicated operation.
         int scoreModifier;
 
-        //  Are we moving from the waste?
-        if (from.SequenceEqual(Waste))
+        //  Are we moving from the cells?
+        if (_cells.Contains(from))
         {
             //  Are we moving to a foundation?
             if (_foundations.Contains(to))
@@ -287,14 +242,22 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
                 //  We can move to a tableau only if:
                 //  1. It is empty and we are a king.
                 //  2. It is card CN and we are color !C and Number N-1
-                if ((to.Count == 0 && card.Value == 12) ||
+                if (to.Count == 0 ||
                     (to.Count > 0 && to.Last().Colour != card.Colour && to.Last().Value == card.Value + 1))
                 {
-                    //  Move from waste to tableau.
-                    scoreModifier = 5;
+                    scoreModifier = 0;
                 }
                 else
                     return false;
+            }
+            else if (_cells.Contains(to))
+            {
+                if (to.Count > 0)
+                {
+                    return false;
+                }
+
+                scoreModifier = 0;
             }
             //  Any other move from the waste is wrong.
             else
@@ -318,13 +281,22 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
                 else
                     return false;
             }
+            else if (_cells.Contains(to))
+            {
+                if (to.Count > 0)
+                {
+                    return false;
+                }
+
+                scoreModifier = 0;
+            }
             //  Are we moving to another tableau?
             else if (_tableauSet.Contains(to))
             {
                 //  We can move to a tableau only if:
                 //  1. It is empty and we are a king.
                 //  2. It is card CN and we are color !C and Number N-1
-                if ((to.Count == 0 && card.Value == 12) ||
+                if ((to.Count == 0) ||
                     (to.Count > 0 && to.Last().Colour != card.Colour && to.Last().Value == card.Value + 1))
                 {
                     //  Move from tableau to tableau.
@@ -334,42 +306,6 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
                     return false;
             }
             //  Any other move from a tableau is wrong.
-            else
-                return false;
-        }
-        //  Are we moving from a foundation?
-        else if (_foundations.Contains(from))
-        {
-            //  Are we moving to a tableau?
-            if (_tableauSet.Contains(to))
-            {
-                //  We can move to a tableau only if:
-                //  1. It is empty and we are a king.
-                //  2. It is card CN and we are color !C and Number N-1
-                if ((to.Count == 0 && card.Value == 12) ||
-                    (to.Count > 0 && to.Last().Colour != card.Colour && to.Last().Value == card.Value + 1))
-                {
-                    //  Move from foundation to tableau.
-                    scoreModifier = -15;
-                }
-                else
-                    return false;
-            }
-            //  Are we moving to another foundation?
-            else if (_foundations.Contains(to))
-            {
-                //  We can move from a foundation to a foundation only 
-                //  if the source foundation has one card (the ace) and the
-                //  destination foundation has no cards).
-                if (from.Count == 1 && to.Count == 0)
-                {
-                    //  The move is valid, but has no impact on the score.
-                    scoreModifier = 0;
-                }
-                else
-                    return false;
-            }
-            //  Any other move from a foundation is wrong.
             else
                 return false;
         }
@@ -385,11 +321,6 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
         MoveCard(from, to, card);
         Score += scoreModifier;
         Moves++;
-
-        //  If we have moved from the waste, we must 
-        //  make sure that the top of the waste is playable.
-        if (from.SequenceEqual(Waste) && Waste.Count > 0)
-            Waste.Last().IsPlayable = true;
 
         //  Check for victory.
         CheckForVictory();
@@ -451,6 +382,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
     }
 
     //  For ease of access we have arrays of the foundations and tableau set.
+    private readonly List<ObservableCollection<PlayingCardViewModel>> _cells = new();
     private readonly List<ObservableCollection<PlayingCardViewModel>> _foundations = new();
     private readonly List<ObservableCollection<PlayingCardViewModel>> _tableauSet = new();
 
@@ -485,16 +417,6 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
     public ObservableCollection<PlayingCardViewModel> Cell3 { get; } = new();
     
     public ObservableCollection<PlayingCardViewModel> Cell4 { get; } = new();
-    
-    public ObservableCollection<PlayingCardViewModel> Stock { get; } = new();
-
-    public ObservableCollection<PlayingCardViewModel> Waste { get; } = new();
-
-
-    /// <summary>
-    /// The turn stock command.
-    /// </summary> 
-    public ICommand? TurnStockCommand { get; }
 
     public ICommand? AppropriateFoundationsCommand { get; }
 }
