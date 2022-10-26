@@ -7,19 +7,13 @@ using Solitaire.Models;
 
 namespace Solitaire.Browser;
 
-public class BrowserSettingsStore<T> : IRuntimeStorageProvider<T>
+public partial class BrowserSettingsStore<T> : IRuntimeStorageProvider<T>
 {
     [JSImport("globalThis.localStorage.setItem")]
-    private static void SetItem(string key, string value)
-    {
-        throw new NotImplementedException();
-    }
+    private static partial void SetItem(string key, string value);
 
     [JSImport("globalThis.localStorage.getItem")]
-    private static string GetItem(string key)
-    {
-        throw new NotImplementedException();
-    }
+    private static partial string GetItem(string key);
 
     private static string Identifier { get; } = typeof(T).FullName?.Replace(".", string.Empty) ?? "default";
 
