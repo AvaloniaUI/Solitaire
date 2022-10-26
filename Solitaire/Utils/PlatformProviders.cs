@@ -3,11 +3,28 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.VisualTree;
 using Newtonsoft.Json;
 using Solitaire.Models;
 using Solitaire.ViewModels;
 
 namespace Solitaire.Utils;
+
+public static class VisualExtensions
+{
+    
+    public static Rect TransformToVisualRect(this IVisual visual, IVisual relativeTo)
+    {
+        var sourceBounds = visual.Bounds;
+        if (visual.TransformToVisual(relativeTo) is Matrix sourceTransform)
+        {
+            return sourceBounds.TransformToAABB(sourceTransform);
+        }
+        return default;
+    }
+
+}
 
 public static class PlatformProviders
 {

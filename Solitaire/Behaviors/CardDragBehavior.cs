@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -21,6 +22,7 @@ public class CardDragBehavior : Behavior<Control>
 {
     private bool _dragStarted;
     private Point _start;
+
 
     public static readonly AttachedProperty<bool> IsDragSourceProperty =
         AvaloniaProperty.RegisterAttached<CardDragBehavior, CardStackControl, bool>
@@ -114,17 +116,26 @@ public class CardDragBehavior : Behavior<Control>
 
     private void PointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (!AssociatedDataContext.IsPlayable) return;
+        var itemsParent = AssociatedObject!.GetVisualAncestors()
+            .FirstOrDefault(x => x.GetType() == typeof(CardStackControl)) as CardStackControl;
+        
+        if (itemsParent is { })
+        {
+                
+        }
+        
+        if (!AssociatedDataContext.IsPlayable)
+        {
+           
+        }
 
         var properties = e.GetCurrentPoint(AssociatedObject).Properties;
-        
-        if (!properties.IsLeftButtonPressed && AssociatedObject is null) return;
-        
-        var itemsParent = AssociatedObject!.GetVisualAncestors()
-            .FirstOrOptional(x => x.GetType() == typeof(CardStackControl));
 
-        if (!itemsParent.HasValue || itemsParent.Value is not CardStackControl ip || !GetIsDragSource(ip)) return;
-        
+        if (!properties.IsLeftButtonPressed && AssociatedObject is null) return;
+
+
+        if (itemsParent is not { } || !GetIsDragSource(itemsParent)) return;
+
         _dragStarted = true;
         _start = e.GetCurrentPoint(AssociatedObject!.Parent).Position;
         AddTransforms();
@@ -156,17 +167,17 @@ public class CardDragBehavior : Behavior<Control>
         {
             var gi = AssociatedDataContext.CardGameInstance;
             var fromList = gi.GetCardCollection(AssociatedDataContext);
-            
+
             if (fromList is null)
             {
                 return;
             }
-            
+
             foreach (var visual in AssociatedObject?.GetVisualRoot()?.GetVisualsAt(position)!)
             {
                 if (visual is not Control targetControl) continue;
                 if (GetDragTargetObject(targetControl) is not IList<PlayingCardViewModel> toList) continue;
-               gi.CheckAndMoveCard(fromList, toList, AssociatedDataContext);
+                gi.CheckAndMoveCard(fromList, toList, AssociatedDataContext);
                 break;
             }
         }
@@ -177,27 +188,28 @@ public class CardDragBehavior : Behavior<Control>
     private void AddTransforms()
     {
         if (AssociatedObject is null) return;
-        
+
         SetTranslateTransform(AssociatedObject, Vector.Zero);
 
-        if(AssociatedObject.FindAncestorOfType<CardStackControl>() is { } csp)
+        if (AssociatedObject.FindAncestorOfType<CardStackControl>() is { } csp)
         {
             csp.ZIndex = 100;
         }
-        
+
         ((IPseudoClasses)AssociatedObject.Classes).Add(":dragging");
     }
 
     private void RemoveTransforms()
     {
         if (AssociatedObject is null) return;
-        
-        if(AssociatedObject.FindAncestorOfType<CardStackControl>() is { } csp)
+
+        if (AssociatedObject.FindAncestorOfType<CardStackControl>() is { } csp)
         {
             csp.ZIndex = 0;
         }
+
         ((IPseudoClasses)AssociatedObject.Classes).Remove(":dragging");
-        
+
         SetTranslateTransform(AssociatedObject, Vector.Zero);
     }
 
@@ -218,8 +230,8 @@ public class CardDragBehavior : Behavior<Control>
         }
 
         SetTranslateTransform(AssociatedObject, delta);
-        
-        
+
+
         // var gi = AssociatedDataContext.CardGameInstance;
         // var fromList = gi.GetCardCollection(AssociatedDataContext);
         //
@@ -227,9 +239,6 @@ public class CardDragBehavior : Behavior<Control>
         // {
         // }
         //  
-        
-        
-        
     }
 
     private static void SetTranslateTransform(IControl? control, Vector newVector)
