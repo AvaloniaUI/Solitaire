@@ -3,11 +3,11 @@
              xmlns:local="using:Solitaire"
              x:Class="Solitaire.App">
     <Application.DataTemplates>
-        <local:ViewLocator/>
+        <local:ViewLocator />
     </Application.DataTemplates>
 
     <Application.Styles>
-        <FluentTheme Mode="Dark"/>
+        <FluentTheme Mode="Dark" />
         <StyleInclude Source="/Styles.axaml" />
         <StyleInclude Source="/CardsStyle.axaml" />
     </Application.Styles>
