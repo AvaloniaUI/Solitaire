@@ -18,6 +18,7 @@ using Avalonia.Styling;
 using Avalonia.VisualTree;
 using ReactiveUI;
 using Solitaire.ViewModels;
+using Vector = Avalonia.Vector;
 
 namespace Solitaire.Controls;
 
@@ -67,7 +68,7 @@ public class CardStackControl : Border, IStyleable
                     {
                         var cachedContainer = new ContentControl()
                         {
-                            DataTemplates = { _dataTemplate },
+                            DataTemplates = {_dataTemplate},
                             Content = newItem
                         };
 
@@ -128,17 +129,110 @@ public class CardStackControl : Border, IStyleable
     private void RegisterEvents(ContentControl container)
     {
         container.PointerPressed += ContainerOnPointerPressed;
+        container.PointerMoved += ContainerOnPointerMoved;
+        container.PointerReleased += ContainerOnPointerReleased;
     }
-
 
     private void UnregisterEvents(ContentControl container)
     {
         container.PointerPressed -= ContainerOnPointerPressed;
+        container.PointerMoved -= ContainerOnPointerMoved;
+        container.PointerReleased -= ContainerOnPointerReleased;
+    }
+
+
+    private void ContainerOnPointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+
+
+        if (!_isDragging) return;
+
+
+        var ssd = sender as ContentControl;
+        var sdd = ssd.Content as PlayingCardViewModel;
+
+
+        var position = e.GetCurrentPoint(ssd.Parent).Position;
+
+        var delta = position - _start;
+
+
+        var compositionVisual = ElementComposition.GetElementVisual(ssd);
+        if (compositionVisual is null)
+        {
+            return;
+        }
+
+        var compositor = compositionVisual.Compositor;
+        var animation = compositor.CreateVector3KeyFrameAnimation();
+        animation.InsertKeyFrame(1f,
+            new Vector3((float) _startVector.X, (float) _startVector.Y, 0f));
+        animation.Duration = TimeSpan.FromSeconds(1);
+
+        compositionVisual.StartAnimation("Offset", animation);
+        _isDragging = false;
+
+        e.Pointer.Capture(null);
+    }
+
+    private void ContainerOnPointerMoved(object? sender, PointerEventArgs e)
+    {
+        if (!_isDragging) return;
+
+
+        var ssd = sender as ContentControl;
+        var sdd = ssd.Content as PlayingCardViewModel;
+
+
+        var properties = e.GetCurrentPoint(ssd).Properties;
+
+        if (!Equals(e.Pointer.Captured, ssd) || !properties.IsLeftButtonPressed || !_isDragging ||
+            ssd is null) return;
+
+        var position = e.GetCurrentPoint(ssd.Parent).Position;
+
+        var delta = position - _start;
+
+        if (Math.Abs(delta.X) < 3 || Math.Abs(delta.Y) < 3)
+        {
+            return;
+        }
+
+
+        var compositionVisual = ElementComposition.GetElementVisual(ssd);
+        if (compositionVisual is null)
+        {
+            return;
+        }
+
+        var compositor = compositionVisual.Compositor;
+        var animation = compositor.CreateVector3KeyFrameAnimation();
+
+        animation.InsertKeyFrame(1f,
+            new Vector3((float) (_startVector.X + delta.X), (float) (_startVector.Y + delta.Y), 0f));
+        animation.Duration = TimeSpan.FromSeconds(0.01);
+
+        compositionVisual.StartAnimation("Offset", animation);
     }
 
     private void ContainerOnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         ExecuteCardClickCommand();
+
+        var ssd = sender as ContentControl;
+        var sdd = ssd.Content as PlayingCardViewModel;
+
+
+        if (!sdd.IsPlayable) return;
+
+
+        var properties = e.GetCurrentPoint(ssd).Properties;
+
+        if (!properties.IsLeftButtonPressed && ssd is null) return;
+
+        _start = e.GetCurrentPoint(ssd!.Parent).Position;
+        e.Pointer.Capture(ssd);
+        _isDragging = true;
     }
 
 
@@ -191,16 +285,13 @@ public class CardStackControl : Border, IStyleable
         var compositor = compositionVisual.Compositor;
         var animation = compositor.CreateVector3KeyFrameAnimation();
 
-        if (Orientation == Orientation.Horizontal)
-        {
-            animation.InsertKeyFrame(1f, new Vector3((float)Bounds.Left + (float)totalOffset, (float)Bounds.Top, 0f));
-            animation.Duration = TimeSpan.FromSeconds(2); 
-        }
-        else
-        {
-            animation.InsertKeyFrame(1f, new Vector3((float)Bounds.Left, (float)Bounds.Top + (float)totalOffset, 0f));
-            animation.Duration = TimeSpan.FromSeconds(2);
-        }
+        _startVector = Orientation == Orientation.Horizontal
+            ? new Vector((float) Bounds.Left + (float) totalOffset, (float) Bounds.Top)
+            : new Vector((float) Bounds.Left, (float) Bounds.Top + (float) totalOffset);
+
+        animation.InsertKeyFrame(1f,
+            new Vector3((float) _startVector.X, (float) _startVector.Y, 0f));
+        animation.Duration = TimeSpan.FromSeconds(0.4);
 
         compositionVisual.StartAnimation("Offset", animation);
     }
@@ -329,6 +420,10 @@ public class CardStackControl : Border, IStyleable
     public static readonly StyledProperty<ICommand?> CommandOnCardClickProperty =
         AvaloniaProperty.Register<CardStackControl, ICommand?>("CommandOnCardClick");
 
+    private bool _isDragging;
+    private Point _start;
+    private Vector _startVector;
+
     public int NValue
     {
         get => GetValue(NValueProperty);
@@ -337,7 +432,7 @@ public class CardStackControl : Border, IStyleable
 
     public ICommand? CommandOnCardClick
     {
-        get => (ICommand?)GetValue(CommandOnCardClickProperty);
+        get => (ICommand?) GetValue(CommandOnCardClickProperty);
         set => SetValue(CommandOnCardClickProperty, value);
     }
 }
