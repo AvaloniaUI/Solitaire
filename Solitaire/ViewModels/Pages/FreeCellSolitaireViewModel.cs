@@ -252,7 +252,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
             }
             else if (_cells.Contains(to))
             {
-                if (to.Count > 0)
+                if (to.Count > 0 || from.Count - from.IndexOf(card) > 1)
                 {
                     return false;
                 }
@@ -282,8 +282,8 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
                     return false;
             }
             else if (_cells.Contains(to))
-            {
-                if (to.Count > 0)
+            {   
+                if (to.Count > 0 || from.Count - from.IndexOf(card) > 1)
                 {
                     return false;
                 }
