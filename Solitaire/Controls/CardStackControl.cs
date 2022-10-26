@@ -4,14 +4,18 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Numerics;
 using System.Reactive.Linq;
 using System.Windows.Input;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml.Templates;
+using Avalonia.Rendering.Composition;
 using Avalonia.Styling;
+using Avalonia.VisualTree;
 using ReactiveUI;
 using Solitaire.ViewModels;
 
@@ -76,13 +80,13 @@ public class CardStackControl : Border, IStyleable
 
                         TargetCanvas.Children.Add(cachedContainer);
                     }
-                    
+
                     foreach (var keyValues in _containers)
                     {
                         SetContainerLayout(keyValues.Key, keyValues.Value);
                     }
                 }
-                
+
 
                 break;
             case NotifyCollectionChangedAction.Remove:
@@ -126,6 +130,7 @@ public class CardStackControl : Border, IStyleable
         container.PointerPressed += ContainerOnPointerPressed;
     }
 
+
     private void UnregisterEvents(ContentControl container)
     {
         container.PointerPressed -= ContainerOnPointerPressed;
@@ -163,13 +168,13 @@ public class CardStackControl : Border, IStyleable
 
         var cardIndex = SourceItems.IndexOf(card);
         var totalItems = SourceItems.Count;
-        
+
         double totalOffset = 0;
-        
+
         for (var i = 0; i <= cardIndex; i++)
         {
-            if(i - 1 < 0) continue;
-            
+            if (i - 1 < 0) continue;
+
             var z = SourceItems[i - 1];
             GetOffsets(z, i, totalItems, out var a, out var b);
             var c = z.IsFaceDown ? a : b;
@@ -177,16 +182,27 @@ public class CardStackControl : Border, IStyleable
         }
 
 
+        var compositionVisual = ElementComposition.GetElementVisual(cachedContainer);
+        if (compositionVisual is null)
+        {
+            return;
+        }
+
+        var compositor = compositionVisual.Compositor;
+        var animation = compositor.CreateVector3KeyFrameAnimation();
+
         if (Orientation == Orientation.Horizontal)
         {
-            Canvas.SetLeft(cachedContainer, Bounds.Left + totalOffset);
-            Canvas.SetTop(cachedContainer, Bounds.Top);
+            animation.InsertKeyFrame(1f, new Vector3((float)Bounds.Left + (float)totalOffset, (float)Bounds.Top, 0f));
+            animation.Duration = TimeSpan.FromSeconds(2); 
         }
         else
         {
-            Canvas.SetLeft(cachedContainer, Bounds.Left);
-            Canvas.SetTop(cachedContainer, Bounds.Top + totalOffset);
+            animation.InsertKeyFrame(1f, new Vector3((float)Bounds.Left, (float)Bounds.Top + (float)totalOffset, 0f));
+            animation.Duration = TimeSpan.FromSeconds(2);
         }
+
+        compositionVisual.StartAnimation("Offset", animation);
     }
 
 
@@ -221,8 +237,9 @@ public class CardStackControl : Border, IStyleable
                     faceDownOffset = FaceDownOffset;
                     faceUpOffset = FaceUpOffset;
                 }
+
                 break;
- 
+
             case OffsetMode.BottomNCards:
                 //  Offset only if 0 < n < N
                 if (n < NValue)
