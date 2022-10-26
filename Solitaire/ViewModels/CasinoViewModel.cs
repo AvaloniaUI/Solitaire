@@ -19,6 +19,7 @@ public partial class CasinoViewModel : ViewModelBase
     {
         KlondikeInstance = new KlondikeSolitaireViewModel(this);
         SpiderInstance = new SpiderSolitaireViewModel(this);
+        FreeCellInstance = new FreeCellSolitaireViewModel(this);
         SettingsInstance = new SettingsViewModel(this);
         TitleInstance = new TitleViewModel(this);
         CurrentView = TitleInstance;
@@ -26,8 +27,9 @@ public partial class CasinoViewModel : ViewModelBase
 
     public TitleViewModel TitleInstance { get; }
     public SettingsViewModel SettingsInstance { get; }
-    public SpiderSolitaireViewModel? SpiderInstance { get; }
-    public KlondikeSolitaireViewModel? KlondikeInstance { get; }
+    public SpiderSolitaireViewModel SpiderInstance { get; }
+    public FreeCellSolitaireViewModel FreeCellInstance { get; }
+    public KlondikeSolitaireViewModel KlondikeInstance { get; }
 
     /// <summary>
     /// Saves this instance.
@@ -47,6 +49,7 @@ public partial class CasinoViewModel : ViewModelBase
         if (ret is null) return new CasinoViewModel();
 
         // Refresh game logics.
+        ret.FreeCellInstance.ResetGame();
         ret.KlondikeInstance.ResetGame();
         ret.SpiderInstance.ResetGame();
         return ret;

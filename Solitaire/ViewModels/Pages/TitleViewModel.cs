@@ -8,6 +8,7 @@ public partial class TitleViewModel : ViewModelBase
 {
     [ObservableProperty] private GameStatisticsViewModel? _klondikeStatsInstance;
     [ObservableProperty] private GameStatisticsViewModel? _spiderStatsInstance;
+    [ObservableProperty] private GameStatisticsViewModel? _freeCellStatsInstance;
 
     
 #if DEBUG
@@ -17,6 +18,8 @@ public partial class TitleViewModel : ViewModelBase
     public ICommand? NavigateToKlondikeCommand { get; }
 
     public ICommand? NavigateToSpiderCommand { get; }
+    
+    public ICommand? NavigateToFreeCellCommand { get; }
 
     public ICommand? NavigateToSettingsCommand { get; }
 
@@ -26,13 +29,19 @@ public partial class TitleViewModel : ViewModelBase
         NavigateToKlondikeCommand = new RelayCommand(() =>
         {
             casinoViewModel.CurrentView = casinoViewModel.KlondikeInstance;
-            casinoViewModel.KlondikeInstance?.NewGameCommand?.Execute(default);
+            casinoViewModel.KlondikeInstance.NewGameCommand?.Execute(default);
         });
 
         NavigateToSpiderCommand = new RelayCommand(() =>
         {
             casinoViewModel.CurrentView = casinoViewModel.SpiderInstance;
-            casinoViewModel.SpiderInstance?.NewGameCommand?.Execute(default);
+            casinoViewModel.SpiderInstance.NewGameCommand?.Execute(default);
+        });
+
+        NavigateToFreeCellCommand = new RelayCommand(() =>
+        {
+            casinoViewModel.CurrentView = casinoViewModel.FreeCellInstance;
+            casinoViewModel.FreeCellInstance.NewGameCommand?.Execute(default);
         });
 
         NavigateToSettingsCommand = new RelayCommand(() =>
@@ -40,7 +49,8 @@ public partial class TitleViewModel : ViewModelBase
             casinoViewModel.CurrentView = casinoViewModel.SettingsInstance;
         });
         
-        SpiderStatsInstance = new GameStatisticsViewModel(casinoViewModel.SpiderInstance!);
-        KlondikeStatsInstance = new GameStatisticsViewModel(casinoViewModel.KlondikeInstance!);
+        SpiderStatsInstance = new GameStatisticsViewModel(casinoViewModel.SpiderInstance);
+        KlondikeStatsInstance = new GameStatisticsViewModel(casinoViewModel.KlondikeInstance);
+        FreeCellStatsInstance = new GameStatisticsViewModel(casinoViewModel.FreeCellInstance);
     }
 }
