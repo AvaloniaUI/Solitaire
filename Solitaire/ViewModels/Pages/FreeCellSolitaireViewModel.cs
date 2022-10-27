@@ -22,14 +22,6 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
 
     [ObservableProperty] private DrawMode _drawMode;
 
-#if DEBUG
-    public FreeCellSolitaireViewModel()
-    {
-        InitializeFoundationsAndTableauSet();
-        DoDealNewGame();
-    }
-#endif
-
     public FreeCellSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel)
     {
         InitializeFoundationsAndTableauSet();
@@ -214,11 +206,16 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
         //  The trivial case is where from and to are the same.
         if (from.SequenceEqual(to))
             return false;
+
+        var freeCells = _cells.Count(x => x.Count == 0);
         
         //  Identify the run of cards we're moving.
         var run = new List<PlayingCardViewModel>();
         for (var i = from.IndexOf(card); i < from.Count; i++)
             run.Add(from[i]);
+
+        if (run.Count > freeCells + 1)
+            return false;
 
         if (run.Count > 1)
         {
@@ -334,7 +331,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
 
         //  If we've got here we've passed all tests
         //  and move the card and update the score.
-        MoveCard(from, to, card);
+        MoveCard(from, to, card, scoreModifier);
         Score += scoreModifier;
         Moves++;
 
@@ -352,7 +349,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
     /// <param name="card">The card.</param>
     private void MoveCard(IList<PlayingCardViewModel> from,
         IList<PlayingCardViewModel> to,
-        PlayingCardViewModel card)
+        PlayingCardViewModel card, int scoreModifier)
     {
         //  Identify the run of cards we're moving.
         var run = new List<PlayingCardViewModel>();
@@ -365,6 +362,8 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
             from.Remove(runCard);
         foreach (var runCard in run)
             to.Add(runCard);
+
+        RecordMove(from, to, run, 0);
 
         //  Are there any cards left in the from pile?
         if (from.Count > 0)

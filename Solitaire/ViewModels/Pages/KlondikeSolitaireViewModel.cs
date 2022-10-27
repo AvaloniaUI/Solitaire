@@ -22,14 +22,6 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
     [ObservableProperty] private DrawMode _drawMode;
 
-#if DEBUG
-    public KlondikeSolitaireViewModel()
-    {
-        InitializeFoundationsAndTableauSet();
-        DoDealNewGame();
-    }
-#endif
-
     public KlondikeSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel)
     {
         _casinoViewModel = casinoViewModel;
