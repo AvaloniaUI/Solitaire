@@ -7,6 +7,8 @@
     xmlns:controls="clr-namespace:Solitaire.Controls"
     xmlns:behaviors="clr-namespace:Solitaire.Behaviors"
     xmlns:pages="clr-namespace:Solitaire.ViewModels.Pages"
+    xmlns:viewModels="clr-namespace:Solitaire.ViewModels"
+    xmlns:generic="clr-namespace:System.Collections.Generic;assembly=System.Collections"
     mc:Ignorable="d"
     x:DataType="pages:FreeCellSolitaireViewModel"
     x:CompileBindings="True"
@@ -21,11 +23,14 @@
 
         <!--  The cards etc are all in a Viewbox so that they resize in a sensible -->
         <!-- way when we resize the window. -->
-        <Viewbox Grid.Row="0" Margin="10" ClipToBounds="False">
+        <Viewbox Grid.Row="0" Margin="10" ClipToBounds="False" StretchDirection="Both" Stretch="Uniform">
 
             <!-- This is the layout grid for the tableaus, foundations etc. -->
             <Grid Width="1550" Height="840" ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
                   RowDefinitions="240,600">
+                <controls:CardStackControl.ContainerCache>
+                    <generic:Dictionary x:TypeArguments="viewModels:PlayingCardViewModel, ContentControl"/>
+                </controls:CardStackControl.ContainerCache>
                 <Grid.Styles>
                     <Style Selector="Border.RunMarker, Border.StackMarker, controls|CardStackControl">
                         <Setter Property="Grid.ColumnSpan" Value="2" />

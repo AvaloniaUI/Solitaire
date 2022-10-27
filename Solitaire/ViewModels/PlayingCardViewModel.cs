@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Solitaire.Models;
 
 namespace Solitaire.ViewModels;
@@ -52,9 +53,11 @@ public partial class PlayingCardViewModel : ViewModelBase
         //  The first two suits in the CardType enum are red, the last two are black.
         (int)CardType < 26 ? CardColour.Red : CardColour.Black;
 
-    [ObservableProperty] private CardType _cardType  = CardType.SA;
+    [ObservableProperty]  private CardType _cardType  = CardType.SA;
     [ObservableProperty] private bool _isFaceDown;
     [ObservableProperty] private bool _isPlayable;
     [ObservableProperty] private double _faceDownOffset;
     [ObservableProperty] private double _faceUpOffset;
+ 
+ 
 }

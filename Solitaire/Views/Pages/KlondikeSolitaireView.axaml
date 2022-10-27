@@ -7,6 +7,8 @@
     xmlns:controls="clr-namespace:Solitaire.Controls"
     xmlns:behaviors="clr-namespace:Solitaire.Behaviors"
     xmlns:pages="clr-namespace:Solitaire.ViewModels.Pages"
+    xmlns:generic="clr-namespace:System.Collections.Generic;assembly=System.Collections"
+    xmlns:viewModels="clr-namespace:Solitaire.ViewModels"
     mc:Ignorable="d"
     x:DataType="pages:KlondikeSolitaireViewModel"
     x:CompileBindings="True"
@@ -21,12 +23,14 @@
 
         <!--  The cards etc are all in a Viewbox so that they resize in a sensible -->
         <!-- way when we resize the window. -->
-        <Viewbox Grid.Row="0" Margin="10" ClipToBounds="False">
+        <Viewbox Grid.Row="0" Margin="10" ClipToBounds="False"  StretchDirection="Both" Stretch="Uniform">
  
             <!-- This is the layout grid for the tableaus, foundations etc. -->
-            <Grid Width="1200" Height="840" ColumnDefinitions="*,*,*,*,*,*,*" RowDefinitions="240,600">
-
-                <Interaction.Behaviors>
+            <Grid Width="1200" Height="840" ColumnDefinitions="*,*,*,*,*,*,*" RowDefinitions="240,600" >
+                <controls:CardStackControl.ContainerCache>
+                    <generic:Dictionary x:TypeArguments="viewModels:PlayingCardViewModel, ContentControl"/>
+                </controls:CardStackControl.ContainerCache>
+                <Interaction.Behaviors> 
                     <BehaviorCollection>
                         <behaviors:ExecuteOnPointerPressedBehavior
                             ActivateOn="RightButton"
