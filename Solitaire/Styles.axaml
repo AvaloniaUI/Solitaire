@@ -13,43 +13,65 @@
         <Thickness x:Key="CardThickness">8,10,40,40</Thickness>
 
         <DataTemplate x:Key="PlayingCardDataTemplate" DataType="{x:Type solitaireGames:PlayingCardViewModel}">
-            <Border
-                Background="White"
-                Classes="playingCard"
-                Classes.isFaceDown="{Binding IsFaceDown}"
-                Width="140" Height="203" Cursor="Hand"
-                BorderThickness="1" CornerRadius="6">
-                <Image Margin="4">
-                    <Image.Source>
-                        <MultiBinding Converter="{StaticResource PlayingCardToBrushConverter}">
-                            <Binding Path="CardType" />
-                            <Binding Path="IsFaceDown" />
-                        </MultiBinding>
-                    </Image.Source>
-                </Image>
-                <Border.Styles>
-                    <Style Selector="Border.playingCard.isFaceDown">
-                        <Setter Property="BorderBrush" Value="Transparent" />
-                    </Style>
-                    <Style Selector="Border.playingCard:not(.isFaceDown)">
-                        <Setter Property="BorderBrush" Value="Gray" />
-                    </Style>
-                    <Style Selector="Border.playingCard:not(:dragging)">
-                        <Setter Property="Transitions">
-                            <Setter.Value>
-                                <Transitions>
-                                    <TransformOperationsTransition Property="RenderTransform"
-                                                                   Duration="0:0:0.075" Easing="QuadraticEaseIn" />
-                                </Transitions>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
+          <Panel>
+                <Panel Classes="playingCardBack">
+              
+              <Border
+                  Background="White"
+                  Width="140" Height="203" Cursor="Hand"
+                  BorderThickness="1" CornerRadius="6">
+                  <Image Margin="4" Source="{StaticResource CardBack}">
+                  </Image>
 
-                    <Style Selector="Border.playingCard:dragging">
-                        <Setter Property="Opacity" Value="0.5" />
-                    </Style>
-                </Border.Styles>
-            </Border>
+                  <Border.RenderTransform>
+                      <Rotate3DTransform
+                          AngleY="180" />
+                  </Border.RenderTransform>
+              </Border>
+          </Panel>
+            
+            <Panel Classes="playingCardFront">
+                <Border
+                    Background="White"
+                    Classes.isFaceDown="{Binding IsFaceDown}"
+                    Width="140" Height="203" Cursor="Hand"
+                    BorderThickness="1" CornerRadius="6">
+                    <Image Margin="4">
+                        <Image.Source>
+                            <MultiBinding Converter="{StaticResource PlayingCardToBrushConverter}">
+                                <Binding Path="CardType" />
+                                <Binding Path="IsFaceDown" />
+                            </MultiBinding>
+                        </Image.Source>
+                    </Image>
+                    <Border.Styles>
+                        <Style Selector="Border.playingCard.isFaceDown">
+                            <Setter Property="BorderBrush" Value="Transparent" />
+                        </Style>
+                        <Style Selector="Border.playingCard:not(.isFaceDown)">
+                            <Setter Property="BorderBrush" Value="Gray" />
+                        </Style>
+                        <Style Selector="Border.playingCard:not(:dragging)">
+                            <Setter Property="Transitions">
+                                <Setter.Value>
+                                    <Transitions>
+                                        <TransformOperationsTransition Property="RenderTransform"
+                                                                       Duration="0:0:0.075" Easing="QuadraticEaseIn" />
+                                    </Transitions>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                
+                        <Style Selector="Border.playingCard:dragging">
+                            <Setter Property="Opacity" Value="0.5" />
+                        </Style>
+                    </Border.Styles>
+                </Border>
+
+
+            </Panel>
+          </Panel>
+          
         </DataTemplate>
     </Styles.Resources>
 

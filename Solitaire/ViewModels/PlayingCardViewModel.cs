@@ -58,6 +58,9 @@ public partial class PlayingCardViewModel : ViewModelBase
     [ObservableProperty] private bool _isPlayable;
     [ObservableProperty] private double _faceDownOffset;
     [ObservableProperty] private double _faceUpOffset;
- 
- 
+
+    public PlayingCardViewModel()
+    {
+        
+    }
 }
