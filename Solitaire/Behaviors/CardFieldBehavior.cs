@@ -37,7 +37,7 @@ public class CardFieldBehavior : Behavior<Canvas>
 
     public static void SetCards(Control obj, List<PlayingCardViewModel> value) => obj.SetValue(CardsProperty, value);
     public static List<PlayingCardViewModel> GetCards(Control obj) => obj.GetValue(CardsProperty);
- 
+
     private void EnsureImplicitAnimations()
     {
         if (ImplicitAnimations != null || AssociatedObject == null) return;
@@ -57,8 +57,6 @@ public class CardFieldBehavior : Behavior<Canvas>
 
         ImplicitAnimations = compositor.CreateImplicitAnimationCollection();
         ImplicitAnimations["Offset"] = animationGroup;
-        
-        
     }
 
 
@@ -81,14 +79,14 @@ public class CardFieldBehavior : Behavior<Canvas>
 
         if (cardStacks != null)
             cardStacks.CollectionChanged += XssOnCollectionChanged;
-        
+
         if (Application.Current == null ||
             !Application.Current.Styles.TryGetResource("PlayingCardDataTemplate", out var x) ||
             x is not DataTemplate y) return;
 
         AssociatedObject.DataTemplates.Add(y);
 
-        var homePosition = cardStacks?.FirstOrDefault(i => i.IsHomeStack)?.StackOrigin ?? new Point(); 
+        var homePosition = cardStacks?.FirstOrDefault(i => i.IsHomeStack)?.StackOrigin ?? new Point();
 
         foreach (var cardType in Enum.GetValuesAsUnderlyingType(typeof(CardType)).Cast<CardType>())
         {
@@ -103,6 +101,9 @@ public class CardFieldBehavior : Behavior<Canvas>
                 Content = card
             };
 
+            Canvas.SetLeft(container, homePosition.X);
+            Canvas.SetTop(container, homePosition.Y);
+
             AddImplicitAnimations(container);
 
             cardsList.Add(card);
@@ -110,7 +111,7 @@ public class CardFieldBehavior : Behavior<Canvas>
             AssociatedObject.Children.Add(container);
         }
     }
- 
+
     private void XssOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         var cardsList = GetCards(AssociatedObject);
@@ -119,11 +120,9 @@ public class CardFieldBehavior : Behavior<Canvas>
 
         if (cardStacks != null)
             cardStacks.CollectionChanged += XssOnCollectionChanged;
-        
+
         foreach (var card in cardsList)
         {
-            
-            
         }
     }
 
