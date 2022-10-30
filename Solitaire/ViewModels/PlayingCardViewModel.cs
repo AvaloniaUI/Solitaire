@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Newtonsoft.Json.Converters;
 using Solitaire.Models;
 
 namespace Solitaire.ViewModels;
@@ -57,9 +58,12 @@ public partial class PlayingCardViewModel : ViewModelBase
     [ObservableProperty] private bool _isPlayable;
     [ObservableProperty] private double _faceDownOffset;
     [ObservableProperty] private double _faceUpOffset;
-
-    public PlayingCardViewModel()
+ 
+    public void Reset()
     {
-        
+        IsPlayable = false;
+        IsFaceDown = true;
+        FaceDownOffset = 0;
+        FaceUpOffset = 0;
     }
 }

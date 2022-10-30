@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -35,6 +38,9 @@ public class CardFieldBehavior : Behavior<Canvas>
     public static readonly AttachedProperty<List<PlayingCardViewModel>> CardsProperty =
         AvaloniaProperty.RegisterAttached<CardFieldBehavior, Control, List<PlayingCardViewModel>>("Cards");
 
+    private Dictionary<CardType, ContentControl> _containerCache = new();
+    private bool _isLayouting;
+
     public static void SetCards(Control obj, List<PlayingCardViewModel> value) => obj.SetValue(CardsProperty, value);
     public static List<PlayingCardViewModel> GetCards(Control obj) => obj.GetValue(CardsProperty);
 
@@ -65,7 +71,29 @@ public class CardFieldBehavior : Behavior<Canvas>
     {
         if (AssociatedObject == null) return;
         AssociatedObject.Loaded += AssociatedObjectOnLoaded;
+        AssociatedObject.Unloaded += AssociatedObjectOnUnloaded;
         base.OnAttached();
+    }
+
+    private void AssociatedObjectOnUnloaded(object? sender, RoutedEventArgs e)
+    {
+        var s = sender as Canvas;
+        var cardsList = GetCards(s);
+        var cardStacks = GetCardStacks(s);
+
+        if (cardStacks != null)
+        {
+            cardStacks.CollectionChanged -= XssOnCollectionChanged;
+            foreach (var card in cardsList)
+            {
+                card.PropertyChanged -= CardOnPropertyChanged;
+            }
+            cardsList.Clear();
+            cardStacks.Clear();
+        }
+
+        _containerCache.Clear();
+        s.Children.Clear();
     }
 
     private void AssociatedObjectOnLoaded(object? sender, RoutedEventArgs e)
@@ -96,24 +124,41 @@ public class CardFieldBehavior : Behavior<Canvas>
                 IsFaceDown = true
             };
 
+            card.PropertyChanged += CardOnPropertyChanged;
+
             var container = new ContentControl
             {
                 Content = card
             };
 
+            _containerCache.Add(cardType, container);
+
             Canvas.SetLeft(container, homePosition.X);
             Canvas.SetTop(container, homePosition.Y);
 
-            AddImplicitAnimations(container);
-
-            cardsList.Add(card);
-
             AssociatedObject.Children.Add(container);
+            cardsList.Add(card);
+            container.Loaded += ContainerOnLoaded;
         }
     }
 
-    private void XssOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    private void CardOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
+    LayoutCards();
+    }
+
+    private void ContainerOnLoaded(object? sender, RoutedEventArgs e)
+    {
+        AddImplicitAnimations(sender as ContentControl ?? throw new InvalidOperationException());
+    }
+
+    private void LayoutCards()
+    {
+        if (_isLayouting) return;
+
+        _isLayouting = true;
+
+        if (AssociatedObject == null) return;
         var cardsList = GetCards(AssociatedObject);
 
         var cardStacks = GetCardStacks(AssociatedObject);
@@ -123,7 +168,24 @@ public class CardFieldBehavior : Behavior<Canvas>
 
         foreach (var card in cardsList)
         {
+            var cardStack = cardStacks?.FirstOrDefault(y => y.Collection.Any(x => x.CardType == card.CardType));
+
+            if (cardStack is null || cardStacks is null) continue;
+
+            if (!_containerCache.TryGetValue(card.CardType, out var container)) continue;
+
+
+            container.ZIndex = 10 * cardStacks.IndexOf(cardStack) + (cardsList.Count - cardsList.IndexOf(card));
+            Canvas.SetLeft(container, cardStack.StackOrigin.X);
+            Canvas.SetTop(container, cardStack.StackOrigin.Y);
         }
+
+        _isLayouting = false;
+    }
+
+    private void XssOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        LayoutCards();
     }
 
 

@@ -74,18 +74,14 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// </summary>
     private void DoDealNewGame()
     {
-        ResetGame();
-
         DrawMode = _casinoViewModel.SettingsInstance.DrawMode;
 
-        //  Create a list of card types.
-        // var eachCardType = Enum.GetValues(typeof(CardType)).Cast<CardType>().ToList();
-        //
-        // //  Create a playing card from each card type.
-        // var playingCards = eachCardType
-        //     .Select(cardType => new PlayingCardViewModel(this) {CardType = cardType, IsFaceDown = true}).ToList();
-
-        //  Shuffle the playing cards.
+        foreach (var card in PlayingCards)
+        {
+            card.Reset();
+        }
+        
+        ResetGame();
 
         var playingCards = PlayingCards.OrderBy(x => Random.Shared.NextDouble()).ToList();
 
