@@ -21,8 +21,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
     [ObservableProperty] private DrawMode _drawMode;
     [ObservableProperty] private List<PlayingCardViewModel> _playingCards;
-    [ObservableProperty] private List<StacksMetadata> _stacksMetadatas;
-
+ 
     public KlondikeSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel)
     {
         PlayingCards = new List<PlayingCardViewModel>();
