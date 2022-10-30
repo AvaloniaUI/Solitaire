@@ -140,38 +140,46 @@ public class CardFieldBehavior : Behavior<Canvas>
 
         foreach (var cardStack in cardStacks)
         {
-            if (cardStack.SourceItems != null)
-                cardStack.SourceItems.CollectionChanged += delegate(object? o, NotifyCollectionChangedEventArgs args)
-                {
-                    if (o is not ObservableCollection<PlayingCardViewModel> col) return;
-                    SourceItemsOnCollectionChanged(cardStack, col, args);
-                };
+            cardStack.SourceItems.CollectionChanged += delegate(object? o, NotifyCollectionChangedEventArgs args)
+            {
+                SourceItemsOnCollectionChanged(cardStack, args);
+            };
         }
         // LayoutCards();
     }
 
-    private void SourceItemsOnCollectionChanged(CardStackPlacementControl control,
-        ObservableCollection<PlayingCardViewModel> col, NotifyCollectionChangedEventArgs e)
+    private void SourceItemsOnCollectionChanged(CardStackPlacementControl control, NotifyCollectionChangedEventArgs e)
     {
-        foreach (var ca in col.Select(x => (col.IndexOf(x), x)).OrderBy(x => x.Item1))
+        if (e.Action == NotifyCollectionChangedAction.Add)
         {
-            if (!_containerCache.TryGetValue(ca.x.CardType, out var container)) continue;
+            var startIndex = e.NewStartingIndex;
+            var ls = e.NewItems.Cast<PlayingCardViewModel>().ToList();
+            
+            
+            
+            foreach (var ca in ls.Select(x => (ls.IndexOf(x) + startIndex, x)).OrderBy(x => x.Item1))
+            {
+                if (!_containerCache.TryGetValue(ca.x.CardType, out var container)) continue;
 
-            container.ZIndex = ca.Item1;
 
-            GetOffsets(control, ca.x, ca.Item1, col.Count, out var xx,
-                out var yy);
+                GetOffsets(control, ca.x, ca.Item1, ls.Count, out var xx,
+                    out var yy);
 
-            var totalOffset = (ca.x.IsFaceDown ? xx : yy) * ca.Item1;
+                var pos = new Point(control.Bounds.Position.X +
+                                    (control.Orientation == Orientation.Horizontal ? (ca.x.IsFaceDown ? xx : yy) : 0)
+                    , control.Bounds.Position.Y
+                      + (control.Orientation == Orientation.Vertical ? (ca.x.IsFaceDown ? xx : yy) : 0)
+                );
 
-            var pos = new Point(control.Bounds.Position.X +
-                                (control.Orientation == Orientation.Horizontal ? totalOffset : 0)
-                , control.Bounds.Position.Y
-                  + (control.Orientation == Orientation.Vertical ? totalOffset : 0)
-            );
+                Canvas.SetLeft(container, pos.X);
+                Canvas.SetTop(container, pos.Y);
+                container.ZIndex = startIndex + ca.Item1;
 
-            Canvas.SetLeft(container, pos.X);
-            Canvas.SetTop(container, pos.Y);
+                if (container.ZIndex == 0)
+                {
+                
+                }
+            }
         }
     }
 
@@ -241,7 +249,7 @@ public class CardFieldBehavior : Behavior<Canvas>
         }
 
         faceDownOffset *= n;
-        faceDownOffset *= n;
+        faceUpOffset *= n;
     }
 
     private static void RemoveImplicitAnimations(Visual container)
