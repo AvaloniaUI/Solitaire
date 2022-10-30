@@ -37,7 +37,8 @@ public class CardStackPlacementControl : Border
         AvaloniaProperty.Register<CardStackPlacementControl, Canvas>("TargetCanvas");
 
     public static readonly StyledProperty<Orientation?> OrientationProperty =
-        AvaloniaProperty.Register<CardStackPlacementControl, Orientation?>("Orientation", Avalonia.Layout.Orientation.Vertical);
+        AvaloniaProperty.Register<CardStackPlacementControl, Orientation?>("Orientation",
+            Avalonia.Layout.Orientation.Vertical);
 
     public static readonly StyledProperty<double?> FaceDownOffsetProperty =
         AvaloniaProperty.Register<CardStackPlacementControl, double?>("FaceDownOffset");
@@ -54,12 +55,8 @@ public class CardStackPlacementControl : Border
     public static readonly StyledProperty<DrawMode?> NValueProperty =
         AvaloniaProperty.Register<CardStackPlacementControl, DrawMode?>("NValue");
 
-    private ObservableCollection<StacksMetadata>? _targetStacksMetaData;
-
     public static readonly StyledProperty<bool> IsHomeStackProperty =
         AvaloniaProperty.Register<CardStackPlacementControl, bool>("IsHomeStack");
-
-    private StacksMetadata? _getStacksMetadata;
 
     public ObservableCollection<PlayingCardViewModel>? SourceItems
     {

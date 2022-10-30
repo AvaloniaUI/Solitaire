@@ -74,10 +74,11 @@ public class CardFieldBehavior : Behavior<Canvas>
     {
         if (AssociatedObject == null) return;
         AssociatedObject.AttachedToVisualTree += AssociatedObjectOnAttachedToVisualTree;
+        AssociatedObject.DetachedFromVisualTree += AssociatedObjectOnDetachedFromVisualTree;
         base.OnAttached();
     }
 
-    private void AssociatedObjectOnUnloaded(object? sender, RoutedEventArgs e)
+    private void AssociatedObjectOnDetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
     {
         var s = sender as Canvas;
         var cardsList = GetCards(s);
@@ -158,7 +159,7 @@ public class CardFieldBehavior : Behavior<Canvas>
             !_containerCache.TryGetValue(newItem.CardType, out var container)) return;
 
         if (control.SourceItems == null) return;
-        
+
         var index = control.SourceItems.IndexOf(newItem);
 
         var sumOffsets = control.SourceItems.Select((x, y) =>
@@ -176,11 +177,9 @@ public class CardFieldBehavior : Behavior<Canvas>
             , control.Bounds.Position.Y
               + (control.Orientation == Orientation.Vertical ? sumOffsets : 0)
         );
-
+        container.ZIndex = index;
         Canvas.SetLeft(container, pos.X);
         Canvas.SetTop(container, pos.Y);
-
-        container.ZIndex = index;
     }
 
     private static void AddImplicitAnimations(Visual container)
