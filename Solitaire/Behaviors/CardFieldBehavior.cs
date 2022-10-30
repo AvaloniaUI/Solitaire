@@ -13,6 +13,7 @@ using Avalonia.Layout;
 using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Rendering.Composition;
 using Avalonia.Rendering.Composition.Animations;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
 using Microsoft.CodeAnalysis.Operations;
@@ -72,8 +73,7 @@ public class CardFieldBehavior : Behavior<Canvas>
     protected override void OnAttached()
     {
         if (AssociatedObject == null) return;
-        AssociatedObject.Loaded += AssociatedObjectOnLoaded;
-        AssociatedObject.Unloaded += AssociatedObjectOnUnloaded;
+        AssociatedObject.AttachedToVisualTree += AssociatedObjectOnAttachedToVisualTree;
         base.OnAttached();
     }
 
@@ -93,7 +93,7 @@ public class CardFieldBehavior : Behavior<Canvas>
         s.Children.Clear();
     }
 
-    private void AssociatedObjectOnLoaded(object? sender, RoutedEventArgs e)
+    private void AssociatedObjectOnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
     {
         if (AssociatedObject == null) return;
 
@@ -126,46 +126,30 @@ public class CardFieldBehavior : Behavior<Canvas>
             };
 
             _containerCache.Add(cardType, container);
-
-            Canvas.SetLeft(container, homePosition.X);
-            Canvas.SetTop(container, homePosition.Y);
-
-            container.AttachedToVisualTree += ContainerOnAttachedToVisualTree;
-
-
             AssociatedObject.Children.Add(container);
 
-
+            AddImplicitAnimations(container);
+            Canvas.SetLeft(container, homePosition.X);
+            Canvas.SetTop(container, homePosition.Y);
             cardsList.Add(card);
         }
 
-        foreach (var cardStack in cardStacks)
+        if (cardStacks == null) return;
+        foreach (var cardStack in cardStacks.Where(cardStack => cardStack.SourceItems != null))
         {
-            cardStack.SourceItems.CollectionChanged += delegate(object? o, NotifyCollectionChangedEventArgs args)
-            {
-                SourceItemsOnCollectionChanged(cardStack, args);
-            };
+            if (cardStack.SourceItems != null)
+                cardStack.SourceItems.CollectionChanged +=
+                    delegate(object? _, NotifyCollectionChangedEventArgs args)
+                    {
+                        SourceItemsOnCollectionChanged(cardStack, args);
+                    };
         }
-    }
-
-    private void ContainerOnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
-    {
-        if (sender is not ContentControl x) return;
-        // AddImplicitAnimations(x);
-        //  Console.WriteLine("impl");
     }
 
     private void SourceItemsOnCollectionChanged(CardStackPlacementControl? control, NotifyCollectionChangedEventArgs e)
     {
-        if (control is null) return;
-
-        if (e.Action != NotifyCollectionChangedAction.Add) return;
-
-        var startIndex = e.NewStartingIndex;
-        if (e.NewItems == null) return;
-
-
-        if (e.NewItems.Count > 1)
+        if (control is null || e.Action != NotifyCollectionChangedAction.Add || e.NewItems == null ||
+            e.NewItems.Count > 1)
         {
             return;
         }
@@ -173,41 +157,30 @@ public class CardFieldBehavior : Behavior<Canvas>
         if (e.NewItems[0] is not PlayingCardViewModel newItem ||
             !_containerCache.TryGetValue(newItem.CardType, out var container)) return;
 
-        if (control.SourceItems != null)
+        if (control.SourceItems == null) return;
+        
+        var index = control.SourceItems.IndexOf(newItem);
+
+        var sumOffsets = control.SourceItems.Select((x, y) =>
         {
-            var index = control.SourceItems.IndexOf(newItem);
+            if (y >= index) return 0;
 
-            var sumOffsets = control.SourceItems.Select((x, y) =>
-            {
-                if (y >= index) return 0;
+            GetOffsets(control, x, y, control.SourceItems.Count, out var xx,
+                out var yy);
 
-                GetOffsets(control, x, y, control.SourceItems.Count, out var xx,
-                    out var yy);
+            return x.IsFaceDown ? xx : yy;
+        }).Sum();
 
-                return x.IsFaceDown ? xx : yy;
-            }).Sum();
+        var pos = new Point(control.Bounds.Position.X +
+                            (control.Orientation == Orientation.Horizontal ? sumOffsets : 0)
+            , control.Bounds.Position.Y
+              + (control.Orientation == Orientation.Vertical ? sumOffsets : 0)
+        );
 
-            var pos = new Point(control.Bounds.Position.X +
-                                (control.Orientation == Orientation.Horizontal ? sumOffsets : 0)
-                , control.Bounds.Position.Y
-                  + (control.Orientation == Orientation.Vertical ? sumOffsets : 0)
-            );
+        Canvas.SetLeft(container, pos.X);
+        Canvas.SetTop(container, pos.Y);
 
-            Canvas.SetLeft(container, pos.X);
-            Canvas.SetTop(container, pos.Y);
-
-            container.ZIndex = index;
-        }
-
-
-        // GetOffsets(control, ca.x, ca.Item1, ls.Count, out var xx,
-        //     out var yy);
-        //
-        // var pos = new Point(control.Bounds.Position.X + prevOffset.X
-        //     , control.Bounds.Position.Y
-        //       + prevOffset.Y
-        // );
-        //
+        container.ZIndex = index;
     }
 
     private static void AddImplicitAnimations(Visual container)
