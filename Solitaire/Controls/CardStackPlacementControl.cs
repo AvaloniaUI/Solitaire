@@ -13,50 +13,20 @@ namespace Solitaire.Controls;
 
 public class CardStackPlacementControl : Border
 {
+    /// <inheritdoc />
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        _targetStacksMetaData = CardFieldBehavior.GetCardStacks(TargetCanvas);
-        OnPropertyChanged(null);
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs? change)
-    {
-        if (_targetStacksMetaData is null) return;
-
-        var prevStacksMeta = _targetStacksMetaData.FirstOrDefault(x => x.Name == Name);
-        if (prevStacksMeta is not null) _targetStacksMetaData.Remove(prevStacksMeta);
-
-        var u = GetStacksMetadata;
-
-        if (u is null) return;
-        _targetStacksMetaData.Add(u);
-
-
-        base.OnPropertyChanged(change);
-    }
-
-    public StacksMetadata? GetStacksMetadata
-    {
-        get
-        {
-            if (Name is null || Bounds.Position == new Point() || SourceItems is null)
-            {
-                return null;
-            }
-
-            return
-                new StacksMetadata(Name, Bounds.Position, SourceItems, FaceDownOffset ?? default,
-                    FaceUpOffset ?? default, OffsetMode ?? default, CommandOnCardClick ?? default, NValue ?? default,
-                    IsHomeStack);
-        }
+        var j = CardFieldBehavior.GetCardStacks(this);
+        j.Add(this);
+        base.OnAttachedToVisualTree(e);
     }
 
     /// <inheritdoc />
-    protected override void OnUnloaded()
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        if (_targetStacksMetaData is null) return;
-        _targetStacksMetaData = null;
-        base.OnUnloaded();
+        var j = CardFieldBehavior.GetCardStacks(this);
+        j.Remove(this);
+        base.OnDetachedFromVisualTree(e);
     }
 
     public static readonly StyledProperty<ObservableCollection<PlayingCardViewModel>?> SourceItemsProperty =
@@ -67,7 +37,7 @@ public class CardStackPlacementControl : Border
         AvaloniaProperty.Register<CardStackPlacementControl, Canvas>("TargetCanvas");
 
     public static readonly StyledProperty<Orientation?> OrientationProperty =
-        AvaloniaProperty.Register<CardStackPlacementControl, Orientation?>("Orientation");
+        AvaloniaProperty.Register<CardStackPlacementControl, Orientation?>("Orientation", Avalonia.Layout.Orientation.Vertical);
 
     public static readonly StyledProperty<double?> FaceDownOffsetProperty =
         AvaloniaProperty.Register<CardStackPlacementControl, double?>("FaceDownOffset");
@@ -76,7 +46,7 @@ public class CardStackPlacementControl : Border
         AvaloniaProperty.Register<CardStackPlacementControl, double?>("FaceUpOffset");
 
     public static readonly StyledProperty<OffsetMode?> OffsetModeProperty =
-        AvaloniaProperty.Register<CardStackPlacementControl, OffsetMode?>("OffsetMode");
+        AvaloniaProperty.Register<CardStackPlacementControl, OffsetMode?>("OffsetMode", Controls.OffsetMode.EveryCard);
 
     public static readonly StyledProperty<ICommand?> CommandOnCardClickProperty =
         AvaloniaProperty.Register<CardStackPlacementControl, ICommand?>("CommandOnCardClick");

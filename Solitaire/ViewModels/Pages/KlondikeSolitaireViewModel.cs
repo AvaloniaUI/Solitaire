@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DynamicData;
 using Solitaire.Models;
 
 namespace Solitaire.ViewModels.Pages;
@@ -94,17 +95,6 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
             for (var j = 0; j < i; j++)
             {
                 var faceDownCardViewModel = playingCards.First();
-
-                //
-                // DispatcherTimer.Run(() =>
-                // {
-                //     var s = faceDownCardViewModel.IsFaceDown;
-                //     ;
-                //     faceDownCardViewModel.IsFaceDown = !s;
-                //     return true;
-                // }, TimeSpan.FromSeconds(1));
-
-
                 playingCards.Remove(faceDownCardViewModel);
                 faceDownCardViewModel.IsFaceDown = true;
                 _tableauSet[i].Add(faceDownCardViewModel);
@@ -112,13 +102,6 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
             //  Add the face up card.
             var faceUpCardViewModel = playingCards.First();
-            // DispatcherTimer.Run(() =>
-            // {
-            //     var s = faceUpCardViewModel.IsFaceDown;
-            //     ;
-            //     faceUpCardViewModel.IsFaceDown = !s;
-            //     return true;
-            // }, TimeSpan.FromSeconds(1));
             playingCards.Remove(faceUpCardViewModel);
             faceUpCardViewModel.IsFaceDown = false;
             faceUpCardViewModel.IsPlayable = true;
@@ -130,9 +113,11 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         {
             playingCard.IsFaceDown = true;
             playingCard.IsPlayable = false;
-            Stock.Add(playingCard);
         }
 
+        Stock.AddRange(playingCards);
+
+        
         //  And we're done.
         StartTimer();
     }

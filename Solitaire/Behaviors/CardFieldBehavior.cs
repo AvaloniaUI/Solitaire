@@ -9,12 +9,14 @@ using System.Reactive.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Rendering.Composition;
 using Avalonia.Rendering.Composition.Animations;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
 using Microsoft.CodeAnalysis.Operations;
+using Solitaire.Controls;
 using Solitaire.Models;
 using Solitaire.ViewModels;
 using Solitaire.ViewModels.Pages;
@@ -25,14 +27,14 @@ public class CardFieldBehavior : Behavior<Canvas>
 {
     private static ImplicitAnimationCollection? ImplicitAnimations;
 
-    public static readonly AttachedProperty<ObservableCollection<StacksMetadata>> CardStacksProperty =
-        AvaloniaProperty.RegisterAttached<CardFieldBehavior, Control, ObservableCollection<StacksMetadata>>(
-            "CardStacks");
+    public static readonly AttachedProperty<List<CardStackPlacementControl>> CardStacksProperty =
+        AvaloniaProperty.RegisterAttached<CardFieldBehavior, Control, List<CardStackPlacementControl>>(
+            "CardStacks", inherits: true);
 
-    public static void SetCardStacks(Control obj, ObservableCollection<StacksMetadata> value) =>
+    public static void SetCardStacks(Control obj, List<CardStackPlacementControl> value) =>
         obj.SetValue(CardStacksProperty, value);
 
-    public static ObservableCollection<StacksMetadata>? GetCardStacks(Control obj) => obj.GetValue(CardStacksProperty);
+    public static List<CardStackPlacementControl>? GetCardStacks(Control obj) => obj.GetValue(CardStacksProperty);
 
 
     public static readonly AttachedProperty<List<PlayingCardViewModel>> CardsProperty =
@@ -83,11 +85,6 @@ public class CardFieldBehavior : Behavior<Canvas>
 
         if (cardStacks != null)
         {
-            cardStacks.CollectionChanged -= XssOnCollectionChanged;
-            foreach (var card in cardsList)
-            {
-                card.PropertyChanged -= CardOnPropertyChanged;
-            }
             cardsList.Clear();
             cardStacks.Clear();
         }
@@ -106,7 +103,8 @@ public class CardFieldBehavior : Behavior<Canvas>
         var cardStacks = GetCardStacks(AssociatedObject);
 
         if (cardStacks != null)
-            cardStacks.CollectionChanged += XssOnCollectionChanged;
+        {
+        }
 
         if (Application.Current == null ||
             !Application.Current.Styles.TryGetResource("PlayingCardDataTemplate", out var x) ||
@@ -114,7 +112,7 @@ public class CardFieldBehavior : Behavior<Canvas>
 
         AssociatedObject.DataTemplates.Add(y);
 
-        var homePosition = cardStacks?.FirstOrDefault(i => i.IsHomeStack)?.StackOrigin ?? new Point();
+        var homePosition = cardStacks?.FirstOrDefault(i => i.IsHomeStack)?.Bounds.Position ?? new Point();
 
         foreach (var cardType in Enum.GetValuesAsUnderlyingType(typeof(CardType)).Cast<CardType>())
         {
@@ -123,8 +121,6 @@ public class CardFieldBehavior : Behavior<Canvas>
                 CardType = cardType,
                 IsFaceDown = true
             };
-
-            card.PropertyChanged += CardOnPropertyChanged;
 
             var container = new ContentControl
             {
@@ -140,11 +136,43 @@ public class CardFieldBehavior : Behavior<Canvas>
             cardsList.Add(card);
             container.Loaded += ContainerOnLoaded;
         }
+
+
+        foreach (var cardStack in cardStacks)
+        {
+            if (cardStack.SourceItems != null)
+                cardStack.SourceItems.CollectionChanged += delegate(object? o, NotifyCollectionChangedEventArgs args)
+                {
+                    if (o is not ObservableCollection<PlayingCardViewModel> col) return;
+                    SourceItemsOnCollectionChanged(cardStack, col, args);
+                };
+        }
+        // LayoutCards();
     }
 
-    private void CardOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private void SourceItemsOnCollectionChanged(CardStackPlacementControl control,
+        ObservableCollection<PlayingCardViewModel> col, NotifyCollectionChangedEventArgs e)
     {
-    LayoutCards();
+        foreach (var ca in col.Select(x => (col.IndexOf(x), x)).OrderBy(x => x.Item1))
+        {
+            if (!_containerCache.TryGetValue(ca.x.CardType, out var container)) continue;
+
+            container.ZIndex = ca.Item1;
+
+            GetOffsets(control, ca.x, ca.Item1, col.Count, out var xx,
+                out var yy);
+
+            var totalOffset = (ca.x.IsFaceDown ? xx : yy) * ca.Item1;
+
+            var pos = new Point(control.Bounds.Position.X +
+                                (control.Orientation == Orientation.Horizontal ? totalOffset : 0)
+                , control.Bounds.Position.Y
+                  + (control.Orientation == Orientation.Vertical ? totalOffset : 0)
+            );
+
+            Canvas.SetLeft(container, pos.X);
+            Canvas.SetTop(container, pos.Y);
+        }
     }
 
     private void ContainerOnLoaded(object? sender, RoutedEventArgs e)
@@ -152,49 +180,68 @@ public class CardFieldBehavior : Behavior<Canvas>
         AddImplicitAnimations(sender as ContentControl ?? throw new InvalidOperationException());
     }
 
-    private void LayoutCards()
-    {
-        if (_isLayouting) return;
-
-        _isLayouting = true;
-
-        if (AssociatedObject == null) return;
-        var cardsList = GetCards(AssociatedObject);
-
-        var cardStacks = GetCardStacks(AssociatedObject);
-
-        if (cardStacks != null)
-            cardStacks.CollectionChanged += XssOnCollectionChanged;
-
-        foreach (var card in cardsList)
-        {
-            var cardStack = cardStacks?.FirstOrDefault(y => y.Collection.Any(x => x.CardType == card.CardType));
-
-            if (cardStack is null || cardStacks is null) continue;
-
-            if (!_containerCache.TryGetValue(card.CardType, out var container)) continue;
-
-
-            container.ZIndex = 10 * cardStacks.IndexOf(cardStack) + (cardsList.Count - cardsList.IndexOf(card));
-            Canvas.SetLeft(container, cardStack.StackOrigin.X);
-            Canvas.SetTop(container, cardStack.StackOrigin.Y);
-        }
-
-        _isLayouting = false;
-    }
-
-    private void XssOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        LayoutCards();
-    }
-
-
     private static void AddImplicitAnimations(Visual container)
     {
         if (ElementComposition.GetElementVisual(container) is { } compositionVisual)
         {
             compositionVisual.ImplicitAnimations = ImplicitAnimations;
         }
+    }
+
+
+    private static void GetOffsets(CardStackPlacementControl parent, PlayingCardViewModel card, int n, int total,
+        out double faceDownOffset,
+        out double faceUpOffset)
+
+    {
+        faceDownOffset = 0;
+        faceUpOffset = 0;
+
+        //  We are now going to offset only if the offset mode is appropriate.
+        switch (parent.OffsetMode)
+        {
+            case OffsetMode.EveryCard:
+                //  Offset every card.
+                faceDownOffset = parent.FaceDownOffset ?? default;
+                faceUpOffset = parent.FaceUpOffset ?? default;
+                break;
+            case OffsetMode.EveryNthCard:
+                //  Offset only if n Mod N is zero.
+                if ((n + 1) % ((int) parent.NValue) == 0)
+                {
+                    faceDownOffset = parent.FaceDownOffset ?? default;
+                    faceUpOffset = parent.FaceUpOffset ?? default;
+                }
+
+                break;
+            case OffsetMode.TopNCards:
+                //  Offset only if (Total - N) <= n < Total
+                if (n > (total - (int) parent.NValue))
+                {
+                    faceDownOffset = parent.FaceDownOffset ?? default;
+                    faceUpOffset = parent.FaceUpOffset ?? default;
+                }
+
+                break;
+
+            case OffsetMode.BottomNCards:
+                //  Offset only if 0 < n < N
+                if (n < (int) parent.NValue)
+                {
+                    faceDownOffset = parent.FaceDownOffset ?? default;
+                    faceUpOffset = parent.FaceUpOffset ?? default;
+                }
+
+                break;
+            case OffsetMode.UseCardValues:
+                //  Offset each time by the amount specified in the card object.
+                faceDownOffset = card.FaceDownOffset;
+                faceUpOffset = card.FaceUpOffset;
+                break;
+        }
+
+        faceDownOffset *= n;
+        faceDownOffset *= n;
     }
 
     private static void RemoveImplicitAnimations(Visual container)

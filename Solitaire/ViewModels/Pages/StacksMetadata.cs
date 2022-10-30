@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Avalonia;
+using Avalonia.Layout;
 using Solitaire.Controls;
 using Solitaire.Models;
 
@@ -14,4 +15,5 @@ public record StacksMetadata(string Name,
     OffsetMode OffsetMode, 
     ICommand? CommandOnCardClick,
     DrawMode NValue,
+    Orientation Orientation,
     bool IsHomeStack);

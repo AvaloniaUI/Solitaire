@@ -13,9 +13,9 @@
         <Thickness x:Key="CardThickness">8,10,40,40</Thickness>
 
         <DataTemplate x:Key="PlayingCardDataTemplate" DataType="{x:Type solitaireGames:PlayingCardViewModel}">
-            
+
             <Panel Name="playingCard">
-                <Panel Classes="playingCardBack">
+                <Panel Classes="playingCardBack" IsVisible="{Binding IsFaceDown}">
 
                     <Border
                         Background="White"
@@ -30,20 +30,14 @@
                         </Border.RenderTransform>
                     </Border>
                 </Panel>
-                <Panel Classes="playingCardFront">
+                <Panel Classes="playingCardFront" IsVisible="{Binding !IsFaceDown}">
                     <Border
                         Background="White"
                         Classes.isFaceDown="{Binding IsFaceDown}"
                         Width="140" Height="203" Cursor="Hand"
                         BorderThickness="1" CornerRadius="6">
-                        <Image Margin="4">
-                            <Image.Source>
-                                <MultiBinding Converter="{StaticResource PlayingCardToBrushConverter}">
-                                    <Binding Path="CardType" />
-                                    <Binding Path="IsFaceDown" />
-                                </MultiBinding>
-                            </Image.Source>
-                        </Image>
+                        <Image Margin="4"
+                               Source="{Binding CardType, Converter={StaticResource PlayingCardToBrushConverter}}"/>
                         <Border.Styles>
                             <Style Selector="Border.playingCard.isFaceDown">
                                 <Setter Property="BorderBrush" Value="Transparent" />
