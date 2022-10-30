@@ -176,27 +176,25 @@ public class CardFieldBehavior : Behavior<Canvas>
         if (control.SourceItems != null)
         {
             var index = control.SourceItems.IndexOf(newItem);
-            if (index > 0)
+
+            var sumOffsets = control.SourceItems.Select((x, y) =>
             {
-                var previousCard = control.SourceItems[index - 1];
-                
-                GetOffsets(control, previousCard, index , control.SourceItems.Count, out var xx,
+                if (y >= index) return 0;
+
+                GetOffsets(control, x, y, control.SourceItems.Count, out var xx,
                     out var yy);
 
-                var pos = new Point(control.Bounds.Position.X +
-                                    (control.Orientation == Orientation.Horizontal ? (newItem.IsFaceDown ? xx : yy) : 0)
-                    , control.Bounds.Position.Y
-                      + (control.Orientation == Orientation.Vertical ? (newItem.IsFaceDown ? xx : yy) : 0)
-                );
+                return x.IsFaceDown ? xx : yy;
+            }).Sum();
 
-                Canvas.SetLeft(container, pos.X);
-                Canvas.SetTop(container, pos.Y);
-            }
-            else
-            {
-                Canvas.SetLeft(container, control.Bounds.Position.X);
-                Canvas.SetTop(container, control.Bounds.Position.Y);
-            }
+            var pos = new Point(control.Bounds.Position.X +
+                                (control.Orientation == Orientation.Horizontal ? sumOffsets : 0)
+                , control.Bounds.Position.Y
+                  + (control.Orientation == Orientation.Vertical ? sumOffsets : 0)
+            );
+
+            Canvas.SetLeft(container, pos.X);
+            Canvas.SetTop(container, pos.Y);
 
             container.ZIndex = index;
         }
@@ -271,9 +269,6 @@ public class CardFieldBehavior : Behavior<Canvas>
                 faceUpOffset = card.FaceUpOffset;
                 break;
         }
-
-        faceDownOffset *= n;
-        faceUpOffset *= n;
     }
 
     private static void RemoveImplicitAnimations(Visual container)
