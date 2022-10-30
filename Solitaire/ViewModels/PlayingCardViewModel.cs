@@ -10,9 +10,9 @@ namespace Solitaire.ViewModels;
 /// </summary>
 public partial class PlayingCardViewModel : ViewModelBase
 {
-    public CardGameViewModel CardGameInstance { get; }
+    public CardGameViewModel? CardGameInstance { get; }
 
-    public PlayingCardViewModel(CardGameViewModel cardGameInstance)
+    public PlayingCardViewModel(CardGameViewModel? cardGameInstance)
     {
         CardGameInstance = cardGameInstance;
     }

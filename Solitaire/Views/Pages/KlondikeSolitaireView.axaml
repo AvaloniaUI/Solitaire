@@ -121,7 +121,18 @@
                         Grid.ColumnSpan="7"
                         Grid.Column="0"
                         Grid.Row="0"
-                        Grid.RowSpan="2" />
+                        Grid.RowSpan="2" >                 
+                </Canvas>
+                
+                <Canvas Background="Black"
+                        Grid.ColumnSpan="7"
+                        Grid.Column="0"
+                        Grid.Row="0"
+                        Grid.RowSpan="2" >
+                    <Interaction.Behaviors>
+                        <behaviors:CardFieldBehavior/>
+                    </Interaction.Behaviors>                    
+                </Canvas>
             </Grid>
         </Viewbox>
 
@@ -151,58 +162,58 @@
 
         </Grid>
 
-        <Panel VerticalAlignment="Center" HorizontalAlignment="Center">
-            <ContentControl>
-                <ContentControl.DataTemplates>
-                    <StaticResource ResourceKey="PlayingCardDataTemplate" />
-                </ContentControl.DataTemplates>
-                <ContentControl.Content>
-                    <viewModels:PlayingCardViewModel CardType="HQ" />
-                </ContentControl.Content>
-            </ContentControl>
-
-            <Panel.Styles>
-                <Style Selector="Panel.playingCardBack">
-                    <Style.Animations>
-                        <Animation Duration="0:0:3"
-                                   PlaybackDirection="Alternate"
-                                   IterationCount="Infinite">
-                            <KeyFrame Cue="0%">
-                                <Setter Property="Rotate3DTransform.AngleY" Value="0" />
-                                <Setter Property="IsVisible" Value="False" />
-                            </KeyFrame>
-                            <KeyFrame Cue="50%">
-                                <Setter Property="Rotate3DTransform.AngleY" Value="90" />
-                                <Setter Property="IsVisible" Value="True" />
-                            </KeyFrame>
-                            <KeyFrame Cue="100%">
-                                <Setter Property="Rotate3DTransform.AngleY" Value="180" />
-                                <Setter Property="IsVisible" Value="True" />
-                            </KeyFrame>
-                        </Animation>
-                    </Style.Animations>
-                </Style>
-                <Style Selector="Panel.playingCardFront">
-                    <Style.Animations>
-                        <Animation Duration="0:0:3"
-                                   PlaybackDirection="Alternate"
-                                   IterationCount="Infinite">
-                            <KeyFrame Cue="0%">
-                                <Setter Property="Rotate3DTransform.AngleY" Value="0" />
-                                <Setter Property="IsVisible" Value="True" />
-                            </KeyFrame>
-                            <KeyFrame Cue="50%">
-                                <Setter Property="Rotate3DTransform.AngleY" Value="90" />
-                                <Setter Property="IsVisible" Value="False" />
-                            </KeyFrame>
-                            <KeyFrame Cue="100%">
-                                <Setter Property="Rotate3DTransform.AngleY" Value="180" />
-                                <Setter Property="IsVisible" Value="False" />
-                            </KeyFrame></Animation>
-                    </Style.Animations>
-                </Style>
-            </Panel.Styles>
-        </Panel>
+        <!-- <Panel VerticalAlignment="Center" HorizontalAlignment="Center"> -->
+        <!--     <ContentControl> -->
+        <!--         <ContentControl.DataTemplates> -->
+        <!--             <StaticResource ResourceKey="PlayingCardDataTemplate" /> -->
+        <!--         </ContentControl.DataTemplates> -->
+        <!--         <ContentControl.Content> -->
+        <!--             <viewModels:PlayingCardViewModel CardType="HQ" /> -->
+        <!--         </ContentControl.Content> -->
+        <!--     </ContentControl> -->
+        <!-- -->
+        <!--     <Panel.Styles> -->
+        <!--         <Style Selector="Panel.playingCardBack"> -->
+        <!--             <Style.Animations> -->
+        <!--                 <Animation Duration="0:0:3" -->
+        <!--                            PlaybackDirection="Alternate" -->
+        <!--                            IterationCount="Infinite"> -->
+        <!--                     <KeyFrame Cue="0%"> -->
+        <!--                         <Setter Property="Rotate3DTransform.AngleY" Value="0" /> -->
+        <!--                         <Setter Property="IsVisible" Value="False" /> -->
+        <!--                     </KeyFrame> -->
+        <!--                     <KeyFrame Cue="50%"> -->
+        <!--                         <Setter Property="Rotate3DTransform.AngleY" Value="90" /> -->
+        <!--                         <Setter Property="IsVisible" Value="True" /> -->
+        <!--                     </KeyFrame> -->
+        <!--                     <KeyFrame Cue="100%"> -->
+        <!--                         <Setter Property="Rotate3DTransform.AngleY" Value="180" /> -->
+        <!--                         <Setter Property="IsVisible" Value="True" /> -->
+        <!--                     </KeyFrame> -->
+        <!--                 </Animation> -->
+        <!--             </Style.Animations> -->
+        <!--         </Style> -->
+        <!--         <Style Selector="Panel.playingCardFront"> -->
+        <!--             <Style.Animations> -->
+        <!--                 <Animation Duration="0:0:3" -->
+        <!--                            PlaybackDirection="Alternate" -->
+        <!--                            IterationCount="Infinite"> -->
+        <!--                     <KeyFrame Cue="0%"> -->
+        <!--                         <Setter Property="Rotate3DTransform.AngleY" Value="0" /> -->
+        <!--                         <Setter Property="IsVisible" Value="True" /> -->
+        <!--                     </KeyFrame> -->
+        <!--                     <KeyFrame Cue="50%"> -->
+        <!--                         <Setter Property="Rotate3DTransform.AngleY" Value="90" /> -->
+        <!--                         <Setter Property="IsVisible" Value="False" /> -->
+        <!--                     </KeyFrame> -->
+        <!--                     <KeyFrame Cue="100%"> -->
+        <!--                         <Setter Property="Rotate3DTransform.AngleY" Value="180" /> -->
+        <!--                         <Setter Property="IsVisible" Value="False" /> -->
+        <!--                     </KeyFrame></Animation> -->
+        <!--             </Style.Animations> -->
+        <!--         </Style> -->
+        <!--     </Panel.Styles> -->
+        <!-- </Panel> -->
 
 
         <!-- The win overlay. -->
