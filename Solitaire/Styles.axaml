@@ -65,6 +65,8 @@
 
 
                 </Panel>
+                
+                <TextBlock Background="Black" FontSize="28" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="Yellow" Text="{Binding $parent[ContentControl].ZIndex}"></TextBlock>
             </Panel>
 
         </DataTemplate>

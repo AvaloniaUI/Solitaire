@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json.Converters;
 using Solitaire.Models;
 
@@ -8,7 +9,7 @@ namespace Solitaire.ViewModels;
 /// The Playing Card represents a Card played in a game - so as
 /// well as the card type it also has the face down property etc.
 /// </summary>
-public partial class PlayingCardViewModel : ViewModelBase
+public partial class PlayingCardViewModel : ViewModelBase, IEquatable<PlayingCardViewModel>
 {
     public CardGameViewModel? CardGameInstance { get; }
 
@@ -65,5 +66,28 @@ public partial class PlayingCardViewModel : ViewModelBase
         IsFaceDown = true;
         FaceDownOffset = 0;
         FaceUpOffset = 0;
+    }
+
+    /// <inheritdoc />
+    public bool Equals(PlayingCardViewModel? other)
+    {
+        if (ReferenceEquals(null, other)) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return _cardType == other._cardType;
+    }
+
+    /// <inheritdoc />
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals((PlayingCardViewModel) obj);
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+        return HashCode.Combine((int) _cardType);
     }
 }

@@ -58,7 +58,7 @@ public class CardFieldBehavior : Behavior<Canvas>
         var offsetAnimation = compositor.CreateVector3KeyFrameAnimation();
         offsetAnimation.Target = "Offset";
         offsetAnimation.InsertExpressionKeyFrame(1.0f, "this.FinalValue");
-        offsetAnimation.Duration = TimeSpan.FromMilliseconds(400);
+        offsetAnimation.Duration = TimeSpan.FromMilliseconds(200);
 
         var animationGroup = compositor.CreateAnimationGroup();
         animationGroup.Add(offsetAnimation);
@@ -124,19 +124,27 @@ public class CardFieldBehavior : Behavior<Canvas>
 
             var container = new ContentControl
             {
-                Content = card
+                Content = card,
+                ZIndex = -1
             };
 
             _containerCache.Add(cardType, container);
 
+            
             Canvas.SetLeft(container, homePosition.X);
             Canvas.SetTop(container, homePosition.Y);
-
+            // container.AttachedToVisualTree += delegate 
+            // {
+            // };
+            
             AssociatedObject.Children.Add(container);
-            cardsList.Add(card);
-            container.Loaded += ContainerOnLoaded;
-        }
+            
+                            // AddImplicitAnimations(container);
 
+            cardsList.Add(card); 
+
+            
+        }
 
         foreach (var cardStack in cardStacks)
         {
@@ -145,47 +153,44 @@ public class CardFieldBehavior : Behavior<Canvas>
                 SourceItemsOnCollectionChanged(cardStack, args);
             };
         }
-        // LayoutCards();
     }
 
-    private void SourceItemsOnCollectionChanged(CardStackPlacementControl control, NotifyCollectionChangedEventArgs e)
+    private void SourceItemsOnCollectionChanged(CardStackPlacementControl? control, NotifyCollectionChangedEventArgs e)
     {
-        if (e.Action == NotifyCollectionChangedAction.Add)
+        if (control is null) return;
+
+        if (e.Action != NotifyCollectionChangedAction.Add) return;
+
+        var startIndex = e.NewStartingIndex;
+        if (e.NewItems == null) return;
+
+        var ls = e.NewItems.Cast<PlayingCardViewModel>().ToList();
+
+
+        foreach (var ca in ls.Select(x => (ls.IndexOf(x) + startIndex, x)))
         {
-            var startIndex = e.NewStartingIndex;
-            var ls = e.NewItems.Cast<PlayingCardViewModel>().ToList();
-            
-            
-            
-            foreach (var ca in ls.Select(x => (ls.IndexOf(x) + startIndex, x)).OrderBy(x => x.Item1))
+            if (!_containerCache.TryGetValue(ca.x.CardType, out var container))
+                continue;
+
+
+            GetOffsets(control, ca.x, ca.Item1, ls.Count, out var xx,
+                out var yy);
+
+            var pos = new Point(control.Bounds.Position.X +
+                                (control.Orientation == Orientation.Horizontal ? (ca.x.IsFaceDown ? xx : yy) : 0)
+                , control.Bounds.Position.Y
+                  + (control.Orientation == Orientation.Vertical ? (ca.x.IsFaceDown ? xx : yy) : 0)
+            );
+
+            Canvas.SetLeft(container, pos.X);
+            Canvas.SetTop(container, pos.Y);
+            container.ZIndex = startIndex + ca.Item1;
+
+
+            if (control.Name.Contains("4") && container.ZIndex > 10)
             {
-                if (!_containerCache.TryGetValue(ca.x.CardType, out var container)) continue;
-
-
-                GetOffsets(control, ca.x, ca.Item1, ls.Count, out var xx,
-                    out var yy);
-
-                var pos = new Point(control.Bounds.Position.X +
-                                    (control.Orientation == Orientation.Horizontal ? (ca.x.IsFaceDown ? xx : yy) : 0)
-                    , control.Bounds.Position.Y
-                      + (control.Orientation == Orientation.Vertical ? (ca.x.IsFaceDown ? xx : yy) : 0)
-                );
-
-                Canvas.SetLeft(container, pos.X);
-                Canvas.SetTop(container, pos.Y);
-                container.ZIndex = startIndex + ca.Item1;
-
-                if (container.ZIndex == 0)
-                {
-                
-                }
             }
         }
-    }
-
-    private void ContainerOnLoaded(object? sender, RoutedEventArgs e)
-    {
-        AddImplicitAnimations(sender as ContentControl ?? throw new InvalidOperationException());
     }
 
     private static void AddImplicitAnimations(Visual container)
