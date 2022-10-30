@@ -28,10 +28,6 @@
             <!-- This is the layout grid for the tableaus, foundations etc. -->
             <Grid Width="1600" Height="840" ColumnDefinitions="*,*,*,*,*,*,*,*,*,*" RowDefinitions="640,200"
                   ClipToBounds="False">
-
-                <controls:CardStackControl.ContainerCache>
-                    <generic:Dictionary x:TypeArguments="viewModels:PlayingCardViewModel, ContentControl"/>
-                </controls:CardStackControl.ContainerCache>
                 <!-- The tableaus. -->
                 <controls:CardStackControl TargetCanvas="{Binding #PlayingField}"
                                            Classes="RunMarker"

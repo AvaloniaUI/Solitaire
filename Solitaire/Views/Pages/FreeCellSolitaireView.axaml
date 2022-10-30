@@ -27,10 +27,7 @@
 
             <!-- This is the layout grid for the tableaus, foundations etc. -->
             <Grid Width="1550" Height="840" ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
-                  RowDefinitions="240,600">
-                <controls:CardStackControl.ContainerCache>
-                    <generic:Dictionary x:TypeArguments="viewModels:PlayingCardViewModel, ContentControl"/>
-                </controls:CardStackControl.ContainerCache>
+                  RowDefinitions="240,600"> 
                 <Grid.Styles>
                     <Style Selector="Border.RunMarker, Border.StackMarker, controls|CardStackControl">
                         <Setter Property="Grid.ColumnSpan" Value="2" />

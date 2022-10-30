@@ -27,9 +27,6 @@
 
             <!-- This is the layout grid for the tableaus, foundations etc. -->
             <Grid Width="1200" Height="840" ColumnDefinitions="*,*,*,*,*,*,*" RowDefinitions="240,600">
-                <controls:CardStackControl.ContainerCache>
-                    <generic:Dictionary x:TypeArguments="viewModels:PlayingCardViewModel, ContentControl" />
-                </controls:CardStackControl.ContainerCache>
                 <Interaction.Behaviors>
                     <BehaviorCollection>
                         <behaviors:ExecuteOnPointerPressedBehavior
@@ -116,15 +113,9 @@
                                            Classes="RunMarker"
                                            Grid.Row="1" Grid.Column="6" SourceItems="{Binding Tableau7}"
                                            Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
-
-                <Canvas x:Name="PlayingField"
-                        Grid.ColumnSpan="7"
-                        Grid.Column="0"
-                        Grid.Row="0"
-                        Grid.RowSpan="2" >                 
-                </Canvas>
                 
-                <Canvas Background="Black"
+                <Canvas x:Name="PlayingField"
+                        behaviors:CardFieldBehavior.Cards="{Binding PlayingCards, Mode=OneWay}"
                         Grid.ColumnSpan="7"
                         Grid.Column="0"
                         Grid.Row="0"
