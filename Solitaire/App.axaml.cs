@@ -4,8 +4,6 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Solitaire.ViewModels;
 using Solitaire.Views;
-using Solitaire.Views.Pages;
-using MainWindow = Solitaire.Views.MainWindow;
 
 namespace Solitaire;
 

@@ -9,7 +9,6 @@ using Avalonia.Layout;
 using Avalonia.Media.Transformation;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
-using DynamicData.Kernel;
 using Solitaire.Controls;
 using Solitaire.ViewModels;
 
@@ -25,11 +24,11 @@ public class CardDragBehavior : Behavior<Control>
 
 
     public static readonly AttachedProperty<bool> IsDragSourceProperty =
-        AvaloniaProperty.RegisterAttached<CardDragBehavior, CardStackControl, bool>
+        AvaloniaProperty.RegisterAttached<CardDragBehavior, CardStackPlacementControl, bool>
             ("IsDragSource", defaultValue: true);
 
-    public static void SetIsDragSource(CardStackControl obj, bool value) => obj.SetValue(IsDragSourceProperty, value);
-    public static bool GetIsDragSource(CardStackControl obj) => obj.GetValue(IsDragSourceProperty);
+    public static void SetIsDragSource(CardStackPlacementControl obj, bool value) => obj.SetValue(IsDragSourceProperty, value);
+    public static bool GetIsDragSource(CardStackPlacementControl obj) => obj.GetValue(IsDragSourceProperty);
 
 
     public static readonly AttachedProperty<object?> DragTargetObjectProperty =
@@ -117,7 +116,7 @@ public class CardDragBehavior : Behavior<Control>
     private void PointerPressed(object? sender, PointerPressedEventArgs e)
     {
         var itemsParent = AssociatedObject!.GetVisualAncestors()
-            .FirstOrDefault(x => x.GetType() == typeof(CardStackControl)) as CardStackControl;
+            .FirstOrDefault(x => x.GetType() == typeof(CardStackPlacementControl)) as CardStackPlacementControl;
         
         if (itemsParent is { })
         {
@@ -191,7 +190,7 @@ public class CardDragBehavior : Behavior<Control>
 
         SetTranslateTransform(AssociatedObject, Vector.Zero);
 
-        if (AssociatedObject.FindAncestorOfType<CardStackControl>() is { } csp)
+        if (AssociatedObject.FindAncestorOfType<CardStackPlacementControl>() is { } csp)
         {
             csp.ZIndex = 100;
         }
@@ -203,7 +202,7 @@ public class CardDragBehavior : Behavior<Control>
     {
         if (AssociatedObject is null) return;
 
-        if (AssociatedObject.FindAncestorOfType<CardStackControl>() is { } csp)
+        if (AssociatedObject.FindAncestorOfType<CardStackPlacementControl>() is { } csp)
         {
             csp.ZIndex = 0;
         }

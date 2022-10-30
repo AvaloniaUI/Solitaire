@@ -29,58 +29,58 @@
             <Grid Width="1600" Height="840" ColumnDefinitions="*,*,*,*,*,*,*,*,*,*" RowDefinitions="640,200"
                   ClipToBounds="False">
                 <!-- The tableaus. -->
-                <controls:CardStackControl TargetCanvas="{Binding #PlayingField}"
+                <controls:CardStackPlacementControl TargetCanvas="{Binding #PlayingField}"
                                            Classes="RunMarker"
                                            Grid.Row="0" Grid.Column="0" SourceItems="{Binding Tableau1}"
                                            Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
 
-                <controls:CardStackControl TargetCanvas="{Binding #PlayingField}"
+                <controls:CardStackPlacementControl TargetCanvas="{Binding #PlayingField}"
                                            Classes="RunMarker"
                                            Grid.Row="0" Grid.Column="1" SourceItems="{Binding Tableau2}"
                                            Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
 
-                <controls:CardStackControl TargetCanvas="{Binding #PlayingField}"
+                <controls:CardStackPlacementControl TargetCanvas="{Binding #PlayingField}"
                                            Classes="RunMarker"
                                            Grid.Row="0" Grid.Column="2" SourceItems="{Binding Tableau3}"
                                            Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
 
-                <controls:CardStackControl TargetCanvas="{Binding #PlayingField}"
+                <controls:CardStackPlacementControl TargetCanvas="{Binding #PlayingField}"
                                            Classes="RunMarker"
                                            Grid.Row="0" Grid.Column="3" SourceItems="{Binding Tableau4}"
                                            Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
                 
-                <controls:CardStackControl TargetCanvas="{Binding #PlayingField}"
+                <controls:CardStackPlacementControl TargetCanvas="{Binding #PlayingField}"
                                            Classes="RunMarker"
                                            Grid.Row="0" Grid.Column="4" SourceItems="{Binding Tableau5}"
                                            Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
                 
-                <controls:CardStackControl TargetCanvas="{Binding #PlayingField}"
+                <controls:CardStackPlacementControl TargetCanvas="{Binding #PlayingField}"
                                            Classes="RunMarker"
                                            Grid.Row="0" Grid.Column="5" SourceItems="{Binding Tableau6}"
                                            Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
                 
-                <controls:CardStackControl TargetCanvas="{Binding #PlayingField}"
+                <controls:CardStackPlacementControl TargetCanvas="{Binding #PlayingField}"
                                            Classes="RunMarker"
                                            Grid.Row="0" Grid.Column="6" SourceItems="{Binding Tableau7}"
                                            Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
                 
-                <controls:CardStackControl TargetCanvas="{Binding #PlayingField}"
+                <controls:CardStackPlacementControl TargetCanvas="{Binding #PlayingField}"
                                            Classes="RunMarker"
                                            Grid.Row="0" Grid.Column="7" SourceItems="{Binding Tableau8}"
                                            Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
                 
-                <controls:CardStackControl TargetCanvas="{Binding #PlayingField}"
+                <controls:CardStackPlacementControl TargetCanvas="{Binding #PlayingField}"
                                            Classes="RunMarker"
                                            Grid.Row="0" Grid.Column="8" SourceItems="{Binding Tableau9}"
                                            Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
                 
-                <controls:CardStackControl TargetCanvas="{Binding #PlayingField}"
+                <controls:CardStackPlacementControl TargetCanvas="{Binding #PlayingField}"
                                            Classes="RunMarker"
                                            Grid.Row="0" Grid.Column="9" SourceItems="{Binding Tableau10}"
                                            Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
 
                 <!-- The foundation. -->
-                <controls:CardStackControl TargetCanvas="{Binding #PlayingField}"
+                <controls:CardStackPlacementControl TargetCanvas="{Binding #PlayingField}"
                                            Classes="StackMarker"
                                            Grid.Row="1" Grid.Column="0" SourceItems="{Binding Foundation}"
                                            Grid.ColumnSpan="3" HorizontalAlignment="Left"
@@ -88,7 +88,7 @@
                                            OffsetMode="EveryNthCard" NValue="13" />
                 
                 <!-- The stock. -->
-                <controls:CardStackControl Grid.Row="1" Grid.Column="8" Grid.ColumnSpan="2"
+                <controls:CardStackPlacementControl Grid.Row="1" Grid.Column="8" Grid.ColumnSpan="2"
                                            Classes="StackMarker"
                                            TargetCanvas="{Binding #PlayingField}"
                                            SourceItems="{Binding Stock}"
@@ -96,7 +96,7 @@
                                            HorizontalAlignment="Left"
                                            Orientation="Horizontal" FaceDownOffset="30" FaceUpOffset="0"
                                            OffsetMode="EveryNthCard" NValue="10">
-                </controls:CardStackControl>
+                </controls:CardStackPlacementControl>
 
 
                 <Canvas x:Name="PlayingField"

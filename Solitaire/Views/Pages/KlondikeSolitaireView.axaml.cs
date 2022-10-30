@@ -1,6 +1,4 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Solitaire.ViewModels;
+﻿using Avalonia.Controls;
 
 namespace Solitaire.Views.Pages;
 
