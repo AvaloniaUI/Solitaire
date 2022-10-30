@@ -51,7 +51,7 @@ public class CardFieldBehavior : Behavior<Canvas>
         if (ImplicitAnimations != null || AssociatedObject == null) return;
 
 
-        var x = AssociatedObject.GetVisualRoot() as Visual;
+        var x = AssociatedObject.GetVisualParent() as Visual;
         var u = ElementComposition.GetElementVisual(x);
         var compositor = u.Compositor;
 
@@ -102,9 +102,6 @@ public class CardFieldBehavior : Behavior<Canvas>
         var cardsList = GetCards(AssociatedObject);
         var cardStacks = GetCardStacks(AssociatedObject);
 
-        if (cardStacks != null)
-        {
-        }
 
         if (Application.Current == null ||
             !Application.Current.Styles.TryGetResource("PlayingCardDataTemplate", out var x) ||
@@ -130,20 +127,16 @@ public class CardFieldBehavior : Behavior<Canvas>
 
             _containerCache.Add(cardType, container);
 
-            
             Canvas.SetLeft(container, homePosition.X);
             Canvas.SetTop(container, homePosition.Y);
-            // container.AttachedToVisualTree += delegate 
-            // {
-            // };
-            
+
+            container.AttachedToVisualTree += ContainerOnAttachedToVisualTree;
+
+
             AssociatedObject.Children.Add(container);
-            
-                            // AddImplicitAnimations(container);
 
-            cardsList.Add(card); 
 
-            
+            cardsList.Add(card);
         }
 
         foreach (var cardStack in cardStacks)
@@ -155,6 +148,13 @@ public class CardFieldBehavior : Behavior<Canvas>
         }
     }
 
+    private void ContainerOnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
+    {
+        if (sender is not ContentControl x) return;
+        // AddImplicitAnimations(x);
+        //  Console.WriteLine("impl");
+    }
+
     private void SourceItemsOnCollectionChanged(CardStackPlacementControl? control, NotifyCollectionChangedEventArgs e)
     {
         if (control is null) return;
@@ -164,33 +164,52 @@ public class CardFieldBehavior : Behavior<Canvas>
         var startIndex = e.NewStartingIndex;
         if (e.NewItems == null) return;
 
-        var ls = e.NewItems.Cast<PlayingCardViewModel>().ToList();
 
-
-        foreach (var ca in ls.Select(x => (ls.IndexOf(x) + startIndex, x)))
+        if (e.NewItems.Count > 1)
         {
-            if (!_containerCache.TryGetValue(ca.x.CardType, out var container))
-                continue;
-
-
-            GetOffsets(control, ca.x, ca.Item1, ls.Count, out var xx,
-                out var yy);
-
-            var pos = new Point(control.Bounds.Position.X +
-                                (control.Orientation == Orientation.Horizontal ? (ca.x.IsFaceDown ? xx : yy) : 0)
-                , control.Bounds.Position.Y
-                  + (control.Orientation == Orientation.Vertical ? (ca.x.IsFaceDown ? xx : yy) : 0)
-            );
-
-            Canvas.SetLeft(container, pos.X);
-            Canvas.SetTop(container, pos.Y);
-            container.ZIndex = startIndex + ca.Item1;
-
-
-            if (control.Name.Contains("4") && container.ZIndex > 10)
-            {
-            }
+            return;
         }
+
+        if (e.NewItems[0] is not PlayingCardViewModel newItem ||
+            !_containerCache.TryGetValue(newItem.CardType, out var container)) return;
+
+        if (control.SourceItems != null)
+        {
+            var index = control.SourceItems.IndexOf(newItem);
+            if (index > 0)
+            {
+                var previousCard = control.SourceItems[index - 1];
+                
+                GetOffsets(control, previousCard, index , control.SourceItems.Count, out var xx,
+                    out var yy);
+
+                var pos = new Point(control.Bounds.Position.X +
+                                    (control.Orientation == Orientation.Horizontal ? (newItem.IsFaceDown ? xx : yy) : 0)
+                    , control.Bounds.Position.Y
+                      + (control.Orientation == Orientation.Vertical ? (newItem.IsFaceDown ? xx : yy) : 0)
+                );
+
+                Canvas.SetLeft(container, pos.X);
+                Canvas.SetTop(container, pos.Y);
+            }
+            else
+            {
+                Canvas.SetLeft(container, control.Bounds.Position.X);
+                Canvas.SetTop(container, control.Bounds.Position.Y);
+            }
+
+            container.ZIndex = index;
+        }
+
+
+        // GetOffsets(control, ca.x, ca.Item1, ls.Count, out var xx,
+        //     out var yy);
+        //
+        // var pos = new Point(control.Bounds.Position.X + prevOffset.X
+        //     , control.Bounds.Position.Y
+        //       + prevOffset.Y
+        // );
+        //
     }
 
     private static void AddImplicitAnimations(Visual container)

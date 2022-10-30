@@ -91,7 +91,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         //  Now distribute them - do the tableau sets first.
         for (var i = 0; i < 7; i++)
         {
-            var tempTablaeu = new List<PlayingCardViewModel>();
+            var tempTableau = new List<PlayingCardViewModel>();
 
             //  We have i face down cards and 1 face up card.
             for (var j = 0; j < i; j++)
@@ -99,7 +99,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
                 var faceDownCardViewModel = playingCards.First();
                 playingCards.Remove(faceDownCardViewModel);
                 faceDownCardViewModel.IsFaceDown = true;
-                tempTablaeu.Add(faceDownCardViewModel);
+                tempTableau.Add(faceDownCardViewModel);
             }
 
             //  Add the face up card.
@@ -107,9 +107,10 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
             playingCards.Remove(faceUpCardViewModel);
             faceUpCardViewModel.IsFaceDown = false;
             faceUpCardViewModel.IsPlayable = true;
-            tempTablaeu.Add(faceUpCardViewModel);
+            tempTableau.Add(faceUpCardViewModel);
             
-            _tableauSet[i].AddRange(tempTablaeu);
+            _tableauSet[i].AddRange(tempTableau);
+             
         }
 
         //  Finally we add every card that's left over to the stock.
