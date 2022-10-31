@@ -58,8 +58,9 @@ public class CardFieldBehavior : Behavior<Canvas>
 
         var offsetAnimation = compositor.CreateVector3KeyFrameAnimation();
         offsetAnimation.Target = "Offset";
+        offsetAnimation.InsertExpressionKeyFrame(0.0f, "this.InitialValue");
         offsetAnimation.InsertExpressionKeyFrame(1.0f, "this.FinalValue");
-        offsetAnimation.Duration = TimeSpan.FromMilliseconds(200);
+        offsetAnimation.Duration = TimeSpan.FromMilliseconds(500);
 
         var animationGroup = compositor.CreateAnimationGroup();
         animationGroup.Add(offsetAnimation);
@@ -98,11 +99,10 @@ public class CardFieldBehavior : Behavior<Canvas>
     {
         if (AssociatedObject == null) return;
 
-        EnsureImplicitAnimations();
+    //    EnsureImplicitAnimations();
 
         var cardsList = GetCards(AssociatedObject);
         var cardStacks = GetCardStacks(AssociatedObject);
-
 
         if (Application.Current == null ||
             !Application.Current.Styles.TryGetResource("PlayingCardDataTemplate", out var x) ||
@@ -125,13 +125,15 @@ public class CardFieldBehavior : Behavior<Canvas>
                 Content = card,
                 ZIndex = -1
             };
-
+            
+            container.Classes.Add("playingCard");
             _containerCache.Add(cardType, container);
             AssociatedObject.Children.Add(container);
-
-            AddImplicitAnimations(container);
+            
             Canvas.SetLeft(container, homePosition.X);
             Canvas.SetTop(container, homePosition.Y);
+        //   AddImplicitAnimations(container);
+ 
             cardsList.Add(card);
         }
 
@@ -160,23 +162,23 @@ public class CardFieldBehavior : Behavior<Canvas>
 
         if (control.SourceItems == null) return;
 
-        var index = control.SourceItems.IndexOf(newItem);
+        var index = e.NewStartingIndex;
 
-        var sumOffsets = control.SourceItems.Select((x, y) =>
-        {
-            if (y >= index) return 0;
+        var sumOffsets = control.SourceItems.Select((card, i) => (card, i)).Where(tuple => tuple.i < index)
+            .Select(z =>
+            {
+                GetOffsets(control, z.card, z.i, control.SourceItems.Count, out var xx,
+                    out var yy);
 
-            GetOffsets(control, x, y, control.SourceItems.Count, out var xx,
-                out var yy);
-
-            return x.IsFaceDown ? xx : yy;
-        }).Sum();
+                return z.card.IsFaceDown ? xx : yy;
+            }).Sum();
 
         var pos = new Point(control.Bounds.Position.X +
                             (control.Orientation == Orientation.Horizontal ? sumOffsets : 0)
             , control.Bounds.Position.Y
               + (control.Orientation == Orientation.Vertical ? sumOffsets : 0)
         );
+
         container.ZIndex = index;
         Canvas.SetLeft(container, pos.X);
         Canvas.SetTop(container, pos.Y);

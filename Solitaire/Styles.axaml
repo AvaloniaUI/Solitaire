@@ -37,7 +37,7 @@
                         Width="140" Height="203" Cursor="Hand"
                         BorderThickness="1" CornerRadius="6">
                         <Image Margin="4"
-                               Source="{Binding CardType, Converter={StaticResource PlayingCardToBrushConverter}}"/>
+                               Source="{Binding CardType, Converter={StaticResource PlayingCardToBrushConverter}}" />
                         <Border.Styles>
                             <Style Selector="Border.playingCard.isFaceDown">
                                 <Setter Property="BorderBrush" Value="Transparent" />
@@ -65,8 +65,10 @@
 
 
                 </Panel>
-                
-                <TextBlock Background="Black" FontSize="28" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="Yellow" Text="{Binding $parent[ContentControl].ZIndex}"></TextBlock>
+
+                <TextBlock Background="Black" FontSize="28" VerticalAlignment="Top" HorizontalAlignment="Left"
+                           Foreground="Yellow" Text="{Binding $parent[ContentControl].ZIndex}">
+                </TextBlock>
             </Panel>
 
         </DataTemplate>
@@ -124,6 +126,18 @@
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- A nice clean style for a button. -->
+    <Style Selector="ContentControl.playingCard:not(.dragging)">
+        <Setter Property="(Canvas.Left)" Value="-100"/>
+        <Setter Property="(Canvas.Top)" Value="-100"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="(Canvas.Left)"  Duration="0:0:0.5" />
+                <DoubleTransition Property="(Canvas.Top)" Duration="0:0:0.5" />
+            </Transitions>
         </Setter>
     </Style>
 
