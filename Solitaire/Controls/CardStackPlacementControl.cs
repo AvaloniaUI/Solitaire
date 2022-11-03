@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
@@ -7,7 +6,6 @@ using Avalonia.Layout;
 using Solitaire.Behaviors;
 using Solitaire.Models;
 using Solitaire.ViewModels;
-using Solitaire.ViewModels.Pages;
 
 namespace Solitaire.Controls;
 

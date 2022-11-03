@@ -1,26 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
-using System.Reactive;
-using System.Reactive.Linq;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Rendering.Composition;
 using Avalonia.Rendering.Composition.Animations;
-using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
-using Microsoft.CodeAnalysis.Operations;
 using Solitaire.Controls;
-using Solitaire.Models;
 using Solitaire.ViewModels;
-using Solitaire.ViewModels.Pages;
 
 namespace Solitaire.Behaviors;
 

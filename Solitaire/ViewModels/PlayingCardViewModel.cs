@@ -1,6 +1,4 @@
-﻿using System;
-using CommunityToolkit.Mvvm.ComponentModel;
-using Newtonsoft.Json.Converters;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Solitaire.Models;
 
 namespace Solitaire.ViewModels;

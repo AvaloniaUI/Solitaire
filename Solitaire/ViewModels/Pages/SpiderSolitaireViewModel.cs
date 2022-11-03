@@ -8,7 +8,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ReactiveUI;
 using Solitaire.Models;
-using Solitaire.Utils;
 
 namespace Solitaire.ViewModels.Pages;
 

@@ -4,12 +4,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Input;
-using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ReactiveUI;
 using Solitaire.Models;
-using Solitaire.Utils;
 
 namespace Solitaire.ViewModels.Pages;
 
