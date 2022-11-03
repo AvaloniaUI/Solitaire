@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using Avalonia.Threading;
@@ -20,21 +21,16 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     public override string GameName => "Klondike Solitaire";
 
     [ObservableProperty] private DrawMode _drawMode;
-    [ObservableProperty] private List<PlayingCardViewModel> _playingCards;
- 
-    public KlondikeSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel)
+
+    public KlondikeSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel,1)
     {
-        PlayingCards = new List<PlayingCardViewModel>();
         _casinoViewModel = casinoViewModel;
         InitializeFoundationsAndTableauSet();
 
         //  Create the turn stock command.
         TurnStockCommand = new RelayCommand(DoTurnStock);
         AppropriateFoundationsCommand = new RelayCommand(TryMoveAllCardsToAppropriateFoundations);
-        NewGameCommand = new RelayCommand(() =>
-        {
-            Dispatcher.UIThread.Post(() => { DoDealNewGame(); }, DispatcherPriority.Loaded);
-        });
+        NewGameCommand = new RelayCommand(DoDealNewGame);
     }
 
     private void InitializeFoundationsAndTableauSet()
@@ -75,18 +71,11 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     private void DoDealNewGame()
     {
         DrawMode = _casinoViewModel.SettingsInstance.DrawMode;
-
-        foreach (var card in PlayingCards)
-        {
-            card.Reset();
-        }
         
         ResetGame();
 
-        var playingCards = PlayingCards.OrderBy(x => Random.Shared.NextDouble()).ToList();
-
-        if (playingCards.Count == 0) return;
-
+        var playingCards = GetNewShuffledDeck();
+        
         //  Now distribute them - do the tableau sets first.
         for (var i = 0; i < 7; i++)
         {
@@ -107,9 +96,8 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
             faceUpCardViewModel.IsFaceDown = false;
             faceUpCardViewModel.IsPlayable = true;
             tempTableau.Add(faceUpCardViewModel);
-            
+
             _tableauSet[i].AddRange(tempTableau);
-             
         }
 
         //  Finally we add every card that's left over to the stock.
@@ -121,7 +109,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
         Stock.AddRange(playingCards);
 
-        
+
         //  And we're done.
         StartTimer();
     }
@@ -136,7 +124,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
             tableau.Clear();
         foreach (var foundation in _foundations)
             foundation.Clear();
-        
+
         //  Clear everything.
         Stock.Clear();
         Waste.Clear();

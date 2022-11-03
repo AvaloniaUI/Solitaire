@@ -32,20 +32,24 @@ public class CardFieldBehavior : Behavior<Canvas>
         AvaloniaProperty.RegisterAttached<CardFieldBehavior, Control, List<CardStackPlacementControl>>(
             "CardStacks", inherits: true);
 
+    public List<PlayingCardViewModel> Cards
+    {
+        get { return (List<PlayingCardViewModel>) GetValue(CardsProperty); }
+        set { SetValue(CardsProperty, value); }
+    }
+
     public static void SetCardStacks(Control obj, List<CardStackPlacementControl> value) =>
         obj.SetValue(CardStacksProperty, value);
 
     public static List<CardStackPlacementControl>? GetCardStacks(Control obj) => obj.GetValue(CardStacksProperty);
 
 
-    public static readonly AttachedProperty<List<PlayingCardViewModel>> CardsProperty =
-        AvaloniaProperty.RegisterAttached<CardFieldBehavior, Control, List<PlayingCardViewModel>>("Cards");
-
-    private Dictionary<CardType, ContentControl> _containerCache = new();
+    private Dictionary<PlayingCardViewModel, ContentControl> _containerCache = new();
     private bool _isLayouting;
 
-    public static void SetCards(Control obj, List<PlayingCardViewModel> value) => obj.SetValue(CardsProperty, value);
-    public static List<PlayingCardViewModel> GetCards(Control obj) => obj.GetValue(CardsProperty);
+    public static readonly StyledProperty<List<PlayingCardViewModel>> CardsProperty =
+        AvaloniaProperty.Register<CardFieldBehavior, List<PlayingCardViewModel>>("Cards");
+
 
     private void EnsureImplicitAnimations()
     {
@@ -81,27 +85,30 @@ public class CardFieldBehavior : Behavior<Canvas>
 
     private void AssociatedObjectOnDetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
     {
-        var s = sender as Canvas;
-        var cardsList = GetCards(s);
-        var cardStacks = GetCardStacks(s);
-
-        if (cardStacks != null)
-        {
-            cardsList.Clear();
-            cardStacks.Clear();
-        }
-
-        _containerCache.Clear();
-        s.Children.Clear();
+        // var s = sender as Canvas;
+        // var cardsList = GetCards(s);
+        // var cardStacks = GetCardStacks(s);
+        //
+        // if (cardStacks != null)
+        // {
+        //     cardsList.Clear();
+        //     cardStacks.Clear();
+        // }
+        //
+        // _containerCache.Clear();
+        // s.Children.Clear();
     }
 
     private void AssociatedObjectOnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
     {
         if (AssociatedObject == null) return;
 
-    //    EnsureImplicitAnimations();
 
-        var cardsList = GetCards(AssociatedObject);
+        if (AssociatedObject?.DataContext is not CardGameViewModel model) return;
+
+        //    EnsureImplicitAnimations();
+
+        var cardsList = model.PlayingCards;
         var cardStacks = GetCardStacks(AssociatedObject);
 
         if (Application.Current == null ||
@@ -112,29 +119,20 @@ public class CardFieldBehavior : Behavior<Canvas>
 
         var homePosition = cardStacks?.FirstOrDefault(i => i.IsHomeStack)?.Bounds.Position ?? new Point();
 
-        foreach (var cardType in Enum.GetValuesAsUnderlyingType(typeof(CardType)).Cast<CardType>())
-        {
-            var card = new PlayingCardViewModel(AssociatedObject.DataContext as CardGameViewModel)
-            {
-                CardType = cardType,
-                IsFaceDown = true
-            };
-
+        foreach (var card in cardsList)
+        { 
             var container = new ContentControl
             {
                 Content = card,
                 ZIndex = -1
             };
-            
+
             container.Classes.Add("playingCard");
-            _containerCache.Add(cardType, container);
+            _containerCache.Add(card, container);
             AssociatedObject.Children.Add(container);
-            
+
             Canvas.SetLeft(container, homePosition.X);
             Canvas.SetTop(container, homePosition.Y);
-        //   AddImplicitAnimations(container);
- 
-            cardsList.Add(card);
         }
 
         if (cardStacks == null) return;
@@ -158,26 +156,27 @@ public class CardFieldBehavior : Behavior<Canvas>
         }
 
         if (e.NewItems[0] is not PlayingCardViewModel newItem ||
-            !_containerCache.TryGetValue(newItem.CardType, out var container)) return;
+            !_containerCache.TryGetValue(newItem, out var container)) return;
 
         if (control.SourceItems == null) return;
 
         var index = e.NewStartingIndex;
 
-        var sumOffsets = control.SourceItems.Select((card, i) => (card, i)).Where(tuple => tuple.i < index)
+        var sumOffsets = control.SourceItems
+            .Select((card, i) => (card, i))
+            .Where(tuple => tuple.i < index)
             .Select(z =>
             {
                 GetOffsets(control, z.card, z.i, control.SourceItems.Count, out var xx,
                     out var yy);
 
                 return z.card.IsFaceDown ? xx : yy;
-            }).Sum();
+            })
+            .Sum();
 
         var pos = new Point(control.Bounds.Position.X +
-                            (control.Orientation == Orientation.Horizontal ? sumOffsets : 0)
-            , control.Bounds.Position.Y
-              + (control.Orientation == Orientation.Vertical ? sumOffsets : 0)
-        );
+                            (control.Orientation == Orientation.Horizontal ? sumOffsets : 0),
+            control.Bounds.Position.Y + (control.Orientation == Orientation.Vertical ? sumOffsets : 0));
 
         container.ZIndex = index;
         Canvas.SetLeft(container, pos.X);

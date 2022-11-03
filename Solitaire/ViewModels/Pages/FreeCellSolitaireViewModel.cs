@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Input;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ReactiveUI;
@@ -21,14 +22,16 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
     public override string GameName => "FreeCell Solitaire";
 
     [ObservableProperty] private DrawMode _drawMode;
+    [ObservableProperty] private List<PlayingCardViewModel> _playingCards;
 
-    public FreeCellSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel)
+    public FreeCellSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel, 1)
     {
         InitializeFoundationsAndTableauSet();
 
         AppropriateFoundationsCommand = new RelayCommand(TryMoveAllCardsToAppropriateFoundations);
-        NewGameCommand = new RelayCommand(DoDealNewGame);
 
+        NewGameCommand = new RelayCommand(DoDealNewGame);
+        
         casinoViewModel.SettingsInstance.WhenAnyValue(x => x.DrawMode)
             .Do(x => DrawMode = x)
             .Subscribe();
@@ -82,15 +85,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
     {
         ResetGame();
 
-        //  Create a list of card types.
-        var eachCardType = Enum.GetValues(typeof(CardType)).Cast<CardType>().ToList();
-
-        //  Create a playing card from each card type.
-        var playingCards = eachCardType
-            .Select(cardType => new PlayingCardViewModel(this) {CardType = cardType, IsFaceDown = true}).ToList();
-
-        //  Shuffle the playing cards.
-        playingCards.Shuffle();
+        var playingCards = GetNewShuffledDeck();
 
         //  Now distribute them - do the tableau sets first.
         while (playingCards.Count > 0)

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Input;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Solitaire.Models;
 using Solitaire.ViewModels.Pages;
 
 namespace Solitaire.ViewModels;
@@ -13,6 +16,8 @@ namespace Solitaire.ViewModels;
 /// </summary>
 public abstract partial class CardGameViewModel : ViewModelBase
 {
+    [ObservableProperty] private IReadOnlyList<PlayingCardViewModel> _playingCards;
+
     private Stack<Move> _moveStack = new();
     
     public abstract string? GameName { get; }
@@ -42,7 +47,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="CardGameViewModel"/> class.
     /// </summary>
-    protected CardGameViewModel(CasinoViewModel casinoViewModel)
+    protected CardGameViewModel(CasinoViewModel casinoViewModel, int totalDecks)
     {
         NavigateToCasinoCommand =
             new RelayCommand(() =>
@@ -61,6 +66,30 @@ public abstract partial class CardGameViewModel : ViewModelBase
         //  Set up the timer.
         _timer.Interval = TimeSpan.FromMilliseconds(500);
         _timer.Tick += timer_Tick;
+
+        var playingCards = Enum
+            .GetValuesAsUnderlyingType(typeof(CardType))
+            .Cast<CardType>()
+            .Select(x=>Enumerable.Repeat(x, totalDecks))
+            .SelectMany(x=>x)
+            .Select(cardType => new PlayingCardViewModel(this) 
+                {CardType = cardType, IsFaceDown = true})
+            .ToList();
+
+        PlayingCards = playingCards;
+    }
+
+    protected IList<PlayingCardViewModel> GetNewShuffledDeck()
+    {
+        foreach (var card in PlayingCards)
+        {
+            card.Reset();
+        }
+
+        var playingCards = PlayingCards.OrderBy(x => Random.Shared.NextDouble()).ToList();
+ 
+        return playingCards.Count == 0 ? 
+            throw new InvalidOperationException("Starting deck cannot be empty.") : playingCards;
     }
     
     

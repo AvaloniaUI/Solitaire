@@ -14,7 +14,7 @@ namespace Solitaire.ViewModels.Pages;
 
 public partial class SpiderSolitaireViewModel : CardGameViewModel
 {
-    public SpiderSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel)
+    public SpiderSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel, 8)
     {
         InitializeTableauSet();
 
@@ -53,24 +53,18 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
     {
         ResetGame();
 
-        //  Create a list of card types.
-        var eachCardType = new List<CardType>();
-        for (var i = 0; i < 8; i++)
-        {
-            foreach (CardType cardType in Enum.GetValues(typeof(CardType)))
-            {
-                eachCardType.Add(cardType);
-            }
-        }
+        var eachCardType = GetNewShuffledDeck();
 
         //  Create a playing card from each card type.
         //  We just keep on adding cards of suits that depend on the
         //  difficulty setting until we have the required 104.
         var playingCards = new List<PlayingCardViewModel>();
-        foreach (var cardType in eachCardType)
+        foreach (var card in eachCardType)
         {
-            var card = new PlayingCardViewModel(this) {CardType = cardType, IsFaceDown = true};
+            // var card = new PlayingCardViewModel(this) {CardType = cardType, IsFaceDown = true};
 
+            card.IsFaceDown = true;
+            
             switch (Difficulty)
             {
                 case Difficulty.Easy:
@@ -95,9 +89,6 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
             if (playingCards.Count >= 104)
                 break;
         }
-
-        //  Shuffle the playing cards.
-        playingCards.Shuffle();
 
         //  Now distribute them - do the tableau set first.
         for (var i = 0; i < 54; i++)
