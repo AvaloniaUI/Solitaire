@@ -86,7 +86,7 @@ public class CardFieldBehavior : Behavior<Canvas>
         ResetDrag();
     }
 
-    private Control? _draggingControl;
+    private Control? _draggingContainer;
     private PlayingCardViewModel? _draggingCard;
     private bool _isDragging;
     private Point _startPoint;
@@ -94,42 +94,69 @@ public class CardFieldBehavior : Behavior<Canvas>
 
     private void AssociatedObjectOnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
+        if (!_isDragging || _draggingContainer is null || _draggingCard is null) return;
+
+        var absCur = e.GetCurrentPoint(AssociatedObject?.GetVisualRoot());
+        var absCurPos = absCur.Position;
+
+        if (AssociatedObject is null) return;
+
+        foreach (var visual in AssociatedObject.GetVisualRoot()!.GetVisualsAt(absCurPos)
+                     .OrderByDescending(x => x.ZIndex))
+        {
+            if (visual is not CardStackPlacementControl {DataContext: CardGameViewModel game} toStack) continue;
+
+            var cardStacks = GetCardStacks(_draggingContainer);
+            var fromStack =
+                cardStacks?.FirstOrDefault(x => x.SourceItems != null && x.SourceItems.Contains(_draggingCard));
+
+            // Trigger on different stack.
+            if (fromStack?.SourceItems != null && toStack?.SourceItems != null &&
+                !fromStack.SourceItems.SequenceEqual(toStack.SourceItems))
+            {
+                // Save reference to current card before resetting. 
+                var targetCard = _draggingCard;
+                ResetDrag();
+                game.CheckAndMoveCard(fromStack.SourceItems, toStack.SourceItems, targetCard);
+            }
+            break;
+        }
+
         ResetDrag();
     }
 
     private void ResetDrag()
     {
-        if (!_isDragging || _draggingControl is null) return;
+        if (!_isDragging || _draggingContainer is null || _draggingCard is null) return;
 
-        ((IPseudoClasses) _draggingControl.Classes).Remove(".dragging");
-        SetTranslateTransform(_draggingControl, Vector.Zero);
-        _draggingControl.ZIndex = _startZIndex;
+        ((IPseudoClasses) _draggingContainer.Classes).Remove(".dragging");
+        SetTranslateTransform(_draggingContainer, Vector.Zero);
+        _draggingContainer.ZIndex = _startZIndex;
         _isDragging = false;
         _draggingCard = null;
-        _draggingControl = null;
+        _draggingContainer = null;
         _startPoint = new Point();
     }
 
     private void AssociatedObjectOnPointerMoved(object? sender, PointerEventArgs e)
     {
-        if (!_isDragging || _draggingControl is null || _draggingCard is null) return;
+        if (!_isDragging || _draggingContainer is null || _draggingCard is null) return;
 
-        if (Equals(e.Pointer.Captured, _draggingControl))
+        if (!Equals(e.Pointer.Captured, _draggingContainer)) return;
+
+        var position = e.GetCurrentPoint(_draggingContainer.Parent).Position;
+
+        var delta = position - _startPoint;
+
+        if (Math.Abs(delta.X) < 3 || Math.Abs(delta.Y) < 3)
         {
-            var position = e.GetCurrentPoint(_draggingControl.Parent).Position;
-
-            var delta = position - _startPoint;
-
-            if (Math.Abs(delta.X) < 3 || Math.Abs(delta.Y) < 3)
-            {
-                return;
-            }
-
-            SetTranslateTransform(_draggingControl, delta);
+            return;
         }
+
+        SetTranslateTransform(_draggingContainer, delta);
     }
 
-    private void SetTranslateTransform(IControl? control, Vector newVector)
+    private static void SetTranslateTransform(IControl? control, Vector newVector)
     {
         if (control is null) return;
         var transformBuilder = new TransformOperations.Builder(1);
@@ -174,14 +201,14 @@ public class CardFieldBehavior : Behavior<Canvas>
                 if (card.IsPlayable && !_isDragging && _containerCache.TryGetValue(card, out var cachedContainer))
                 {
                     _isDragging = true;
-                    _draggingControl = cachedContainer;
+                    _draggingContainer = cachedContainer;
                     _draggingCard = card;
 
                     ((IPseudoClasses) cachedContainer.Classes).Add(".dragging");
 
                     _startPoint = e.GetCurrentPoint(cachedContainer!.Parent).Position;
-                    _startZIndex = _draggingControl.ZIndex;
-                    _draggingControl.ZIndex = Int32.MaxValue;
+                    _startZIndex = _draggingContainer.ZIndex;
+                    _draggingContainer.ZIndex = Int32.MaxValue;
 
                     e.Pointer.Capture(cachedContainer);
                     break;
