@@ -8,6 +8,7 @@ using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Media;
+using Avalonia.Media.Transformation;
 using Avalonia.Rendering.Composition;
 using Avalonia.Rendering.Composition.Animations;
 using Avalonia.VisualTree;
@@ -76,55 +77,121 @@ public class CardFieldBehavior : Behavior<Canvas>
         AssociatedObject.PointerPressed += AssociatedObjectOnPointerPressed;
         AssociatedObject.PointerMoved += AssociatedObjectOnPointerMoved;
         AssociatedObject.PointerReleased += AssociatedObjectOnPointerReleased;
+        AssociatedObject.PointerCaptureLost += AssociatedObjectOnPointerCaptureLost;
         base.OnAttached();
     }
 
-    private Control _draggingControl;
+    private void AssociatedObjectOnPointerCaptureLost(object? sender, PointerCaptureLostEventArgs e)
+    {
+        ResetDrag();
+    }
+
+    private Control? _draggingControl;
+    private PlayingCardViewModel? _draggingCard;
+    private bool _isDragging;
+    private Point _startPoint;
+    private int _startZIndex;
 
     private void AssociatedObjectOnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
+        ResetDrag();
+    }
+
+    private void ResetDrag()
+    {
+        if (!_isDragging || _draggingControl is null) return;
+
+        ((IPseudoClasses) _draggingControl.Classes).Remove(".dragging");
+        SetTranslateTransform(_draggingControl, Vector.Zero);
+        _draggingControl.ZIndex = _startZIndex;
+        _isDragging = false;
+        _draggingCard = null;
+        _draggingControl = null;
+        _startPoint = new Point();
     }
 
     private void AssociatedObjectOnPointerMoved(object? sender, PointerEventArgs e)
     {
+        if (!_isDragging || _draggingControl is null || _draggingCard is null) return;
+
+        if (Equals(e.Pointer.Captured, _draggingControl))
+        {
+            var position = e.GetCurrentPoint(_draggingControl.Parent).Position;
+
+            var delta = position - _startPoint;
+
+            if (Math.Abs(delta.X) < 3 || Math.Abs(delta.Y) < 3)
+            {
+                return;
+            }
+
+            SetTranslateTransform(_draggingControl, delta);
+        }
+    }
+
+    private void SetTranslateTransform(IControl? control, Vector newVector)
+    {
+        if (control is null) return;
+        var transformBuilder = new TransformOperations.Builder(1);
+        transformBuilder.AppendTranslate(newVector.X, newVector.Y);
+        control.RenderTransform = transformBuilder.Build();
     }
 
     private void AssociatedObjectOnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        var absCurPos = e.GetCurrentPoint(AssociatedObject?.GetVisualRoot()).Position;
+        var absCur = e.GetCurrentPoint(AssociatedObject?.GetVisualRoot());
+        var absCurPos = absCur.Position;
 
-        if (AssociatedObject == null) return;
+        void ActivateCommand(CardStackPlacementControl? stack)
+        {
+            if (stack?.CommandOnCardClick?.CanExecute(null) ?? false)
+            {
+                stack.CommandOnCardClick?.Execute(null);
+            }
+        }
+
+        if (!absCur.Properties.IsLeftButtonPressed || AssociatedObject == null) return;
+
         foreach (var visual in AssociatedObject.GetVisualRoot()!.GetVisualsAt(absCurPos)
                      .OrderByDescending(x => x.ZIndex))
         {
-            if (visual is CardStackPlacementControl stack && stack.DataContext is CardGameViewModel a)
+            if (visual is CardStackPlacementControl {DataContext: CardGameViewModel a} stack1)
             {
-                if (stack.CommandOnCardClick?.CanExecute(null) ?? false)
-                {
-                    stack.CommandOnCardClick.Execute(null);
-                }
-
+                ActivateCommand(stack1);
                 break;
             }
 
-            if (visual is Border container && container.DataContext is PlayingCardViewModel card)
+            if (visual is Border {DataContext: PlayingCardViewModel card} container)
             {
                 var cardStacks = GetCardStacks(container);
                 if (cardStacks != null)
                 {
-                    var parentStack = cardStacks.FirstOrDefault(x => x.SourceItems != null && x.SourceItems.Contains(card));
-                    
-                    if (parentStack?.CommandOnCardClick?.CanExecute(null) ?? false)
-                    {
-                        parentStack.CommandOnCardClick?.Execute(null);
-                    }
-                    
+                    var stack2 =
+                        cardStacks.FirstOrDefault(x => x.SourceItems != null && x.SourceItems.Contains(card));
+                    ActivateCommand(stack2);
+                }
+
+                if (card.IsPlayable && !_isDragging && _containerCache.TryGetValue(card, out var cachedContainer))
+                {
+                    _isDragging = true;
+                    _draggingControl = cachedContainer;
+                    _draggingCard = card;
+
+                    ((IPseudoClasses) cachedContainer.Classes).Add(".dragging");
+
+                    _startPoint = e.GetCurrentPoint(cachedContainer!.Parent).Position;
+                    _startZIndex = _draggingControl.ZIndex;
+                    _draggingControl.ZIndex = Int32.MaxValue;
+
+                    e.Pointer.Capture(cachedContainer);
+                    break;
                 }
 
                 break;
             }
         }
     }
+
 
     private void AssociatedObjectOnDetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
     {
@@ -249,20 +316,19 @@ public class CardFieldBehavior : Behavior<Canvas>
                 break;
             case OffsetMode.EveryNthCard:
                 //  Offset only if n Mod N is zero.
-                if ((n + 1) % (int)parent.NValue == 0)
+                if ((n + 1) % (int) parent.NValue == 0)
                 {
                     faceDownOffset = parent.FaceDownOffset ?? default;
                     faceUpOffset = parent.FaceUpOffset ?? default;
                 }
 
                 break;
-            
-             
-            
+
+
             case OffsetMode.TopNCards:
                 //  Offset only if (Total - N) <= n < Total
-                var k = (int)parent.NValue;
-                
+                var k = (int) parent.NValue;
+
                 if ((total - k) <= n && n < total)
                 {
                     faceDownOffset = parent.FaceDownOffset ?? default;
@@ -273,7 +339,7 @@ public class CardFieldBehavior : Behavior<Canvas>
 
             case OffsetMode.BottomNCards:
                 //  Offset only if 0 < n < N
-                if (n <= (int)(parent.NValue))
+                if (n <= (int) (parent.NValue))
                 {
                     faceDownOffset = parent.FaceDownOffset ?? default;
                     faceUpOffset = parent.FaceUpOffset ?? default;
