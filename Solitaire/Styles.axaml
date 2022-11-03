@@ -66,9 +66,9 @@
 
                 </Panel>
 
-                <TextBlock Background="Black" FontSize="28" VerticalAlignment="Top" HorizontalAlignment="Left"
-                           Foreground="Yellow" Text="{Binding $parent[ContentControl].ZIndex}">
-                </TextBlock>
+                <!-- <TextBlock Background="Black" FontSize="28" VerticalAlignment="Top" HorizontalAlignment="Left" -->
+                <!--            Foreground="Yellow" Text="{Binding $parent[ContentControl].ZIndex}"> -->
+                <!-- </TextBlock> -->
             </Panel>
 
         </DataTemplate>
@@ -135,8 +135,8 @@
         <Setter Property="(Canvas.Top)" Value="-100"/>
         <Setter Property="Transitions">
             <Transitions>
-                <DoubleTransition Property="(Canvas.Left)"  Duration="0:0:0.5" />
-                <DoubleTransition Property="(Canvas.Top)" Duration="0:0:0.5" />
+                <DoubleTransition Property="(Canvas.Left)" Easing="CubicEaseInOut"  Duration="0:0:0.5" />
+                <DoubleTransition Property="(Canvas.Top)" Easing="CubicEaseInOut" Duration="0:0:0.5" />
             </Transitions>
         </Setter>
     </Style>
