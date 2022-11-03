@@ -22,7 +22,13 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
     [ObservableProperty] private DrawMode _drawMode;
 
-    public KlondikeSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel,1)
+    /// <inheritdoc />
+    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+    }
+
+    public KlondikeSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel)
     {
         _casinoViewModel = casinoViewModel;
         InitializeFoundationsAndTableauSet();

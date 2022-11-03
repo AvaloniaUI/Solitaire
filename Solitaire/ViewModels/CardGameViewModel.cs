@@ -47,7 +47,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="CardGameViewModel"/> class.
     /// </summary>
-    protected CardGameViewModel(CasinoViewModel casinoViewModel, int totalDecks)
+    protected CardGameViewModel(CasinoViewModel casinoViewModel)
     {
         NavigateToCasinoCommand =
             new RelayCommand(() =>
@@ -67,11 +67,16 @@ public abstract partial class CardGameViewModel : ViewModelBase
         _timer.Interval = TimeSpan.FromMilliseconds(500);
         _timer.Tick += timer_Tick;
 
+        GenerateDeck();
+        
+        
+    }
+
+    protected virtual void GenerateDeck()
+    {
         var playingCards = Enum
             .GetValuesAsUnderlyingType(typeof(CardType))
-            .Cast<CardType>()
-            .Select(x=>Enumerable.Repeat(x, totalDecks))
-            .SelectMany(x=>x)
+            .Cast<CardType>() 
             .Select(cardType => new PlayingCardViewModel(this) 
                 {CardType = cardType, IsFaceDown = true})
             .ToList();

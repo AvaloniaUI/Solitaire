@@ -24,7 +24,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
     [ObservableProperty] private DrawMode _drawMode;
     [ObservableProperty] private List<PlayingCardViewModel> _playingCards;
 
-    public FreeCellSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel, 1)
+    public FreeCellSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel)
     {
         InitializeFoundationsAndTableauSet();
 
