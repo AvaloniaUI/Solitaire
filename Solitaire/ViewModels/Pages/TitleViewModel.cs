@@ -1,4 +1,5 @@
 using System.Windows.Input;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -29,20 +30,31 @@ public partial class TitleViewModel : ViewModelBase
         NavigateToKlondikeCommand = new RelayCommand(() =>
         {
             casinoViewModel.CurrentView = casinoViewModel.KlondikeInstance;
-            casinoViewModel.KlondikeInstance.NewGameCommand?.Execute(default);
+            Dispatcher.UIThread.Post(() =>
+            {
+                casinoViewModel.KlondikeInstance.NewGameCommand?.Execute(default);
+            }, DispatcherPriority.Background);
         });
 
         NavigateToSpiderCommand = new RelayCommand(() =>
         {
             casinoViewModel.CurrentView = casinoViewModel.SpiderInstance;
-            casinoViewModel.SpiderInstance.NewGameCommand?.Execute(default);
-        });
+            
+            Dispatcher.UIThread.Post(() =>
+            {
+                casinoViewModel.SpiderInstance.NewGameCommand?.Execute(default);
+            }, DispatcherPriority.Background);
+         });
 
         NavigateToFreeCellCommand = new RelayCommand(() =>
         {
             casinoViewModel.CurrentView = casinoViewModel.FreeCellInstance;
-            casinoViewModel.FreeCellInstance.NewGameCommand?.Execute(default);
-        });
+            
+            Dispatcher.UIThread.Post(() =>
+            {
+                casinoViewModel.FreeCellInstance.NewGameCommand?.Execute(default);
+            }, DispatcherPriority.Background);
+         });
 
         NavigateToSettingsCommand = new RelayCommand(() =>
         {
