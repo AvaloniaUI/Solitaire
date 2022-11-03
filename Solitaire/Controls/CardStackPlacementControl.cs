@@ -3,6 +3,7 @@ using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using Avalonia.Styling;
 using Solitaire.Behaviors;
 using Solitaire.Models;
 using Solitaire.ViewModels;
@@ -14,16 +15,16 @@ public class CardStackPlacementControl : Border
     /// <inheritdoc />
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        var j = CardFieldBehavior.GetCardStacks(this);
-        j.Add(this);
+        var stacks = CardFieldBehavior.GetCardStacks(this);
+        stacks?.Add(this);
         base.OnAttachedToVisualTree(e);
     }
 
     /// <inheritdoc />
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        var j = CardFieldBehavior.GetCardStacks(this);
-        j.Remove(this);
+        var stacks = CardFieldBehavior.GetCardStacks(this);
+        stacks?.Remove(this);
         base.OnDetachedFromVisualTree(e);
     }
 
@@ -50,8 +51,8 @@ public class CardStackPlacementControl : Border
     public static readonly StyledProperty<ICommand?> CommandOnCardClickProperty =
         AvaloniaProperty.Register<CardStackPlacementControl, ICommand?>("CommandOnCardClick");
 
-    public static readonly StyledProperty<DrawMode?> NValueProperty =
-        AvaloniaProperty.Register<CardStackPlacementControl, DrawMode?>("NValue");
+    public static readonly StyledProperty<DrawMode> NValueProperty =
+        AvaloniaProperty.Register<CardStackPlacementControl, DrawMode>("NValue");
 
     public static readonly StyledProperty<bool> IsHomeStackProperty =
         AvaloniaProperty.Register<CardStackPlacementControl, bool>("IsHomeStack");
@@ -98,7 +99,7 @@ public class CardStackPlacementControl : Border
         set => SetValue(CommandOnCardClickProperty, value);
     }
 
-    public DrawMode? NValue
+    public DrawMode NValue
     {
         get => GetValue(NValueProperty);
         set => SetValue(NValueProperty, value);

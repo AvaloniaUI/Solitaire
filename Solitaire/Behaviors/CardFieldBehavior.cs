@@ -4,8 +4,10 @@ using System.Collections.Specialized;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml.Templates;
+using Avalonia.Media;
 using Avalonia.Rendering.Composition;
 using Avalonia.Rendering.Composition.Animations;
 using Avalonia.VisualTree;
@@ -25,8 +27,8 @@ public class CardFieldBehavior : Behavior<Canvas>
 
     public List<PlayingCardViewModel> Cards
     {
-        get { return (List<PlayingCardViewModel>) GetValue(CardsProperty); }
-        set { SetValue(CardsProperty, value); }
+        get => GetValue(CardsProperty);
+        set => SetValue(CardsProperty, value);
     }
 
     public static void SetCardStacks(Control obj, List<CardStackPlacementControl> value) =>
@@ -35,8 +37,7 @@ public class CardFieldBehavior : Behavior<Canvas>
     public static List<CardStackPlacementControl>? GetCardStacks(Control obj) => obj.GetValue(CardStacksProperty);
 
 
-    private Dictionary<PlayingCardViewModel, ContentControl> _containerCache = new();
-    private bool _isLayouting;
+    private readonly Dictionary<PlayingCardViewModel, ContentControl> _containerCache = new();
 
     public static readonly StyledProperty<List<PlayingCardViewModel>> CardsProperty =
         AvaloniaProperty.Register<CardFieldBehavior, List<PlayingCardViewModel>>("Cards");
@@ -69,9 +70,60 @@ public class CardFieldBehavior : Behavior<Canvas>
     protected override void OnAttached()
     {
         if (AssociatedObject == null) return;
+        AssociatedObject.Background = Brushes.Transparent;
         AssociatedObject.AttachedToVisualTree += AssociatedObjectOnAttachedToVisualTree;
         AssociatedObject.DetachedFromVisualTree += AssociatedObjectOnDetachedFromVisualTree;
+        AssociatedObject.PointerPressed += AssociatedObjectOnPointerPressed;
+        AssociatedObject.PointerMoved += AssociatedObjectOnPointerMoved;
+        AssociatedObject.PointerReleased += AssociatedObjectOnPointerReleased;
         base.OnAttached();
+    }
+
+    private Control _draggingControl;
+
+    private void AssociatedObjectOnPointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+    }
+
+    private void AssociatedObjectOnPointerMoved(object? sender, PointerEventArgs e)
+    {
+    }
+
+    private void AssociatedObjectOnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        var absCurPos = e.GetCurrentPoint(AssociatedObject?.GetVisualRoot()).Position;
+
+        if (AssociatedObject == null) return;
+        foreach (var visual in AssociatedObject.GetVisualRoot()!.GetVisualsAt(absCurPos)
+                     .OrderByDescending(x => x.ZIndex))
+        {
+            if (visual is CardStackPlacementControl stack && stack.DataContext is CardGameViewModel a)
+            {
+                if (stack.CommandOnCardClick?.CanExecute(null) ?? false)
+                {
+                    stack.CommandOnCardClick.Execute(null);
+                }
+
+                break;
+            }
+
+            if (visual is Border container && container.DataContext is PlayingCardViewModel card)
+            {
+                var cardStacks = GetCardStacks(container);
+                if (cardStacks != null)
+                {
+                    var parentStack = cardStacks.FirstOrDefault(x => x.SourceItems != null && x.SourceItems.Contains(card));
+                    
+                    if (parentStack?.CommandOnCardClick?.CanExecute(null) ?? false)
+                    {
+                        parentStack.CommandOnCardClick?.Execute(null);
+                    }
+                    
+                }
+
+                break;
+            }
+        }
     }
 
     private void AssociatedObjectOnDetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
@@ -107,7 +159,7 @@ public class CardFieldBehavior : Behavior<Canvas>
         var homePosition = cardStacks?.FirstOrDefault(i => i.IsHomeStack)?.Bounds.Position ?? new Point();
 
         foreach (var card in cardsList)
-        { 
+        {
             var container = new ContentControl
             {
                 Content = card,
@@ -197,16 +249,21 @@ public class CardFieldBehavior : Behavior<Canvas>
                 break;
             case OffsetMode.EveryNthCard:
                 //  Offset only if n Mod N is zero.
-                if ((n + 1) % ((int) parent.NValue) == 0)
+                if ((n + 1) % (int)parent.NValue == 0)
                 {
                     faceDownOffset = parent.FaceDownOffset ?? default;
                     faceUpOffset = parent.FaceUpOffset ?? default;
                 }
 
                 break;
+            
+             
+            
             case OffsetMode.TopNCards:
                 //  Offset only if (Total - N) <= n < Total
-                if (n > (total - (int) parent.NValue))
+                var k = (int)parent.NValue;
+                
+                if ((total - k) <= n && n < total)
                 {
                     faceDownOffset = parent.FaceDownOffset ?? default;
                     faceUpOffset = parent.FaceUpOffset ?? default;
@@ -216,7 +273,7 @@ public class CardFieldBehavior : Behavior<Canvas>
 
             case OffsetMode.BottomNCards:
                 //  Offset only if 0 < n < N
-                if (n < (int) parent.NValue)
+                if (n <= (int)(parent.NValue))
                 {
                     faceDownOffset = parent.FaceDownOffset ?? default;
                     faceUpOffset = parent.FaceUpOffset ?? default;
