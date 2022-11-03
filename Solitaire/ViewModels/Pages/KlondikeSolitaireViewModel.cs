@@ -75,11 +75,11 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     private void DoDealNewGame()
     {
         DrawMode = _casinoViewModel.SettingsInstance.DrawMode;
-        
+
         ResetGame();
 
         var playingCards = GetNewShuffledDeck();
-        
+
         //  Now distribute them - do the tableau sets first.
         for (var i = 0; i < 7; i++)
         {
@@ -120,6 +120,8 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
     public override void ResetGame()
     {
+        DrawMode = _casinoViewModel.SettingsInstance.DrawMode;
+
         //  Call the base, which stops the timer, clears
         //  the score etc.
         ResetInternalState();
@@ -148,20 +150,41 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
                 card.IsPlayable = false;
                 Stock.Insert(0, card);
             }
-
             Waste.Clear();
         }
         else
         {
-            //  Put up to three cards in the waste.
-            for (var i = 0; i < (int) DrawMode; i++)
+            //  Everything in the waste so far must now have no offset.
+            foreach (var wasteCard in Waste)
+                wasteCard.FaceUpOffset = 0;
+
+            //  Work out how many cards to draw.
+            int cardsToDraw = 0;
+            switch (DrawMode)
             {
-                if (Stock.Count <= 0) continue;
-                var card = Stock.Last();
-                Stock.Remove(card);
-                card.IsFaceDown = false;
-                card.IsPlayable = false;
-                Waste.Add(card);
+                case DrawMode.DrawOne:
+                    cardsToDraw = 1;
+                    break;
+                case DrawMode.DrawThree:
+                    cardsToDraw = 3;
+                    break;
+                default:
+                    cardsToDraw = 1;
+                    break;
+            }
+
+            //  Put up to three cards in the waste.
+            for (int i = 0; i < cardsToDraw; i++)
+            {
+                if (Stock.Count > 0)
+                {
+                    var card = Stock.Last();
+                    Stock.Remove(card);
+                    card.IsFaceDown = false;
+                    card.IsPlayable = false;
+                    card.FaceUpOffset = 30;
+                    Waste.Add(card);
+                }
             }
         }
 
@@ -170,7 +193,6 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         foreach (var wasteCard in Waste)
             wasteCard.IsPlayable = wasteCard == Waste.Last();
     }
-
     /// <summary>
     /// Tries the move all cards to appropriate foundations.
     /// </summary>

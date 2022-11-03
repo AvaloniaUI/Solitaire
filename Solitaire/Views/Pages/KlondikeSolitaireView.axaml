@@ -54,14 +54,13 @@
                 <controls:CardStackPlacementControl Name="Waste"
                                            TargetCanvas="{Binding #PlayingField}"
                                            Classes="StackMarker"
-                                           NValue="{Binding DrawMode, Converter={StaticResource EnumToIntConverter}}"
+                                           NValue="{Binding DrawMode}"
                                            Grid.Row="0"
                                            Grid.Column="1"
-                                           Grid.ColumnSpan="2"
-                                           FaceUpOffset="30"
+                                           Grid.ColumnSpan="2" 
                                            SourceItems="{Binding Waste}"
                                            Orientation="Horizontal"
-                                           OffsetMode="TopNCards" />
+                                           OffsetMode="UseCardValues" />
 
                 <!-- The foundations. -->
                 <controls:CardStackPlacementControl Name="Foundation1"
