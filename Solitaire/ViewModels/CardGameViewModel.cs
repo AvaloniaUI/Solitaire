@@ -6,6 +6,7 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Solitaire.Models;
+using Solitaire.Utils;
 using Solitaire.ViewModels.Pages;
 
 namespace Solitaire.ViewModels;
@@ -67,8 +68,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
         _timer.Tick += timer_Tick;
 
         GenerateDeck();
-        
-        
+         
     }
 
     protected virtual void GenerateDeck()
@@ -90,7 +90,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
             card.Reset();
         }
 
-        var playingCards = PlayingCards.OrderBy(x => Random.Shared.NextDouble()).ToList();
+        var playingCards = PlayingCards.OrderBy(x => PlatformProviders.NextRandomDouble()).ToList();
  
         return playingCards.Count == 0 ? 
             throw new InvalidOperationException("Starting deck cannot be empty.") : playingCards;
