@@ -85,18 +85,14 @@ public class CardFieldBehavior : Behavior<Canvas>
 
     private void AssociatedObjectOnDetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
     {
-        // var s = sender as Canvas;
-        // var cardsList = GetCards(s);
-        // var cardStacks = GetCardStacks(s);
-        //
-        // if (cardStacks != null)
-        // {
-        //     cardsList.Clear();
-        //     cardStacks.Clear();
-        // }
-        //
-        // _containerCache.Clear();
-        // s.Children.Clear();
+        if (sender is Canvas s)
+        {
+            var cardStacks = GetCardStacks(s);
+            cardStacks?.Clear();
+            s.Children.Clear();
+        }
+
+        _containerCache.Clear();
     }
 
     private void AssociatedObjectOnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
