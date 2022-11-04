@@ -40,39 +40,9 @@
                         BorderThickness="1" CornerRadius="6">
                         <Image Margin="4"
                                Source="{Binding CardType, Converter={StaticResource PlayingCardToBrushConverter}}" />
-                        <Border.Styles>
-                            <Style Selector="Border.playingCard.isFaceDown">
-                                <Setter Property="BorderBrush" Value="Transparent" />
-                            </Style>
-                            <Style Selector="Border.playingCard:not(.isFaceDown)">
-                                <Setter Property="BorderBrush" Value="Gray" />
-                            </Style>
-                            <Style Selector="Border.playingCard:not(:dragging)">
-                                <Setter Property="Transitions">
-                                    <Setter.Value>
-                                        <Transitions>
-                                            <TransformOperationsTransition Property="RenderTransform"
-                                                                           Duration="0:0:0.075"
-                                                                           Easing="QuadraticEaseIn" />
-                                        </Transitions>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-
-                            <Style Selector="Border.playingCard:dragging">
-                                <Setter Property="Opacity" Value="0.5" />
-                            </Style>
-                        </Border.Styles>
-                    </Border>
-
-
+                    </Border> 
                 </Panel>
-
-                <!-- <TextBlock Background="Black" FontSize="28" VerticalAlignment="Top" HorizontalAlignment="Left" -->
-                <!--            Foreground="Yellow" Text="{Binding $parent[ContentControl].ZIndex}"> -->
-                <!-- </TextBlock> -->
             </Panel>
-
         </DataTemplate>
     </Styles.Resources>
 
@@ -132,7 +102,7 @@
     </Style>
     
     <!-- A nice clean style for a button. -->
-    <Style Selector="ContentControl.playingCard:not(.dragging)">
+    <Style Selector="ContentControl.playingCard">
         <Setter Property="(Canvas.Left)" Value="-100"/>
         <Setter Property="(Canvas.Top)" Value="-100"/>
         <Setter Property="Transitions">
