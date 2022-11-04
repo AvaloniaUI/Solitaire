@@ -9,9 +9,9 @@ namespace Solitaire.ViewModels;
 /// </summary>
 public partial class PlayingCardViewModel : ViewModelBase
 {
-    public CardGameViewModel CardGameInstance { get; }
+    public CardGameViewModel? CardGameInstance { get; }
 
-    public PlayingCardViewModel(CardGameViewModel cardGameInstance)
+    public PlayingCardViewModel(CardGameViewModel? cardGameInstance)
     {
         CardGameInstance = cardGameInstance;
     }
@@ -52,9 +52,18 @@ public partial class PlayingCardViewModel : ViewModelBase
         //  The first two suits in the CardType enum are red, the last two are black.
         (int)CardType < 26 ? CardColour.Red : CardColour.Black;
 
-    [ObservableProperty] private CardType _cardType  = CardType.SA;
+    [ObservableProperty]  private CardType _cardType  = CardType.SA;
     [ObservableProperty] private bool _isFaceDown;
     [ObservableProperty] private bool _isPlayable;
     [ObservableProperty] private double _faceDownOffset;
     [ObservableProperty] private double _faceUpOffset;
+ 
+    public void Reset()
+    {
+        IsPlayable = false;
+        IsFaceDown = true;
+        FaceDownOffset = 0;
+        FaceUpOffset = 0;
+    }
+ 
 }

@@ -8,89 +8,44 @@
         <converters:TimeSpanToShortStringConverter x:Key="TimeSpanToShortStringConverter" />
         <converters:PlayingCardToBrushConverter x:Key="PlayingCardToBrushConverter" />
         <converters:EnumToListConverter x:Key="EnumToListConverter" />
+        <converters:EnumToIntConverter x:Key="EnumToIntConverter" />
+
+        <Thickness x:Key="CardThickness">8,10,40,40</Thickness>
+
+        <DataTemplate x:Key="PlayingCardDataTemplate" DataType="{x:Type solitaireGames:PlayingCardViewModel}">
+
+            <Panel Name="playingCard">
+                <Panel Classes="playingCardBack" IsVisible="{Binding IsFaceDown}">
+
+                    <Border
+                        Background="White"
+                        Width="140" Height="203" Cursor="Hand"
+                        BorderBrush="Gray"
+                        BorderThickness="1" CornerRadius="6">
+                        <Image Margin="4" Source="{StaticResource CardBack}">
+                        </Image>
+
+                        <Border.RenderTransform>
+                            <Rotate3DTransform
+                                AngleY="180" />
+                        </Border.RenderTransform>
+                    </Border>
+                </Panel>
+                <Panel Classes="playingCardFront" IsVisible="{Binding !IsFaceDown}">
+                    <Border
+                        Background="White"
+                        Classes.isFaceDown="{Binding IsFaceDown}"
+                        Width="140" Height="203" Cursor="Hand"
+                        BorderBrush="Gray"
+                        BorderThickness="1" CornerRadius="6">
+                        <Image Margin="4"
+                               Source="{Binding CardType, Converter={StaticResource PlayingCardToBrushConverter}}" />
+                    </Border> 
+                </Panel>
+            </Panel>
+        </DataTemplate>
     </Styles.Resources>
 
-
-    <StyleInclude Source="avares://Avalonia.Xaml.Interactions/Draggable/Styles.axaml" />
-    <Style Selector="controls|CardStackControl">
-        <Setter Property="ClipToBounds" Value="False" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type controls:CardStackControl}">
-                    <!-- Transparent Background is important so that it catches the visual point selection -->
-                    <Border Background="Transparent"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            ClipToBounds="False"
-                            behaviors:CardDragBehavior.DragTargetObject="{TemplateBinding Items}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
-                        <ItemsControl Items="{TemplateBinding Items}"
-                                      ClipToBounds="False"
-                                      Background="Transparent">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="{x:Type solitaireGames:PlayingCardViewModel}">
-                                    <Border
-                                        Background="White"
-                                        Classes="playingCard"
-                                        Classes.isFaceDown="{Binding IsFaceDown}"
-                                        Width="140" Height="203.33" Cursor="Hand"
-                                        BorderThickness="1" CornerRadius="6">
-                                        <Image Margin="4">
-                                            <Image.Source>
-                                                <MultiBinding Converter="{StaticResource PlayingCardToBrushConverter}">
-                                                    <Binding Path="CardType" />
-                                                    <Binding Path="IsFaceDown" />
-                                                </MultiBinding>
-                                            </Image.Source>
-                                        </Image>
-                                        <Interaction.Behaviors>
-                                            <BehaviorCollection>
-                                                <behaviors:CardDragBehavior HorizontalDragThreshold="3"
-                                                                            VerticalDragThreshold="3" />
-                                            </BehaviorCollection>
-                                        </Interaction.Behaviors>
-                                        <Border.Styles>
-                                            <Style Selector="Border.playingCard.isFaceDown">
-                                                <Setter Property="BorderBrush" Value="Transparent" />
-                                            </Style>
-                                            <Style Selector="Border.playingCard:not(.isFaceDown)">
-                                                <Setter Property="BorderBrush" Value="Gray" />
-                                            </Style>
-                                            <Style Selector="Border.playingCard:not(:dragging)">
-                                                <Setter Property="Transitions">
-                                                    <Setter.Value>
-                                                        <Transitions>
-                                                            <TransformOperationsTransition Property="RenderTransform"
-                                                                Duration="0:0:0.075" Easing="QuadraticEaseIn" />
-                                                        </Transitions>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </Style>
-
-                                            <Style Selector="Border.playingCard:dragging">
-                                                <Setter Property="Opacity" Value="0.5" />
-                                            </Style>
-                                        </Border.Styles>
-                                    </Border>
-                                </DataTemplate>
-
-                            </ItemsControl.ItemTemplate>
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <controls:CardStackPanel ClipToBounds="False"
-                                                             FaceDownOffset="{Binding $parent[controls:CardStackControl].FaceDownOffset}"
-                                                             FaceUpOffset="{Binding $parent[controls:CardStackControl].FaceUpOffset}"
-                                                             OffsetMode="{Binding $parent[controls:CardStackControl].OffsetMode}"
-                                                             NValue="{Binding $parent[controls:CardStackControl].NValue}"
-                                                             Orientation="{Binding $parent[controls:CardStackControl].Orientation}" />
-
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                        </ItemsControl>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
 
     <!--The style for text etc in a game. -->
     <Style Selector="TextBlock.CasinoTextStyle">
@@ -99,17 +54,20 @@
     </Style>
 
     <!-- The style for a stack marker. -->
-    <Style Selector="Border.StackMarker">
-        <Setter Property="Padding" Value="10" />
+    <Style Selector="controls|CardStackPlacementControl.StackMarker">
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="6" />
         <Setter Property="CornerRadius" Value="15" />
         <Setter Property="BorderBrush" Value="#33FFFFFF" />
-        <Setter Property="Margin" Value="8,10,40,60" />
+        <Setter Property="Width" Value="140" />
+        <Setter Property="Height" Value="203" />
+        <Setter Property="Margin" Value="{StaticResource CardThickness}" />
     </Style>
 
     <!-- Style for a run marker. -->
-    <Style Selector="Border.RunMarker">
-        <Setter Property="Padding" Value="10" />
+    <Style Selector="controls|CardStackPlacementControl.RunMarker">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Width" Value="140" />
         <Setter Property="BorderThickness" Value="6" />
         <Setter Property="CornerRadius" Value="15" />
         <Setter Property="BorderBrush">
@@ -120,7 +78,7 @@
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
-        <Setter Property="Margin" Value="8,10,40,40" />
+        <Setter Property="Margin" Value="{StaticResource CardThickness}" />
     </Style>
 
     <!-- A nice clean style for a button. -->
@@ -140,6 +98,18 @@
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- A nice clean style for a button. -->
+    <Style Selector="ContentControl.playingCard">
+        <Setter Property="(Canvas.Left)" Value="-100"/>
+        <Setter Property="(Canvas.Top)" Value="-100"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="(Canvas.Left)" Easing="CubicEaseInOut"  Duration="0:0:0.5" />
+                <DoubleTransition Property="(Canvas.Top)" Easing="CubicEaseInOut" Duration="0:0:0.5" />
+            </Transitions>
         </Setter>
     </Style>
 

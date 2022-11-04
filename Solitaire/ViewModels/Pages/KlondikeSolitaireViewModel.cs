@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ReactiveUI;
+using DynamicData;
 using Solitaire.Models;
 using Solitaire.Utils;
 
@@ -21,19 +20,16 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     public override string GameName => "Klondike Solitaire";
 
     [ObservableProperty] private DrawMode _drawMode;
-
+ 
     public KlondikeSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel)
     {
+        _casinoViewModel = casinoViewModel;
         InitializeFoundationsAndTableauSet();
 
         //  Create the turn stock command.
         TurnStockCommand = new RelayCommand(DoTurnStock);
         AppropriateFoundationsCommand = new RelayCommand(TryMoveAllCardsToAppropriateFoundations);
         NewGameCommand = new RelayCommand(DoDealNewGame);
-
-        casinoViewModel.SettingsInstance.WhenAnyValue(x => x.DrawMode)
-            .Do(x => DrawMode = x)
-            .Subscribe();
     }
 
     private void InitializeFoundationsAndTableauSet()
@@ -73,28 +69,24 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// </summary>
     private void DoDealNewGame()
     {
+        DrawMode = _casinoViewModel.SettingsInstance.DrawMode;
+
         ResetGame();
 
-        //  Create a list of card types.
-        var eachCardType = Enum.GetValues(typeof(CardType)).Cast<CardType>().ToList();
-
-        //  Create a playing card from each card type.
-        var playingCards = eachCardType
-            .Select(cardType => new PlayingCardViewModel(this) {CardType = cardType, IsFaceDown = true}).ToList();
-
-        //  Shuffle the playing cards.
-        playingCards.Shuffle();
+        var playingCards = GetNewShuffledDeck();
 
         //  Now distribute them - do the tableau sets first.
         for (var i = 0; i < 7; i++)
         {
+            var tempTableau = new List<PlayingCardViewModel>();
+
             //  We have i face down cards and 1 face up card.
             for (var j = 0; j < i; j++)
             {
                 var faceDownCardViewModel = playingCards.First();
                 playingCards.Remove(faceDownCardViewModel);
                 faceDownCardViewModel.IsFaceDown = true;
-                _tableauSet[i].Add(faceDownCardViewModel);
+                tempTableau.Add(faceDownCardViewModel);
             }
 
             //  Add the face up card.
@@ -102,7 +94,10 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
             playingCards.Remove(faceUpCardViewModel);
             faceUpCardViewModel.IsFaceDown = false;
             faceUpCardViewModel.IsPlayable = true;
-            _tableauSet[i].Add(faceUpCardViewModel);
+            tempTableau.Add(faceUpCardViewModel);
+
+            using var tableauSetD = _tableauSet[i].DelayNotifications();
+            tableauSetD.AddRange(tempTableau);
         }
 
         //  Finally we add every card that's left over to the stock.
@@ -110,10 +105,12 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         {
             playingCard.IsFaceDown = true;
             playingCard.IsPlayable = false;
-            Stock.Add(playingCard);
         }
 
-        playingCards.Clear();
+        using var stockD = Stock.DelayNotifications();
+        
+        stockD.AddRange(playingCards);
+
 
         //  And we're done.
         StartTimer();
@@ -121,17 +118,31 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
     public override void ResetGame()
     {
+        using var stockD = Stock.DelayNotifications();
+        using var wasteD = Waste.DelayNotifications();
+
+        DrawMode = _casinoViewModel.SettingsInstance.DrawMode;
+
         //  Call the base, which stops the timer, clears
         //  the score etc.
         ResetInternalState();
 
-        //  Clear everything.
-        Stock.Clear();
-        Waste.Clear();
         foreach (var tableau in _tableauSet)
-            tableau.Clear();
+        {
+            using var tableauD = tableau.DelayNotifications();
+            tableauD.Clear();
+        }
+
         foreach (var foundation in _foundations)
-            foundation.Clear();
+        {
+            
+            using var foundationD = foundation.DelayNotifications();
+            foundationD.Clear();
+        }
+
+        //  Clear everything.
+        stockD.Clear();
+        wasteD.Clear();
     }
 
     /// <summary>
@@ -139,24 +150,22 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// </summary>
     private void DoTurnStock()
     {
+        using var wasteD = Waste.DelayNotifications();
+        using var stockD = Stock.DelayNotifications();
+        
         //  If the stock is empty, put every card from the waste back into the stock.
-        if (Stock.Count == 0)
+        if (stockD.Count == 0)
         {
-            foreach (var card in Waste)
+            foreach (var card in wasteD)
             {
                 card.IsFaceDown = true;
                 card.IsPlayable = false;
-                Stock.Insert(0, card);
+                stockD.Insert(0, card);
             }
-
-            Waste.Clear();
+            wasteD.Clear();
         }
         else
-        {
-            //  Everything in the waste so far must now have no offset.
-            foreach (var wasteCard in Waste)
-                wasteCard.FaceUpOffset = 0;
-
+        { 
             //  Work out how many cards to draw.
             var cardsToDraw = DrawMode switch
             {
@@ -168,22 +177,20 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
             //  Put up to three cards in the waste.
             for (var i = 0; i < cardsToDraw; i++)
             {
-                if (Stock.Count <= 0) continue;
-                var card = Stock.Last();
-                Stock.Remove(card);
+                if (stockD.Count <= 0) continue;
+                var card = stockD.Last();
+                stockD.Remove(card);
                 card.IsFaceDown = false;
                 card.IsPlayable = false;
-                card.FaceUpOffset = 30;
-                Waste.Add(card);
+                wasteD.Add(card);
             }
         }
 
         //  Everything in the waste must be not playable,
         //  apart from the top card.
-        foreach (var wasteCard in Waste)
+        foreach (var wasteCard in wasteD)
             wasteCard.IsPlayable = wasteCard == Waste.Last();
     }
-
     /// <summary>
     /// Tries the move all cards to appropriate foundations.
     /// </summary>
@@ -451,34 +458,35 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     }
 
     //  For ease of access we have arrays of the foundations and tableau set.
-    private readonly List<ObservableCollection<PlayingCardViewModel>> _foundations = new();
-    private readonly List<ObservableCollection<PlayingCardViewModel>> _tableauSet = new();
+    private readonly List<BatchObservableCollection<PlayingCardViewModel>> _foundations = new();
+    private readonly List<BatchObservableCollection<PlayingCardViewModel>> _tableauSet = new();
+    private readonly CasinoViewModel _casinoViewModel;
 
-    public ObservableCollection<PlayingCardViewModel> Foundation1 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Foundation1 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Foundation2 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Foundation2 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Foundation3 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Foundation3 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Foundation4 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Foundation4 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Tableau1 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau1 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Tableau2 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau2 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Tableau3 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau3 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Tableau4 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau4 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Tableau5 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau5 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Tableau6 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau6 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Tableau7 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau7 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Stock { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Stock { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Waste { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Waste { get; } = new();
 
 
     /// <summary>

@@ -2,15 +2,40 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.IsolatedStorage;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.VisualTree;
 using Newtonsoft.Json;
 using Solitaire.Models;
 using Solitaire.ViewModels;
 
 namespace Solitaire.Utils;
 
+public static class VisualExtensions
+{
+    
+    public static Rect TransformToVisualRect(this IVisual visual, IVisual relativeTo)
+    {
+        var sourceBounds = visual.Bounds;
+        if (visual.TransformToVisual(relativeTo) is Matrix sourceTransform)
+        {
+            return sourceBounds.TransformToAABB(sourceTransform);
+        }
+        return default;
+    }
+
+}
+
 public static class PlatformProviders
 {
+    public static double NextRandomDouble()
+    {
+        var nextULong = BitConverter.ToUInt64(RandomNumberGenerator.GetBytes(sizeof(ulong)));
+
+        return (nextULong >> 11) * (1.0 / (1ul << 53));
+    }
+    
     private class DefaultSettingsStore<T> : IRuntimeStorageProvider<T>
     {
         private static string Identifier { get; } = typeof(T).FullName?.Replace(".", string.Empty) ?? "default";

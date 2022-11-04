@@ -8,10 +8,10 @@ public enum DrawMode
     /// <summary>
     /// Draw one card.
     /// </summary>
-    DrawOne = 0,
+    DrawOne = 1,
 
     /// <summary>
     /// Draw three cards.
     /// </summary>
-    DrawThree = 1
+    DrawThree = 3
 }

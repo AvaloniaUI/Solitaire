@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 using System.Windows.Input;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Solitaire.Models;
+using Solitaire.Utils;
 using Solitaire.ViewModels.Pages;
 
 namespace Solitaire.ViewModels;
@@ -13,11 +17,14 @@ namespace Solitaire.ViewModels;
 /// </summary>
 public abstract partial class CardGameViewModel : ViewModelBase
 {
+    public ImmutableArray<PlayingCardViewModel>? Deck;
+
     private Stack<Move> _moveStack = new();
-    
+
     public abstract string? GameName { get; }
 
-    protected void RecordMove(IList<PlayingCardViewModel> from, IList<PlayingCardViewModel> to, IList<PlayingCardViewModel> range, int score)
+    protected void RecordMove(IList<PlayingCardViewModel> from, IList<PlayingCardViewModel> to,
+        IList<PlayingCardViewModel> range, int score)
     {
         _moveStack.Push(new Move(from, to, range, score));
     }
@@ -29,7 +36,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
             var move = _moveStack.Pop();
 
             Score -= move.Score;
-            
+
             foreach (var runCard in move.Run)
                 move.From.Add(runCard);
             foreach (var runCard in move.Run)
@@ -55,15 +62,48 @@ public abstract partial class CardGameViewModel : ViewModelBase
 
                 casinoViewModel.CurrentView = casinoViewModel.TitleInstance;
             });
-        
+
         UndoCommand = new RelayCommand(UndoMove);
 
+        DoInitialize();
+    }
+
+    private void DoInitialize()
+    {
         //  Set up the timer.
         _timer.Interval = TimeSpan.FromMilliseconds(500);
         _timer.Tick += timer_Tick;
+        InitializeDeck();
     }
     
+    protected virtual void InitializeDeck()
+    {
+        if(Deck is { }) return;
+        
+        var playingCards = Enum
+            .GetValuesAsUnderlyingType(typeof(CardType))
+            .Cast<CardType>()
+            .Select(cardType => new PlayingCardViewModel(this)
+                {CardType = cardType, IsFaceDown = true})
+            .ToImmutableArray();
+
+        Deck = playingCards;
+    }
     
+    protected IList<PlayingCardViewModel> GetNewShuffledDeck()
+    {
+        foreach (var card in Deck!)
+        {
+            card.Reset();
+        }
+
+        var playingCards = Deck.Value.OrderBy(x => PlatformProviders.NextRandomDouble()).ToList();
+
+        return playingCards.Count == 0
+            ? throw new InvalidOperationException("Starting deck cannot be empty.")
+            : playingCards;
+    }
+
 
     public abstract IList<PlayingCardViewModel>? GetCardCollection(PlayingCardViewModel card);
 
@@ -158,7 +198,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
     /// </summary>
     /// <value>The deal new game command.</value>
     public ICommand? NewGameCommand { get; protected set; }
-    
+
     public ICommand? UndoCommand { get; protected set; }
 
     /// <summary>
@@ -172,24 +212,24 @@ public abstract partial class CardGameViewModel : ViewModelBase
     {
         _gameStats = gameStatsInstance;
     }
-    
+
     private class Move
     {
-        public Move(IList<PlayingCardViewModel> from, IList<PlayingCardViewModel> to, IList<PlayingCardViewModel> run, int score)
+        public Move(IList<PlayingCardViewModel> from, IList<PlayingCardViewModel> to, IList<PlayingCardViewModel> run,
+            int score)
         {
             From = from;
             To = to;
             Run = run;
             Score = score;
         }
-    
+
         public IList<PlayingCardViewModel> From { get; }
-    
+
         public IList<PlayingCardViewModel> To { get; }
-    
+
         public IList<PlayingCardViewModel> Run { get; }
 
         public int Score { get; }
-
     }
 }

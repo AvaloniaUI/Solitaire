@@ -4,8 +4,6 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Solitaire.ViewModels;
 using Solitaire.Views;
-using Solitaire.Views.Pages;
-using MainWindow = Solitaire.Views.MainWindow;
 
 namespace Solitaire;
 
@@ -16,25 +14,24 @@ public class App : Application
         AvaloniaXamlLoader.Load(this);
     }
 
-    public override void OnFrameworkInitializationCompleted()
+    public override async void OnFrameworkInitializationCompleted()
     {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            desktop.MainWindow = new MainWindow();
+        var dataContext = await CasinoViewModel.CreateOrLoadFromDisk();
 
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                desktop.MainWindow.DataContext = await CasinoViewModel.Load();
-            });
-        }
-        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
+        switch (ApplicationLifetime)
         {
-            singleViewPlatform.MainView = new CasinoView();
-            
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                singleViewPlatform.MainView.DataContext = await CasinoViewModel.Load();
-            });
+            case IClassicDesktopStyleApplicationLifetime desktop:
+                desktop.MainWindow = new MainWindow()
+                {
+                    DataContext = dataContext
+                };
+                break;
+            case ISingleViewApplicationLifetime singleViewPlatform:
+                singleViewPlatform.MainView = new CasinoView()
+                {
+                    DataContext = dataContext
+                };
+                break;
         }
 
         base.OnFrameworkInitializationCompleted();
