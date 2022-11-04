@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
@@ -33,7 +34,7 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
             .SelectMany(x => x)
             .Select(cardType => new PlayingCardViewModel(this)
                 {CardType = cardType, IsFaceDown = true})
-            .ToList();
+            .ToArray();
     
         //  Create a playing card from each card type.
         //  We just keep on adding cards of suits that depend on the
@@ -70,7 +71,7 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
                 break;
         }
         
-        Deck = playingCards;
+        Deck = playingCards.ToImmutableArray();
     }
     private void InitializeTableauSet()
     {

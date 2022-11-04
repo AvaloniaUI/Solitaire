@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Windows.Input;
 using Avalonia.Threading;
@@ -16,8 +17,7 @@ namespace Solitaire.ViewModels;
 /// </summary>
 public abstract partial class CardGameViewModel : ViewModelBase
 {
-    public   IReadOnlyList<PlayingCardViewModel>? Deck;
-
+    public ImmutableArray<PlayingCardViewModel>? Deck;
 
     private Stack<Move> _moveStack = new();
 
@@ -49,7 +49,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
     /// <summary>
     /// Initializes a new instance of the <see cref="CardGameViewModel"/> class.
     /// </summary>
-    protected CardGameViewModel(CasinoViewModel casinoViewModel) 
+    protected CardGameViewModel(CasinoViewModel casinoViewModel)
     {
         NavigateToCasinoCommand =
             new RelayCommand(() =>
@@ -69,12 +69,15 @@ public abstract partial class CardGameViewModel : ViewModelBase
         _timer.Interval = TimeSpan.FromMilliseconds(500);
         _timer.Tick += timer_Tick;
 
+        if (Deck is { })
+            return;
+
         var playingCards = Enum
             .GetValuesAsUnderlyingType(typeof(CardType))
             .Cast<CardType>()
             .Select(cardType => new PlayingCardViewModel(this)
                 {CardType = cardType, IsFaceDown = true})
-            .ToList();
+            .ToImmutableArray();
 
         Deck = playingCards;
     }
@@ -86,7 +89,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
             card.Reset();
         }
 
-        var playingCards = Deck.OrderBy(x => PlatformProviders.NextRandomDouble()).ToList();
+        var playingCards = Deck.Value.OrderBy(x => PlatformProviders.NextRandomDouble()).ToList();
 
         return playingCards.Count == 0
             ? throw new InvalidOperationException("Starting deck cannot be empty.")
