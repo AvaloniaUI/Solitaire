@@ -43,7 +43,7 @@ public partial class CasinoViewModel : ViewModelBase
     /// Loads this instance.
     /// </summary>
     /// <returns></returns>
-    public static async Task<CasinoViewModel> Load()
+    public static async Task<CasinoViewModel> CreateOrLoadFromDisk()
     {
         var ret = await PlatformProviders.CasinoStorage.LoadObject("mainSettings");
         if (ret is null) return new CasinoViewModel();
