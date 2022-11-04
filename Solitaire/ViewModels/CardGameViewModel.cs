@@ -65,12 +65,17 @@ public abstract partial class CardGameViewModel : ViewModelBase
 
         UndoCommand = new RelayCommand(UndoMove);
 
+        DoInitialize();
+    }
+
+    private void DoInitialize()
+    {
         //  Set up the timer.
         _timer.Interval = TimeSpan.FromMilliseconds(500);
         _timer.Tick += timer_Tick;
-
+        InitializeDeck();
     }
-
+    
     protected virtual void InitializeDeck()
     {
         if(Deck is { }) return;
@@ -87,11 +92,6 @@ public abstract partial class CardGameViewModel : ViewModelBase
     
     protected IList<PlayingCardViewModel> GetNewShuffledDeck()
     {
-        if (Deck is not { })
-        {
-            InitializeDeck();
-        }
-
         foreach (var card in Deck!)
         {
             card.Reset();
