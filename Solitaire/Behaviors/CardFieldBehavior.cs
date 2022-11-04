@@ -148,11 +148,6 @@ public class CardFieldBehavior : Behavior<Canvas>
 
         var delta = position - _startPoint;
 
-        if (Math.Abs(delta.X) < 3 || Math.Abs(delta.Y) < 3)
-        {
-            return;
-        }
-
         SetTranslateTransform(_draggingContainer, delta);
     }
 
@@ -188,34 +183,33 @@ public class CardFieldBehavior : Behavior<Canvas>
                 break;
             }
 
-            if (visual is Border {DataContext: PlayingCardViewModel card} container)
+            if (visual is not Border {DataContext: PlayingCardViewModel card} container) continue;
+            
+            var cardStacks = GetCardStacks(container);
+            if (cardStacks != null)
             {
-                var cardStacks = GetCardStacks(container);
-                if (cardStacks != null)
-                {
-                    var stack2 =
-                        cardStacks.FirstOrDefault(x => x.SourceItems != null && x.SourceItems.Contains(card));
-                    ActivateCommand(stack2);
-                }
+                var stack2 =
+                    cardStacks.FirstOrDefault(x => x.SourceItems != null && x.SourceItems.Contains(card));
+                ActivateCommand(stack2);
+            }
 
-                if (card.IsPlayable && !_isDragging && _containerCache.TryGetValue(card, out var cachedContainer))
-                {
-                    _isDragging = true;
-                    _draggingContainer = cachedContainer;
-                    _draggingCard = card;
+            if (card.IsPlayable && !_isDragging && _containerCache.TryGetValue(card, out var cachedContainer))
+            {
+                _isDragging = true;
+                _draggingContainer = cachedContainer;
+                _draggingCard = card;
 
-                    ((IPseudoClasses) cachedContainer.Classes).Add(".dragging");
+                ((IPseudoClasses) cachedContainer.Classes).Add(".dragging");
 
-                    _startPoint = e.GetCurrentPoint(cachedContainer!.Parent).Position;
-                    _startZIndex = _draggingContainer.ZIndex;
-                    _draggingContainer.ZIndex = Int32.MaxValue;
+                _startPoint = e.GetCurrentPoint(cachedContainer!.Parent).Position;
+                _startZIndex = _draggingContainer.ZIndex;
+                _draggingContainer.ZIndex = Int32.MaxValue;
 
-                    e.Pointer.Capture(cachedContainer);
-                    break;
-                }
-
+                e.Pointer.Capture(cachedContainer);
                 break;
             }
+
+            break;
         }
     }
 
@@ -229,14 +223,22 @@ public class CardFieldBehavior : Behavior<Canvas>
             s.Children.Clear();
         }
 
+
+        if (AssociatedObject != null)
+        {
+            AssociatedObject.AttachedToVisualTree -= AssociatedObjectOnAttachedToVisualTree;
+            AssociatedObject.DetachedFromVisualTree -= AssociatedObjectOnDetachedFromVisualTree;
+            AssociatedObject.PointerPressed -= AssociatedObjectOnPointerPressed;
+            AssociatedObject.PointerMoved -= AssociatedObjectOnPointerMoved;
+            AssociatedObject.PointerReleased -= AssociatedObjectOnPointerReleased;
+            AssociatedObject.PointerCaptureLost -= AssociatedObjectOnPointerCaptureLost;
+        }
+
         _containerCache.Clear();
     }
 
     private void AssociatedObjectOnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
     {
-        if (AssociatedObject == null) return;
-
-
         if (AssociatedObject?.DataContext is not CardGameViewModel model) return;
 
         //    EnsureImplicitAnimations();
