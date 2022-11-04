@@ -22,9 +22,9 @@
         <DockPanel LastChildFill="True" ClipToBounds="False">
             <Grid
                 DockPanel.Dock="Bottom" ColumnDefinitions="Auto,*,Auto,Auto,Auto,*,Auto">
-                <Button Margin="4"
-                        Classes="CasinoButtonStyle" Grid.Column="0" Width="120" Content="Go to Casino"
-                        Command="{Binding NavigateToCasinoCommand}" />
+                <Button
+                    Classes="CasinoButtonStyle" Margin="4" Grid.Column="0" Width="120" Content="Deal New Game"
+                    Command="{Binding NewGameCommand}" />
                 <RichTextBlock Grid.Column="2" Classes="CasinoTextStyle" VerticalAlignment="Center" Margin="4">
                     <Run Text="Score:" />
                     <Run Text="{Binding Score}" />
@@ -37,9 +37,9 @@
                     <Run Text="Time:" />
                     <Run Text="{Binding ElapsedTime, Converter={StaticResource TimeSpanToShortStringConverter}}" />
                 </RichTextBlock>
-                <Button
-                    Classes="CasinoButtonStyle" Margin="4" Grid.Column="6" Width="120" Content="Deal New Game"
-                    Command="{Binding NewGameCommand}" />
+                <Button Margin="4"
+                        Classes="CasinoButtonStyle" Grid.Column="6" Width="120" Content="Go to Casino"
+                        Command="{Binding NavigateToCasinoCommand}" />
             </Grid>
 
             <!-- The cards etc are all in a Viewbox so that they resize in a sensible -->
