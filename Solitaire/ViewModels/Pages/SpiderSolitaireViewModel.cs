@@ -150,22 +150,30 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
     private void DoDealCards()
     {
         //  As a sanity check if the stock is empty we cannot deal cards.
-        if (Stock.Count == 0)
+        using var stockD = Stock.DelayNotifications();
+        
+        if (stockD.Count < 10)
             return;
 
+        var tableauBatches = _tableauSet.Select(x => x.DelayNotifications()).ToList();
+
         //  If any tableau is empty we cannot deal cards.
-        foreach (var tableau in _tableauSet)
-            if (tableau.Count == 0)
-                return;
+        if (tableauBatches.Any(tableau => tableau.Count == 0))
+        {
+            tableauBatches.ForEach(x=>x.Dispose());
+            return;
+        }
 
         for (var i = 0; i < 10; i++)
         {
-            var card = Stock.Last();
-            Stock.Remove(card);
+            var card = stockD.Last();
+            stockD.Remove(card);
             card.IsFaceDown = false;
             card.IsPlayable = true;
-            _tableauSet[i].Add(card);
+            tableauBatches[i].Add(card);
         }
+        
+        tableauBatches.ForEach(x=>x.Dispose());
 
         //  Check each tableau for sequences - then check for victory.
         CheckEachTableau();
