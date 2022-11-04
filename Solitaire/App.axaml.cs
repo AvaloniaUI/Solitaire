@@ -14,25 +14,18 @@ public class App : Application
         AvaloniaXamlLoader.Load(this);
     }
 
-    public override void OnFrameworkInitializationCompleted()
+    public override async void OnFrameworkInitializationCompleted()
     {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        switch (ApplicationLifetime)
         {
-            desktop.MainWindow = new MainWindow();
-
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
+            case IClassicDesktopStyleApplicationLifetime desktop:
+                desktop.MainWindow = new MainWindow();
                 desktop.MainWindow.DataContext = await CasinoViewModel.Load();
-            });
-        }
-        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
-        {
-            singleViewPlatform.MainView = new CasinoView();
-            
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
+                break;
+            case ISingleViewApplicationLifetime singleViewPlatform:
+                singleViewPlatform.MainView = new CasinoView();
                 singleViewPlatform.MainView.DataContext = await CasinoViewModel.Load();
-            });
+                break;
         }
 
         base.OnFrameworkInitializationCompleted();
