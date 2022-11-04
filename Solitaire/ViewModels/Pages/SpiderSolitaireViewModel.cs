@@ -189,7 +189,10 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         //  The trivial case is where from and to are the same.
         if (from.SequenceEqual(to))
             return false;
-
+        
+        if (to.SequenceEqual(Stock))
+            return false;
+        
         //  This is the complicated operation.
         int scoreModifier;
 
