@@ -50,7 +50,7 @@
                 </behaviors:CardFieldBehavior.CardStacks>
 
                 <!-- This is the layout grid for the tableaus, foundations etc. -->
-                <Grid Width="1600" Height="840" ColumnDefinitions="*,*,*,*,*,*,*,*,*,*" RowDefinitions="640,200"
+                <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*,*" RowDefinitions="640,200"
                       ClipToBounds="False">
                     <!-- The tableaus. -->
                     <controls:CardStackPlacementControl Name="Tableau1"

@@ -23,20 +23,19 @@
 
         <!--  The cards etc are all in a Viewbox so that they resize in a sensible -->
         <!-- way when we resize the window. -->
-        <Viewbox Grid.Row="0" Margin="10" ClipToBounds="False" StretchDirection="Both" Stretch="Uniform">
+        <Viewbox ClipToBounds="False" Stretch="Uniform">
             <behaviors:CardFieldBehavior.CardStacks>
                 <generic:List x:TypeArguments="controls:CardStackPlacementControl" />
             </behaviors:CardFieldBehavior.CardStacks>
 
             <!-- This is the layout grid for the tableaus, foundations etc. -->
-            <Grid Width="1550" Height="840" ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
+            <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
                   RowDefinitions="240,600">
                 <Grid.Styles>
                     <Style Selector="Border.RunMarker, Border.StackMarker, controls|CardStackPlacementControl">
                         <Setter Property="Grid.ColumnSpan" Value="2" />
                     </Style>
                 </Grid.Styles>
-
                 <Interaction.Behaviors>
                     <BehaviorCollection>
                         <behaviors:ExecuteOnPointerPressedBehavior
@@ -76,22 +75,26 @@
                 <!-- The foundations. -->
                 <controls:CardStackPlacementControl Name="Foundation1" Classes="StackMarker"
                                                     TargetCanvas="{Binding #PlayingField}"
-                                                    Grid.Row="0" Grid.Column="10" SourceItems="{Binding Foundation1}"
+                                                    Grid.Row="0" Grid.Column="10"
+                                                    SourceItems="{Binding Foundation1}"
                                                     Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" />
 
                 <controls:CardStackPlacementControl Name="Foundation2" Classes="StackMarker"
                                                     TargetCanvas="{Binding #PlayingField}"
-                                                    Grid.Row="0" Grid.Column="12" SourceItems="{Binding Foundation2}"
+                                                    Grid.Row="0" Grid.Column="12"
+                                                    SourceItems="{Binding Foundation2}"
                                                     Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" />
 
                 <controls:CardStackPlacementControl Name="Foundation3" Classes="StackMarker"
                                                     TargetCanvas="{Binding #PlayingField}"
-                                                    Grid.Row="0" Grid.Column="14" SourceItems="{Binding Foundation3}"
+                                                    Grid.Row="0" Grid.Column="14"
+                                                    SourceItems="{Binding Foundation3}"
                                                     Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" />
 
                 <controls:CardStackPlacementControl Name="Foundation4" Classes="StackMarker"
                                                     TargetCanvas="{Binding #PlayingField}"
-                                                    Grid.Row="0" Grid.Column="16" SourceItems="{Binding Foundation4}"
+                                                    Grid.Row="0" Grid.Column="16"
+                                                    SourceItems="{Binding Foundation4}"
                                                     Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" />
 
                 <!-- The tableaus. -->
@@ -135,17 +138,16 @@
                                                     Grid.Row="1" Grid.Column="15" SourceItems="{Binding Tableau8}"
                                                     Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
                 <Canvas x:Name="PlayingField"
-                        Grid.ColumnSpan="7"
+                        Grid.ColumnSpan="18"
                         Grid.Column="0"
                         Grid.Row="0"
-                        Grid.RowSpan="2" >
+                        Grid.RowSpan="2">
                     <Interaction.Behaviors>
-                        <behaviors:CardFieldBehavior/>
-                    </Interaction.Behaviors>                    
+                        <behaviors:CardFieldBehavior />
+                    </Interaction.Behaviors>
                 </Canvas>
             </Grid>
         </Viewbox>
-
         <!-- A padded grid is used to layout commands and info at the bottom of the screen. -->
         <Grid
             Grid.Row="1" ColumnDefinitions="Auto,*,Auto,Auto,Auto,*,Auto">
