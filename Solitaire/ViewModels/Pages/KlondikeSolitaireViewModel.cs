@@ -20,13 +20,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     public override string GameName => "Klondike Solitaire";
 
     [ObservableProperty] private DrawMode _drawMode;
-
-    /// <inheritdoc />
-    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
-    {
-        base.OnPropertyChanged(e);
-    }
-
+ 
     public KlondikeSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel)
     {
         _casinoViewModel = casinoViewModel;

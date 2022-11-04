@@ -69,9 +69,12 @@ public abstract partial class CardGameViewModel : ViewModelBase
         _timer.Interval = TimeSpan.FromMilliseconds(500);
         _timer.Tick += timer_Tick;
 
-        if (Deck is { })
-            return;
+    }
 
+    protected virtual void InitializeDeck()
+    {
+        if(Deck is { }) return;
+        
         var playingCards = Enum
             .GetValuesAsUnderlyingType(typeof(CardType))
             .Cast<CardType>()
@@ -81,9 +84,14 @@ public abstract partial class CardGameViewModel : ViewModelBase
 
         Deck = playingCards;
     }
-
+    
     protected IList<PlayingCardViewModel> GetNewShuffledDeck()
     {
+        if (Deck is not { })
+        {
+            InitializeDeck();
+        }
+
         foreach (var card in Deck!)
         {
             card.Reset();

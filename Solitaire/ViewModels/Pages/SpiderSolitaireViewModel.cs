@@ -27,7 +27,13 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
             .Do(x => Difficulty = x)
             .Subscribe();
    
-        var TempplayingCards = Enum
+    }
+
+    /// <inheritdoc />
+    protected override void InitializeDeck()
+    {
+        
+        var temp = Enum
             .GetValuesAsUnderlyingType(typeof(CardType))
             .Cast<CardType>()
             .Select(x => Enumerable.Repeat(x, 8))
@@ -40,10 +46,8 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         //  We just keep on adding cards of suits that depend on the
         //  difficulty setting until we have the required 104.
         var playingCards = new List<PlayingCardViewModel>();
-        foreach (var card in TempplayingCards)
+        foreach (var card in temp)
         {
-            // var card = new PlayingCardViewModel(this) {CardType = cardType, IsFaceDown = true};
-    
             card.IsFaceDown = true;
     
             switch (Difficulty)
@@ -73,6 +77,7 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         
         Deck = playingCards.ToImmutableArray();
     }
+
     private void InitializeTableauSet()
     {
         //  Create the quick access arrays.
