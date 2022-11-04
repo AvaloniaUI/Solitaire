@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ReactiveUI;
 using Solitaire.Models;
+using Solitaire.Utils;
 
 namespace Solitaire.ViewModels.Pages;
 
@@ -29,7 +30,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
         AppropriateFoundationsCommand = new RelayCommand(TryMoveAllCardsToAppropriateFoundations);
 
         NewGameCommand = new RelayCommand(DoDealNewGame);
-        
+
         casinoViewModel.SettingsInstance.WhenAnyValue(x => x.DrawMode)
             .Do(x => DrawMode = x)
             .Subscribe();
@@ -42,12 +43,12 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
         _cells.Add(Cell2);
         _cells.Add(Cell3);
         _cells.Add(Cell4);
-        
+
         _foundations.Add(Foundation1);
         _foundations.Add(Foundation2);
         _foundations.Add(Foundation3);
         _foundations.Add(Foundation4);
-        
+
         _tableauSet.Add(Tableau1);
         _tableauSet.Add(Tableau2);
         _tableauSet.Add(Tableau3);
@@ -85,6 +86,8 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
 
         var playingCards = GetNewShuffledDeck();
 
+        var tableauBatches = _tableauSet.Select(x => x.DelayNotifications()).ToList();
+
         //  Now distribute them - do the tableau sets first.
         while (playingCards.Count > 0)
         {
@@ -94,16 +97,19 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
                 {
                     break;
                 }
+
                 var faceUpCardViewModel = playingCards.First();
 
                 faceUpCardViewModel.IsFaceDown = false;
                 faceUpCardViewModel.IsPlayable = true;
-                
-                _tableauSet[i].Add(faceUpCardViewModel);
+
+                tableauBatches[i].Add(faceUpCardViewModel);
 
                 playingCards.Remove(faceUpCardViewModel);
             }
         }
+
+        tableauBatches.ForEach(x => x.Dispose());
 
         //  And we're done.
         StartTimer();
@@ -116,11 +122,12 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
         ResetInternalState();
 
         //  Clear everything.
+
         Cell1.Clear();
         Cell2.Clear();
         Cell3.Clear();
         Cell4.Clear();
-        
+
         foreach (var tableau in _tableauSet)
             tableau.Clear();
         foreach (var foundation in _foundations)
@@ -138,7 +145,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
         while (keepTrying)
         {
             var movedACard = false;
-            
+
             // TODO ? appropriate from cells?
 
             foreach (var tableau in _tableauSet)
@@ -161,7 +168,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
     private bool TryMoveCardToAppropriateFoundation(PlayingCardViewModel card)
     {
         // TODO try and move the cells.
-        
+
 
         //  Is the card in a tableau?
         var inTableau = false;
@@ -201,7 +208,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
             return false;
 
         var freeCells = _cells.Count(x => x.Count == 0);
-        
+
         //  Identify the run of cards we're moving.
         var run = new List<PlayingCardViewModel>();
         for (var i = from.IndexOf(card); i < from.Count; i++)
@@ -288,7 +295,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
                     return false;
             }
             else if (_cells.Contains(to))
-            {   
+            {
                 if (to.Count > 0 || from.Count - from.IndexOf(card) > 1)
                 {
                     return false;
@@ -390,41 +397,41 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
     }
 
     //  For ease of access we have arrays of the foundations and tableau set.
-    private readonly List<ObservableCollection<PlayingCardViewModel>> _cells = new();
-    private readonly List<ObservableCollection<PlayingCardViewModel>> _foundations = new();
-    private readonly List<ObservableCollection<PlayingCardViewModel>> _tableauSet = new();
+    private readonly List<BatchObservableCollection<PlayingCardViewModel>> _cells = new();
+    private readonly List<BatchObservableCollection<PlayingCardViewModel>> _foundations = new();
+    private readonly List<BatchObservableCollection<PlayingCardViewModel>> _tableauSet = new();
 
-    public ObservableCollection<PlayingCardViewModel> Foundation1 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Foundation1 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Foundation2 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Foundation2 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Foundation3 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Foundation3 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Foundation4 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Foundation4 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Tableau1 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau1 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Tableau2 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau2 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Tableau3 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau3 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Tableau4 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau4 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Tableau5 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau5 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Tableau6 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau6 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Tableau7 { get; } = new();
-    
-    public ObservableCollection<PlayingCardViewModel> Tableau8 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau7 { get; } = new();
 
-    public ObservableCollection<PlayingCardViewModel> Cell1 { get; } = new();
-    
-    public ObservableCollection<PlayingCardViewModel> Cell2 { get; } = new();
-    
-    public ObservableCollection<PlayingCardViewModel> Cell3 { get; } = new();
-    
-    public ObservableCollection<PlayingCardViewModel> Cell4 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau8 { get; } = new();
+
+    public BatchObservableCollection<PlayingCardViewModel> Cell1 { get; } = new();
+
+    public BatchObservableCollection<PlayingCardViewModel> Cell2 { get; } = new();
+
+    public BatchObservableCollection<PlayingCardViewModel> Cell3 { get; } = new();
+
+    public BatchObservableCollection<PlayingCardViewModel> Cell4 { get; } = new();
 
     public ICommand? AppropriateFoundationsCommand { get; }
 }
