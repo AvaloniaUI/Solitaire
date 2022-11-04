@@ -119,8 +119,8 @@ public class CardFieldBehavior : Behavior<Canvas>
                 var targetCard = _draggingCard;
                 ResetDrag();
                 game.CheckAndMoveCard(fromStack.SourceItems, toStack.SourceItems, targetCard);
-
             }
+
             break;
         }
 
@@ -131,7 +131,7 @@ public class CardFieldBehavior : Behavior<Canvas>
     {
         if (!_isDragging || _draggingContainer is null || _draggingCard is null) return;
 
-       // ((IPseudoClasses) _draggingContainer.Classes).Remove(".dragging");
+        // ((IPseudoClasses) _draggingContainer.Classes).Remove(".dragging");
         SetTranslateTransform(_draggingContainer, Vector.Zero);
         _draggingContainer.ZIndex = _startZIndex;
         _isDragging = false;
@@ -187,7 +187,7 @@ public class CardFieldBehavior : Behavior<Canvas>
             }
 
             if (visual is not Border {DataContext: PlayingCardViewModel card} container) continue;
-            
+
             var cardStacks = GetCardStacks(container);
             if (cardStacks != null)
             {
@@ -277,7 +277,7 @@ public class CardFieldBehavior : Behavior<Canvas>
         foreach (var cardStack in cardStacks.Where(cardStack => cardStack.SourceItems != null))
         {
             if (cardStack.SourceItems != null)
-                cardStack.SourceItems.CollectionChanged +=
+                (cardStack.SourceItems as INotifyCollectionChanged).CollectionChanged +=
                     delegate(object? _, NotifyCollectionChangedEventArgs args)
                     {
                         SourceItemsOnCollectionChanged(cardStack, args);
@@ -287,38 +287,39 @@ public class CardFieldBehavior : Behavior<Canvas>
 
     private void SourceItemsOnCollectionChanged(CardStackPlacementControl? control, NotifyCollectionChangedEventArgs e)
     {
-        if (control is null || e.Action != NotifyCollectionChangedAction.Add || e.NewItems == null ||
-            e.NewItems.Count > 1)
+        if (control is null || e.Action != NotifyCollectionChangedAction.Add || e.NewItems == null)
         {
             return;
         }
 
-        if (e.NewItems[0] is not PlayingCardViewModel newItem ||
-            !_containerCache.TryGetValue(newItem, out var container)) return;
-
         if (control.SourceItems == null) return;
 
-        var index = e.NewStartingIndex;
 
-        var sumOffsets = control.SourceItems
-            .Select((card, i) => (card, i))
-            .Where(tuple => tuple.i < index)
-            .Select(z =>
-            {
-                GetOffsets(control, z.card, z.i, control.SourceItems.Count, out var xx,
-                    out var yy);
+        foreach (var x in control.SourceItems.Select((card, i) => (card, i)))
+        {
+            if (!_containerCache.TryGetValue(x.card, out var container)) return;
 
-                return z.card.IsFaceDown ? xx : yy;
-            })
-            .Sum();
+            var sumOffsets = control.SourceItems
+                .Select((card, i) => (card, i))
+                .Where(t => t.i < x.i)
+                .Select(z =>
+                {
+                    GetOffsets(control, z.card, z.i, control.SourceItems.Count, out var xx,
+                        out var yy);
 
-        var pos = new Point(control.Bounds.Position.X +
-                            (control.Orientation == Orientation.Horizontal ? sumOffsets : 0),
-            control.Bounds.Position.Y + (control.Orientation == Orientation.Vertical ? sumOffsets : 0));
+                    return z.card.IsFaceDown ? xx : yy;
+                })
+                .Sum();
 
-        container.ZIndex = index;
-        Canvas.SetLeft(container, pos.X);
-        Canvas.SetTop(container, pos.Y);
+
+            var pos = new Point(control.Bounds.Position.X +
+                                (control.Orientation == Orientation.Horizontal ? sumOffsets : 0),
+                control.Bounds.Position.Y + (control.Orientation == Orientation.Vertical ? sumOffsets : 0));
+
+            container.ZIndex = x.i;
+            Canvas.SetLeft(container, pos.X);
+            Canvas.SetTop(container, pos.Y);
+        }
     }
 
     private static void AddImplicitAnimations(Visual container)

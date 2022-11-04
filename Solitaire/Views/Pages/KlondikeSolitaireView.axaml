@@ -60,7 +60,8 @@
                                            Grid.ColumnSpan="2" 
                                            SourceItems="{Binding Waste}"
                                            Orientation="Horizontal"
-                                           OffsetMode="UseCardValues" />
+                                           FaceUpOffset="30"
+                                           OffsetMode="TopNCards" />
 
                 <!-- The foundations. -->
                 <controls:CardStackPlacementControl Name="Foundation1"

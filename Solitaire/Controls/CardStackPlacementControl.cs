@@ -6,6 +6,7 @@ using Avalonia.Layout;
 using Avalonia.Styling;
 using Solitaire.Behaviors;
 using Solitaire.Models;
+using Solitaire.Utils;
 using Solitaire.ViewModels;
 
 namespace Solitaire.Controls;
@@ -28,9 +29,9 @@ public class CardStackPlacementControl : Border
         base.OnDetachedFromVisualTree(e);
     }
 
-    public static readonly StyledProperty<ObservableCollection<PlayingCardViewModel>?> SourceItemsProperty =
+    public static readonly StyledProperty<BatchObservableCollection<PlayingCardViewModel>?> SourceItemsProperty =
         AvaloniaProperty
-            .Register<CardStackPlacementControl, ObservableCollection<PlayingCardViewModel>?>("SourceItems");
+            .Register<CardStackPlacementControl, BatchObservableCollection<PlayingCardViewModel>?>("SourceItems");
 
     public static readonly StyledProperty<Canvas> TargetCanvasProperty =
         AvaloniaProperty.Register<CardStackPlacementControl, Canvas>("TargetCanvas");
@@ -57,7 +58,7 @@ public class CardStackPlacementControl : Border
     public static readonly StyledProperty<bool> IsHomeStackProperty =
         AvaloniaProperty.Register<CardStackPlacementControl, bool>("IsHomeStack");
 
-    public ObservableCollection<PlayingCardViewModel>? SourceItems
+    public BatchObservableCollection<PlayingCardViewModel>? SourceItems
     {
         get => GetValue(SourceItemsProperty);
         set => SetValue(SourceItemsProperty, value);
