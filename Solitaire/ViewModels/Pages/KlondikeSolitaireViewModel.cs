@@ -172,11 +172,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
             wasteD.Clear();
         }
         else
-        {
-            //  Everything in the waste so far must now have no offset.
-            foreach (var wasteCard in wasteD)
-                wasteCard.FaceUpOffset = 0;
-
+        { 
             //  Work out how many cards to draw.
             var cardsToDraw = DrawMode switch
             {
@@ -194,7 +190,6 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
                     stockD.Remove(card);
                     card.IsFaceDown = false;
                     card.IsPlayable = false;
-                    card.FaceUpOffset = 30;
                     wasteD.Add(card);
                 }
             }
