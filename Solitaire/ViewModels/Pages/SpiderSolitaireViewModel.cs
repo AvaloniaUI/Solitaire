@@ -151,10 +151,7 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
     {
         //  As a sanity check if the stock is empty we cannot deal cards.
         using var stockD = Stock.DelayNotifications();
-        
-        if (stockD.Count < 10)
-            return;
-
+         
         var tableauBatches = _tableauSet.Select(x => x.DelayNotifications()).ToList();
 
         //  If any tableau is empty we cannot deal cards.
@@ -164,13 +161,14 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
             return;
         }
 
-        for (var i = 0; i < 10; i++)
+        foreach (var tableau in tableauBatches)
         {
+            if(stockD.Count == 0) break;
             var card = stockD.Last();
             stockD.Remove(card);
             card.IsFaceDown = false;
             card.IsPlayable = true;
-            tableauBatches[i].Add(card);
+            tableau.Add(card);
         }
         
         tableauBatches.ForEach(x=>x.Dispose());
