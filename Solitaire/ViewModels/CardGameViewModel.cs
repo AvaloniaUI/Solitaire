@@ -81,7 +81,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
 
     protected IList<PlayingCardViewModel> GetNewShuffledDeck()
     {
-        foreach (var card in Deck)
+        foreach (var card in Deck!)
         {
             card.Reset();
         }

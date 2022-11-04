@@ -6,8 +6,10 @@ using System.Reactive.Linq;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DynamicData;
 using ReactiveUI;
 using Solitaire.Models;
+using Solitaire.Utils;
 
 namespace Solitaire.ViewModels.Pages;
 
@@ -23,59 +25,53 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         casinoViewModel.SettingsInstance.WhenAnyValue(x => x.Difficulty)
             .Do(x => Difficulty = x)
             .Subscribe();
+   
+        var TempplayingCards = Enum
+            .GetValuesAsUnderlyingType(typeof(CardType))
+            .Cast<CardType>()
+            .Select(x => Enumerable.Repeat(x, 8))
+            .SelectMany(x => x)
+            .Select(cardType => new PlayingCardViewModel(this)
+                {CardType = cardType, IsFaceDown = true})
+            .ToList();
+    
+        //  Create a playing card from each card type.
+        //  We just keep on adding cards of suits that depend on the
+        //  difficulty setting until we have the required 104.
+        var playingCards = new List<PlayingCardViewModel>();
+        foreach (var card in TempplayingCards)
+        {
+            // var card = new PlayingCardViewModel(this) {CardType = cardType, IsFaceDown = true};
+    
+            card.IsFaceDown = true;
+    
+            switch (Difficulty)
+            {
+                case Difficulty.Easy:
+                    //  In easy mode, we have hearts only.
+                    if (card.Suit != CardSuit.Hearts)
+                        continue;
+                    break;
+                case Difficulty.Medium:
+                    //  In easy mode, we have hearts and spades.
+                    if (card.Suit == CardSuit.Diamonds || card.Suit == CardSuit.Clubs)
+                        continue;
+                    break;
+                case Difficulty.Hard:
+                    //  In hard mode we have every card.
+                    break;
+            }
+    
+            //  Add the card.
+            playingCards.Add(card);
+    
+            //  If we've got 104 we're done.
+            if (playingCards.Count >= 104)
+                break;
+        }
+        
+        Deck = playingCards;
     }
-
-    /// <inheritdoc />
-    // protected override void GenerateDeck()
-    // {
-    //     var TempplayingCards = Enum
-    //         .GetValuesAsUnderlyingType(typeof(CardType))
-    //         .Cast<CardType>()
-    //         .Select(x => Enumerable.Repeat(x, 8))
-    //         .SelectMany(x => x)
-    //         .Select(cardType => new PlayingCardViewModel(this)
-    //             {CardType = cardType, IsFaceDown = true})
-    //         .ToList();
-    //
-    //     //  Create a playing card from each card type.
-    //     //  We just keep on adding cards of suits that depend on the
-    //     //  difficulty setting until we have the required 104.
-    //     var playingCards = new List<PlayingCardViewModel>();
-    //     foreach (var card in TempplayingCards)
-    //     {
-    //         // var card = new PlayingCardViewModel(this) {CardType = cardType, IsFaceDown = true};
-    //
-    //         card.IsFaceDown = true;
-    //
-    //         switch (Difficulty)
-    //         {
-    //             case Difficulty.Easy:
-    //                 //  In easy mode, we have hearts only.
-    //                 if (card.Suit != CardSuit.Hearts)
-    //                     continue;
-    //                 break;
-    //             case Difficulty.Medium:
-    //                 //  In easy mode, we have hearts and spades.
-    //                 if (card.Suit == CardSuit.Diamonds || card.Suit == CardSuit.Clubs)
-    //                     continue;
-    //                 break;
-    //             case Difficulty.Hard:
-    //                 //  In hard mode we have every card.
-    //                 break;
-    //         }
-    //
-    //         //  Add the card.
-    //         playingCards.Add(card);
-    //
-    //         //  If we've got 104 we're done.
-    //         if (playingCards.Count >= 104)
-    //             break;
-    //     }
-    //
-    //
-    //     PlayingCards = playingCards;
-    // }
-
     private void InitializeTableauSet()
     {
         //  Create the quick access arrays.
@@ -104,7 +100,8 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         ResetGame();
 
         var playingCards = GetNewShuffledDeck();
-
+        var tableauBatches = _tableauSet.Select(x => x.DelayNotifications()).ToList();
+        using var stockD = Stock.DelayNotifications();
 
         //  Now distribute them - do the tableau set first.
         for (var i = 0; i < 54; i++)
@@ -112,23 +109,21 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
             var card = playingCards.First();
             playingCards.Remove(card);
             card.IsFaceDown = true;
-            _tableauSet[i % 10].Add(card);
+            tableauBatches[i % 10].Add(card);
         }
 
         for (var i = 0; i < 10; i++)
         {
-            _tableauSet[i].Last().IsFaceDown = false;
-            _tableauSet[i].Last().IsPlayable = true;
+            tableauBatches[i].Last().IsFaceDown = false;
+            tableauBatches[i].Last().IsPlayable = true;
         }
 
         //  Finally we add every card that's left over to the stock.
-        foreach (var playingCard in playingCards)
-        {
-            Stock.Add(playingCard);
-        }
-
+        stockD.AddRange(playingCards);
         playingCards.Clear();
 
+        tableauBatches.ForEach(x => x.Dispose());
+        
         //  And we're done.
         StartTimer();
     }
@@ -322,21 +317,21 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
     }
 
     //  For ease of access we have an array of tableau set.
-    private readonly List<ObservableCollection<PlayingCardViewModel>> _tableauSet = new();
+    private readonly List<BatchObservableCollection<PlayingCardViewModel>> _tableauSet = new();
 
     //  Accessors for the various card stacks.
-    public ObservableCollection<PlayingCardViewModel> Tableau1 { get; } = new();
-    public ObservableCollection<PlayingCardViewModel> Tableau2 { get; } = new();
-    public ObservableCollection<PlayingCardViewModel> Tableau3 { get; } = new();
-    public ObservableCollection<PlayingCardViewModel> Tableau4 { get; } = new();
-    public ObservableCollection<PlayingCardViewModel> Tableau5 { get; } = new();
-    public ObservableCollection<PlayingCardViewModel> Tableau6 { get; } = new();
-    public ObservableCollection<PlayingCardViewModel> Tableau7 { get; } = new();
-    public ObservableCollection<PlayingCardViewModel> Tableau8 { get; } = new();
-    public ObservableCollection<PlayingCardViewModel> Tableau9 { get; } = new();
-    public ObservableCollection<PlayingCardViewModel> Tableau10 { get; } = new();
-    public ObservableCollection<PlayingCardViewModel> Stock { get; } = new();
-    public ObservableCollection<PlayingCardViewModel> Foundation { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau1 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau2 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau3 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau4 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau5 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau6 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau7 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau8 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau9 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Tableau10 { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Stock { get; } = new();
+    public BatchObservableCollection<PlayingCardViewModel> Foundation { get; } = new();
 
 
     [ObservableProperty] private Difficulty _difficulty;
