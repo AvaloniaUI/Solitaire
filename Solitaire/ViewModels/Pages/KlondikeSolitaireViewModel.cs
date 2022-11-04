@@ -443,29 +443,6 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
             topCardViewModel.IsFaceDown = false;
             topCardViewModel.IsPlayable = true;
-            
-            // Try to set the card values manually.
-            if (from.SequenceEqual(Waste))
-            {
-                card.FaceDownOffset = 0;
-                card.FaceUpOffset = 0;
-                
-                foreach (var lastCard in from)
-                {
-                    lastCard.FaceDownOffset = 0;
-                    lastCard.FaceUpOffset = 0;
-                }
-                
-                foreach (var lastCard in from.TakeLast(3))
-                {
-                    lastCard.FaceUpOffset = 30;
-                }
-                
-                // Hacky way to trigger Waste's CollectionChanged handler.
-                var temp = Waste.Last();
-                Waste.Remove(temp);
-                Waste.Add(temp);
-            }
         }
     }
 
