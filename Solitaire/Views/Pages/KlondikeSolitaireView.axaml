@@ -133,7 +133,6 @@
                                             Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
                 
                 <Canvas x:Name="PlayingField"
-                        behaviors:CardFieldBehavior.Cards="{Binding PlayingCards, Mode=OneWay}"
                         Grid.ColumnSpan="7"
                         Grid.Column="0"
                         Grid.Row="0"

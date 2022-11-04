@@ -157,7 +157,6 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     private void DoTurnStock()
     {
         using var wasteD = Waste.DelayNotifications();
-
         using var stockD = Stock.DelayNotifications();
         
         //  If the stock is empty, put every card from the waste back into the stock.
@@ -184,14 +183,12 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
             //  Put up to three cards in the waste.
             for (var i = 0; i < cardsToDraw; i++)
             {
-                if (stockD.Count > 0)
-                {
-                    var card = stockD.Last();
-                    stockD.Remove(card);
-                    card.IsFaceDown = false;
-                    card.IsPlayable = false;
-                    wasteD.Add(card);
-                }
+                if (stockD.Count <= 0) continue;
+                var card = stockD.Last();
+                stockD.Remove(card);
+                card.IsFaceDown = false;
+                card.IsPlayable = false;
+                wasteD.Add(card);
             }
         }
 

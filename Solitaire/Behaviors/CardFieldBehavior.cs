@@ -28,12 +28,6 @@ public class CardFieldBehavior : Behavior<Canvas>
         AvaloniaProperty.RegisterAttached<CardFieldBehavior, Control, List<CardStackPlacementControl>>(
             "CardStacks", inherits: true);
 
-    public List<PlayingCardViewModel> Cards
-    {
-        get => GetValue(CardsProperty);
-        set => SetValue(CardsProperty, value);
-    }
-
     public static void SetCardStacks(Control obj, List<CardStackPlacementControl> value) =>
         obj.SetValue(CardStacksProperty, value);
 
@@ -141,7 +135,7 @@ public class CardFieldBehavior : Behavior<Canvas>
             pair.container.ZIndex = _startZIndices[pair.i];
         }
 
-         _isDragging = false;
+        _isDragging = false;
         _draggingCards = null;
         _draggingContainers = null;
         _startZIndices = null;
@@ -214,15 +208,13 @@ public class CardFieldBehavior : Behavior<Canvas>
 
             if (card.IsPlayable && !_isDragging)
             {
-                _isDragging = true;
-
                 _draggingContainers = new List<ContentControl>();
                 _draggingCards = new List<PlayingCardViewModel>();
                 _startZIndices = new();
                 if (stack2.SourceItems != null)
                 {
                     var cardIndex = stack2.SourceItems.IndexOf(card);
-                
+
                     foreach (var c in stack2.SourceItems.Select((card, i) => (card, i))
                                  .Where(a => a.i >= cardIndex))
                     {
@@ -232,7 +224,11 @@ public class CardFieldBehavior : Behavior<Canvas>
                         _startZIndices.Add(cachedContainer.ZIndex);
                         cachedContainer.ZIndex = int.MaxValue / 2 + c.i;
                     }
+                    
+                    if (_draggingContainers.Count == 0) return;
                 }
+
+                _isDragging = true;
 
 
                 // ((IPseudoClasses) cachedContainer.Classes).Add(".dragging");
@@ -276,7 +272,7 @@ public class CardFieldBehavior : Behavior<Canvas>
 
         //    EnsureImplicitAnimations();
 
-        var cardsList = model.PlayingCards;
+        var cardsList = model.Deck;
         var cardStacks = GetCardStacks(AssociatedObject);
 
         if (Application.Current == null ||
