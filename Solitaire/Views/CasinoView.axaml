@@ -79,7 +79,7 @@
                     </Interaction.Behaviors>
                     <!-- <Path  Fill="Black"   Data="M74.9 85.8h.5c5.3 0 9.7-4 10.4-9.2V41.8a43 43 0 1 0-43.6 44h32.7Z"/> -->
                     <Path  Fill="White" Data="M43 14.6a28.3 28.3 0 0 0-27.6 22.1 6.4 6.4 0 0 1 0 12.4 28.3 28.3 0 0 0 41.2 18.6V71h14.7V42.9a28.3 28.3 0 0 0-28.2-28.3ZM29.6 43a13.5 13.5 0 1 1 27.1 0 13.5 13.5 0 0 1-27 0Z"/>
-                    <Path  Fill="White" Data="M18.1 42.9a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z"/>
+                    <Path RenderTransformOrigin="50%, 50%" Fill="White" Data="M18.1 42.9a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z"/>
                 </Canvas>
 
             </Viewbox>
