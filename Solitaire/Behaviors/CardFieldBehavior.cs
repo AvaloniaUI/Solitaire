@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
@@ -87,15 +88,15 @@ public class CardFieldBehavior : Behavior<Canvas>
         ResetDrag();
     }
 
-    private Control? _draggingContainer;
-    private PlayingCardViewModel? _draggingCard;
+    private List<ContentControl>? _draggingContainers;
+    private List<PlayingCardViewModel>? _draggingCards;
     private bool _isDragging;
     private Point _startPoint;
-    private int _startZIndex;
+    private List<int>? _startZIndices;
 
     private void AssociatedObjectOnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
-        if (!_isDragging || _draggingContainer is null || _draggingCard is null) return;
+        if (!_isDragging || _draggingContainers is null || _draggingCards is null) return;
 
         var absCur = e.GetCurrentPoint(AssociatedObject?.GetVisualRoot());
         var absCurPos = absCur.Position;
@@ -107,16 +108,16 @@ public class CardFieldBehavior : Behavior<Canvas>
         {
             if (visual is not CardStackPlacementControl {DataContext: CardGameViewModel game} toStack) continue;
 
-            var cardStacks = GetCardStacks(_draggingContainer);
+            var cardStacks = GetCardStacks(_draggingContainers![0]);
             var fromStack =
-                cardStacks?.FirstOrDefault(x => x.SourceItems != null && x.SourceItems.Contains(_draggingCard));
+                cardStacks?.FirstOrDefault(x => x.SourceItems != null && x.SourceItems.Contains(_draggingCards[0]));
 
             // Trigger on different stack.
             if (fromStack?.SourceItems != null && toStack?.SourceItems != null &&
                 !fromStack.SourceItems.SequenceEqual(toStack.SourceItems))
             {
                 // Save reference to current card before resetting. 
-                var targetCard = _draggingCard;
+                var targetCard = _draggingCards[0];
                 ResetDrag();
                 game.CheckAndMoveCard(fromStack.SourceItems, toStack.SourceItems, targetCard);
             }
@@ -129,28 +130,39 @@ public class CardFieldBehavior : Behavior<Canvas>
 
     private void ResetDrag()
     {
-        if (!_isDragging || _draggingContainer is null || _draggingCard is null) return;
+        if (!_isDragging || _draggingContainers is null || _draggingCards is null) return;
 
         // ((IPseudoClasses) _draggingContainer.Classes).Remove(".dragging");
-        SetTranslateTransform(_draggingContainer, Vector.Zero);
-        _draggingContainer.ZIndex = _startZIndex;
-        _isDragging = false;
-        _draggingCard = null;
-        _draggingContainer = null;
+
+
+        foreach (var pair in _draggingContainers.Select((container, i) => (container, i)))
+        {
+            SetTranslateTransform(pair.container, Vector.Zero);
+            pair.container.ZIndex = _startZIndices[pair.i];
+        }
+
+         _isDragging = false;
+        _draggingCards = null;
+        _draggingContainers = null;
+        _startZIndices = null;
         _startPoint = new Point();
     }
 
     private void AssociatedObjectOnPointerMoved(object? sender, PointerEventArgs e)
     {
-        if (!_isDragging || _draggingContainer is null || _draggingCard is null) return;
+        if (!_isDragging || _draggingContainers is null || _draggingCards is null) return;
 
-        if (!Equals(e.Pointer.Captured, _draggingContainer)) return;
+        if (!Equals(e.Pointer.Captured, _draggingContainers[0])) return;
 
-        var position = e.GetCurrentPoint(_draggingContainer.Parent).Position;
+        var position = e.GetCurrentPoint(_draggingContainers[0].Parent).Position;
 
         var delta = position - _startPoint;
 
-        SetTranslateTransform(_draggingContainer, delta);
+
+        foreach (var draggingContainer in _draggingContainers)
+        {
+            SetTranslateTransform(draggingContainer, delta);
+        }
     }
 
     private static void SetTranslateTransform(IControl? control, Vector newVector)
@@ -189,33 +201,51 @@ public class CardFieldBehavior : Behavior<Canvas>
             if (visual is not Border {DataContext: PlayingCardViewModel card} container) continue;
 
             var cardStacks = GetCardStacks(container);
-            if (cardStacks != null)
-            {
-                var stack2 =
-                    cardStacks.FirstOrDefault(x => x.SourceItems != null && x.SourceItems.Contains(card));
-                ActivateCommand(stack2);
-            }
 
-            if (card.IsPlayable && !_isDragging && _containerCache.TryGetValue(card, out var cachedContainer))
+            if (cardStacks is null) return;
+
+            var stack2 =
+                cardStacks.FirstOrDefault(x => x.SourceItems != null && x.SourceItems.Contains(card));
+
+            if (stack2 is null) return;
+
+            ActivateCommand(stack2);
+
+
+            if (card.IsPlayable && !_isDragging)
             {
                 _isDragging = true;
-                _draggingContainer = cachedContainer;
-                _draggingCard = card;
+
+                _draggingContainers = new List<ContentControl>();
+                _draggingCards = new List<PlayingCardViewModel>();
+                _startZIndices = new();
+                if (stack2.SourceItems != null)
+                {
+                    var cardIndex = stack2.SourceItems.IndexOf(card);
+                
+                    foreach (var c in stack2.SourceItems.Select((card, i) => (card, i))
+                                 .Where(a => a.i >= cardIndex))
+                    {
+                        if (!_containerCache.TryGetValue(c.card, out var cachedContainer)) continue;
+                        _draggingContainers.Add(cachedContainer);
+                        _draggingCards.Add(c.card);
+                        _startZIndices.Add(cachedContainer.ZIndex);
+                        cachedContainer.ZIndex = int.MaxValue / 2 + c.i;
+                    }
+                }
+
 
                 // ((IPseudoClasses) cachedContainer.Classes).Add(".dragging");
 
-                _startPoint = e.GetCurrentPoint(cachedContainer!.Parent).Position;
-                _startZIndex = _draggingContainer.ZIndex;
-                _draggingContainer.ZIndex = Int32.MaxValue;
+                _startPoint = e.GetCurrentPoint(_draggingContainers[0].Parent).Position;
 
-                e.Pointer.Capture(cachedContainer);
+                e.Pointer.Capture(_draggingContainers[0]);
                 break;
             }
 
             break;
         }
     }
-
 
     private void AssociatedObjectOnDetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
     {
@@ -295,19 +325,19 @@ public class CardFieldBehavior : Behavior<Canvas>
         if (control.SourceItems == null) return;
 
 
-        foreach (var x in control.SourceItems.Select((card, i) => (card, i)))
+        foreach (var pair in control.SourceItems.Select((card, i) => (card, i)))
         {
-            if (!_containerCache.TryGetValue(x.card, out var container)) return;
+            if (!_containerCache.TryGetValue(pair.card, out var container)) return;
 
             var sumOffsets = control.SourceItems
                 .Select((card, i) => (card, i))
-                .Where(t => t.i < x.i)
-                .Select(z =>
+                .Where(a => a.i < pair.i)
+                .Select(b =>
                 {
-                    GetOffsets(control, z.card, z.i, control.SourceItems.Count, out var xx,
-                        out var yy);
+                    GetOffsets(control, b.card, b.i, control.SourceItems.Count, out var c,
+                        out var d);
 
-                    return z.card.IsFaceDown ? xx : yy;
+                    return b.card.IsFaceDown ? c : d;
                 })
                 .Sum();
 
@@ -316,7 +346,7 @@ public class CardFieldBehavior : Behavior<Canvas>
                                 (control.Orientation == Orientation.Horizontal ? sumOffsets : 0),
                 control.Bounds.Position.Y + (control.Orientation == Orientation.Vertical ? sumOffsets : 0));
 
-            container.ZIndex = x.i;
+            container.ZIndex = pair.i;
             Canvas.SetLeft(container, pos.X);
             Canvas.SetTop(container, pos.Y);
         }
