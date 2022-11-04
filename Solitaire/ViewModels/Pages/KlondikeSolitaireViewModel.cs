@@ -159,22 +159,15 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
                 wasteCard.FaceUpOffset = 0;
 
             //  Work out how many cards to draw.
-            int cardsToDraw = 0;
-            switch (DrawMode)
+            var cardsToDraw = DrawMode switch
             {
-                case DrawMode.DrawOne:
-                    cardsToDraw = 1;
-                    break;
-                case DrawMode.DrawThree:
-                    cardsToDraw = 3;
-                    break;
-                default:
-                    cardsToDraw = 1;
-                    break;
-            }
+                DrawMode.DrawOne => 1,
+                DrawMode.DrawThree => 3,
+                _ => 1
+            };
 
             //  Put up to three cards in the waste.
-            for (int i = 0; i < cardsToDraw; i++)
+            for (var i = 0; i < cardsToDraw; i++)
             {
                 if (Stock.Count > 0)
                 {
@@ -436,6 +429,29 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
             topCardViewModel.IsFaceDown = false;
             topCardViewModel.IsPlayable = true;
+            
+            // Try to set the card values manually.
+            if (from.SequenceEqual(Waste))
+            {
+                card.FaceDownOffset = 0;
+                card.FaceUpOffset = 0;
+                
+                foreach (var lastCard in from)
+                {
+                    lastCard.FaceDownOffset = 0;
+                    lastCard.FaceUpOffset = 0;
+                }
+                
+                foreach (var lastCard in from.TakeLast(3))
+                {
+                    lastCard.FaceUpOffset = 30;
+                }
+                
+                // Hacky way to trigger Waste's CollectionChanged handler.
+                var temp = Waste.Last();
+                Waste.Remove(temp);
+                Waste.Add(temp);
+            }
         }
     }
 

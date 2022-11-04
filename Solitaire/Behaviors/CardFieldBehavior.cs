@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml.Templates;
@@ -118,6 +119,7 @@ public class CardFieldBehavior : Behavior<Canvas>
                 var targetCard = _draggingCard;
                 ResetDrag();
                 game.CheckAndMoveCard(fromStack.SourceItems, toStack.SourceItems, targetCard);
+
             }
             break;
         }
@@ -129,7 +131,7 @@ public class CardFieldBehavior : Behavior<Canvas>
     {
         if (!_isDragging || _draggingContainer is null || _draggingCard is null) return;
 
-        ((IPseudoClasses) _draggingContainer.Classes).Remove(".dragging");
+       // ((IPseudoClasses) _draggingContainer.Classes).Remove(".dragging");
         SetTranslateTransform(_draggingContainer, Vector.Zero);
         _draggingContainer.ZIndex = _startZIndex;
         _isDragging = false;
@@ -156,7 +158,8 @@ public class CardFieldBehavior : Behavior<Canvas>
         if (control is null) return;
         var transformBuilder = new TransformOperations.Builder(1);
         transformBuilder.AppendTranslate(newVector.X, newVector.Y);
-        control.RenderTransform = transformBuilder.Build();
+        control.SetValue(Visual.RenderTransformProperty, transformBuilder.Build(), BindingPriority.Style);
+        // control.RenderTransform = transformBuilder.Build();
     }
 
     private void AssociatedObjectOnPointerPressed(object? sender, PointerPressedEventArgs e)
@@ -199,7 +202,7 @@ public class CardFieldBehavior : Behavior<Canvas>
                 _draggingContainer = cachedContainer;
                 _draggingCard = card;
 
-                ((IPseudoClasses) cachedContainer.Classes).Add(".dragging");
+                // ((IPseudoClasses) cachedContainer.Classes).Add(".dragging");
 
                 _startPoint = e.GetCurrentPoint(cachedContainer!.Parent).Position;
                 _startZIndex = _draggingContainer.ZIndex;

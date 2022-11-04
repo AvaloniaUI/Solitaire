@@ -212,7 +212,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
 
         if (run.Count > 1)
         {
-            for (int i = 0; i < run.Count - 1; i++)
+            for (var i = 0; i < run.Count - 1; i++)
             {
                 if (run[i].Value - 1 != run[i + 1].Value)
                 {
