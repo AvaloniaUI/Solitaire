@@ -13,5 +13,5 @@ public abstract class CompositionBehaviors<T> : DisposingBehavior<T> where T : c
 {
     public TimeSpan Duration { get; set; }
     public TimeSpan Delay { get; set; }
-    public IEasing? Easing { get; set; }
+    public Easing Easing { get; set; }
 }

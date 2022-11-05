@@ -15,58 +15,89 @@
         <viewModels:CasinoViewModel />
     </Design.DataContext>
     <Panel>
-        <Panel>
-            <Border>
-                <Border.Background>
-                    <RadialGradientBrush GradientOrigin="50%,50%">
-                        <RadialGradientBrush.GradientStops>
-                            <GradientStop Color="#16A757" Offset="0" />
-                            <GradientStop Color="#116336" Offset="1" />
-                        </RadialGradientBrush.GradientStops>
-                    </RadialGradientBrush>
-                </Border.Background>
-            </Border>
-            <Border BorderThickness="0" Opacity="0.05">
-                <Border.Background>
-                    <VisualBrush TileMode="Tile" SourceRect="0,0,300,300" DestinationRect="0,0,200,200"
-                                 BitmapInterpolationMode="HighQuality">
-                        <VisualBrush.Visual>
-                            <controls:RandomNoiseTextureControl />
-                        </VisualBrush.Visual>
-                    </VisualBrush>
-                </Border.Background>
-            </Border>
-        </Panel>
-        <ContentControl Content="{Binding CurrentView, Mode=OneWay}" />
+        
+        <Panel.Styles>
+            <Style Selector="Panel.mainContent">
+                <Style.Animations> 
 
+                    <Animation  Duration="0:0:2" FillMode="Both">
+                        <KeyFrame Cue="0%">
+                            <Setter Property="IsVisible" Value="False"></Setter>
+                        </KeyFrame>
+                        <KeyFrame Cue="100%">
+                            <Setter Property="IsVisible" Value="True"></Setter>
+                        </KeyFrame>
+                    </Animation>
+
+                </Style.Animations>
+            </Style>
+        </Panel.Styles>
+        <Panel Classes="mainContent">
+            
+            <Panel>
+                <Border>
+                    <Border.Background>
+                        <RadialGradientBrush GradientOrigin="50%,50%">
+                            <RadialGradientBrush.GradientStops>
+                                <GradientStop Color="#16A757" Offset="0" />
+                                <GradientStop Color="#116336" Offset="1" />
+                            </RadialGradientBrush.GradientStops>
+                        </RadialGradientBrush>
+                    </Border.Background>
+                </Border>
+                <Border BorderThickness="0" Opacity="0.05">
+                    <Border.Background>
+                        <VisualBrush TileMode="Tile" SourceRect="0,0,300,300" DestinationRect="0,0,200,200"
+                                     BitmapInterpolationMode="HighQuality">
+                            <VisualBrush.Visual>
+                                <controls:RandomNoiseTextureControl />
+                            </VisualBrush.Visual>
+                        </VisualBrush>
+                    </Border.Background>
+                </Border>
+            </Panel>
+            <ContentControl Content="{Binding CurrentView, Mode=OneWay}" />
+
+        </Panel>
 
         <Panel Background="Black">
             <Panel.Styles>
                 <Style Selector="Panel">
                     <Style.Animations>
-                        <Animation Delay="0:0:4" Duration="0:0:1" FillMode="Both">
+                        <Animation Delay="0:0:2" Duration="0:0:0.7" Easing="CubicEaseOut" FillMode="Both">
                             <KeyFrame Cue="0%">
-                                <Setter Property="Opacity" Value="1"/>
+                                <Setter Property="Opacity" Value="1" />
+                            </KeyFrame>
+                            <KeyFrame Cue="100%">
+                                <Setter Property="Opacity" Value="0" />
+                            </KeyFrame>
+                        </Animation>
+
+                        <Animation Delay="0:0:2" Duration="0:0:0.7" FillMode="Both">
+                            <KeyFrame Cue="0%">
                                 <Setter Property="IsVisible" Value="True"></Setter>
                             </KeyFrame>
                             <KeyFrame Cue="100%">
-                                <Setter Property="Opacity" Value="0"/>
                                 <Setter Property="IsVisible" Value="False"></Setter>
                             </KeyFrame>
                         </Animation>
+
                     </Style.Animations>
                 </Style>
             </Panel.Styles>
-            
+
             <Viewbox MinWidth="24" MinHeight="24" MaxHeight="128" MaxWidth="128">
-              
+
                 <Canvas Name="g8" Height="86" Width="86" Opacity="0">
                     <Interaction.Behaviors>
-                        <behaviors:CompositionOpacityBehavior Duration="0:0:1.3"/>
+                        <behaviors:CompositionOpacityBehavior Duration="0:0:0.5" Easing="CubicEaseIn" InitialOpacity="0" StartOpacity="0"
+                                                              FinalOpacity="1" />
                     </Interaction.Behaviors>
                     <!-- <Path  Fill="Black"   Data="M74.9 85.8h.5c5.3 0 9.7-4 10.4-9.2V41.8a43 43 0 1 0-43.6 44h32.7Z"/> -->
-                    <Path  Fill="White" Data="M43 14.6a28.3 28.3 0 0 0-27.6 22.1 6.4 6.4 0 0 1 0 12.4 28.3 28.3 0 0 0 41.2 18.6V71h14.7V42.9a28.3 28.3 0 0 0-28.2-28.3ZM29.6 43a13.5 13.5 0 1 1 27.1 0 13.5 13.5 0 0 1-27 0Z"/>
-                    <Path RenderTransformOrigin="50%, 50%" Fill="White" Data="M18.1 42.9a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z"/>
+                    <Path Fill="White"
+                          Data="M43 14.6a28.3 28.3 0 0 0-27.6 22.1 6.4 6.4 0 0 1 0 12.4 28.3 28.3 0 0 0 41.2 18.6V71h14.7V42.9a28.3 28.3 0 0 0-28.2-28.3ZM29.6 43a13.5 13.5 0 1 1 27.1 0 13.5 13.5 0 0 1-27 0Z" />
+                    <Path RenderTransformOrigin="50%, 50%" Fill="White"
+                          Data="M18.1 42.9a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
                 </Canvas>
 
             </Viewbox>
