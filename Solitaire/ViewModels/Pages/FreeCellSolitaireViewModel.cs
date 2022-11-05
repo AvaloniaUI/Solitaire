@@ -141,12 +141,23 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
     {
         //  Go through the top card in each tableau - keeping
         //  track of whether we moved one.
+        if (Cell1.Count > 0)
+            TryMoveCardToAppropriateFoundation(Cell1.Last());
+        
+        if (Cell2.Count > 0)
+            TryMoveCardToAppropriateFoundation(Cell2.Last());
+        
+        if (Cell3.Count > 0)
+            TryMoveCardToAppropriateFoundation(Cell3.Last());
+        
+        if (Cell4.Count > 0)
+            TryMoveCardToAppropriateFoundation(Cell4.Last());
+
         var keepTrying = true;
         while (keepTrying)
         {
             var movedACard = false;
 
-            // TODO ? appropriate from cells?
 
             foreach (var tableau in _tableauSet)
             {
@@ -167,23 +178,22 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
     /// <returns>True if card moved.</returns>
     private bool TryMoveCardToAppropriateFoundation(PlayingCardViewModel card)
     {
-        // TODO try and move the cells.
-
+        var _tableauPlusCells = _tableauSet.Concat(_cells).ToList();
 
         //  Is the card in a tableau?
-        var inTableau = false;
+        var movable = false;
         var i = 0;
-        for (; i < _tableauSet.Count && inTableau == false; i++)
-            inTableau = _tableauSet[i].Contains(card);
+        for (; i < _tableauPlusCells.Count && movable == false; i++)
+            movable = _tableauPlusCells[i].Contains(card);
 
         //  It's if its not in a tableau and it's not the top
         //  of the waste, we cannot move it.
-        if (inTableau == false)
+        if (!movable)
             return false;
 
         //  Try and move to each foundation.
         foreach (var foundation in _foundations)
-            if (CheckAndMoveCard(_tableauSet[i - 1], foundation, card))
+            if (CheckAndMoveCard(_tableauPlusCells[i - 1], foundation, card))
                 return true;
 
         //  We couldn't move the card.
@@ -363,7 +373,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
         foreach (var runCard in run)
             to.Add(runCard);
 
-        RecordMove(from, to, run, 0);
+        RecordMove(from, to, run, scoreModifier);
 
         //  Are there any cards left in the from pile?
         if (from.Count > 0)
