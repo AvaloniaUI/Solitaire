@@ -272,6 +272,14 @@ public class BatchObservableCollection<T> : Collection<T>, INotifyCollectionChan
 
     #region Public Methods
 
+    public void AddRange(IEnumerable<T> items)
+    {
+        foreach (var item in items)
+        {
+            Add(item);
+        }
+    }
+
     /// <summary>
     /// Move item at oldIndex to newIndex. 
     /// </summary> 
@@ -504,7 +512,7 @@ public class BatchObservableCollection<T> : Collection<T>, INotifyCollectionChan
                     {
                         try
                         {
-                            delegateItem.DynamicInvoke(new object[] {_notifyInfo.RootCollection, args});
+                            delegateItem.DynamicInvoke(new object[] { _notifyInfo.RootCollection, args });
                         }
                         catch (TargetInvocationException e)
                         {
@@ -513,7 +521,7 @@ public class BatchObservableCollection<T> : Collection<T>, INotifyCollectionChan
                             //     (delegateItem.Target as ICollectionView).Refresh();
                             // }
                             // else
-                                throw;
+                            throw;
                         }
                     }
                 }

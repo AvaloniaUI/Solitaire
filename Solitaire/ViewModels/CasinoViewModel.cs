@@ -17,10 +17,10 @@ public partial class CasinoViewModel : ViewModelBase
     /// </summary>
     public CasinoViewModel()
     {
+        SettingsInstance = new SettingsViewModel(this);
         KlondikeInstance = new KlondikeSolitaireViewModel(this);
         SpiderInstance = new SpiderSolitaireViewModel(this);
         FreeCellInstance = new FreeCellSolitaireViewModel(this);
-        SettingsInstance = new SettingsViewModel(this);
         TitleInstance = new TitleViewModel(this);
         CurrentView = TitleInstance;
     }

@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DynamicData;
-using ReactiveUI;
 using Solitaire.Models;
 using Solitaire.Utils;
 
@@ -26,7 +25,6 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         casinoViewModel.SettingsInstance.WhenAnyValue(x => x.Difficulty)
             .Do(x => Difficulty = x)
             .Subscribe();
-   
     }
 
     /// <inheritdoc />

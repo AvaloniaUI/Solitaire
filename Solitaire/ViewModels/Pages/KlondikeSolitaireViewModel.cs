@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DynamicData;
 using Solitaire.Models;
 using Solitaire.Utils;
 

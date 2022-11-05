@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ReactiveUI;
 using Solitaire.Models;
 using Solitaire.Utils;
+using System;
 
 namespace Solitaire.ViewModels.Pages;
 
@@ -32,8 +29,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
         NewGameCommand = new RelayCommand(DoDealNewGame);
 
         casinoViewModel.SettingsInstance.WhenAnyValue(x => x.DrawMode)
-            .Do(x => DrawMode = x)
-            .Subscribe();
+            .Subscribe(x => DrawMode = x);
     }
 
     private void InitializeFoundationsAndTableauSet()
