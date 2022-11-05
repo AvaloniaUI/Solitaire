@@ -2,30 +2,19 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net7.0-ios</TargetFramework>
-        <SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
         <ProvisioningType>manual</ProvisioningType>
         <Nullable>enable</Nullable>
-<!--        <RuntimeIdentifier>iossimulator-x64</RuntimeIdentifier>-->
+        <RuntimeIdentifier>iossimulator-x64</RuntimeIdentifier>
         <RootNamespace>Solitaire.iOS</RootNamespace>
         <UseInterpreter>True</UseInterpreter>
-
-
-        <!-- These properties need to be set in order to run on a real iDevice -->
-        <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
-        <CodesignKey>Apple Development: jumar@macato.net (S66Z98PJ8N)</CodesignKey>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia.iOS" Version="$(AvaloniaVersion)" />
+        <PackageReference Include="Avalonia.iOS" Version="$(AvaloniaVersion)"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Solitaire\Solitaire.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Resources" />
+        <ProjectReference Include="..\Solitaire\Solitaire.csproj"/>
     </ItemGroup>
 </Project>
