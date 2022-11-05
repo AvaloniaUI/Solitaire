@@ -41,41 +41,28 @@
 
 
         <Panel Background="Black">
-            
-
-            <Border BorderThickness="0" Opacity="0.05">
-                <Border.Background>
-                    <VisualBrush TileMode="Tile" SourceRect="0,0,300,300" DestinationRect="0,0,200,200"
-                                 BitmapInterpolationMode="HighQuality">
-                        <VisualBrush.Visual>
-                            <controls:RandomNoiseTextureControl />
-                        </VisualBrush.Visual>
-                    </VisualBrush>
-                </Border.Background> 
-            </Border>
-            <!-- <Ellipse  VerticalAlignment="Center" HorizontalAlignment="Center" -->
-            <!--          Width="100" Height="100"> -->
-            <!--     <Ellipse.Fill> -->
-            <!--         <RadialGradientBrush GradientOrigin="50%, 50%"> -->
-            <!--             <RadialGradientBrush.GradientStops> -->
-            <!--                 <GradientStop Color="#AAFFFFFF" Offset="0" /> -->
-            <!--                 <GradientStop Color="Transparent" Offset="1" /> -->
-            <!--             </RadialGradientBrush.GradientStops> -->
-            <!--         </RadialGradientBrush> -->
-            <!--     </Ellipse.Fill> -->
-            <!-- -->
-            <!--      -->
-            <!--     ~1~ <Interaction.Behaviors> @1@ -->
-            <!--     ~1~     <behaviors:IntroAnimationBehavior /> @1@ -->
-            <!--     ~1~ </Interaction.Behaviors> @1@ -->
-            <!-- </Ellipse> -->
-            
+            <Panel.Styles>
+                <Style Selector="Panel">
+                    <Style.Animations>
+                        <Animation Delay="0:0:4" Duration="0:0:1" FillMode="Both">
+                            <KeyFrame Cue="0%">
+                                <Setter Property="Opacity" Value="1"/>
+                                <Setter Property="IsVisible" Value="True"></Setter>
+                            </KeyFrame>
+                            <KeyFrame Cue="100%">
+                                <Setter Property="Opacity" Value="0"/>
+                                <Setter Property="IsVisible" Value="False"></Setter>
+                            </KeyFrame>
+                        </Animation>
+                    </Style.Animations>
+                </Style>
+            </Panel.Styles>
             
             <Viewbox MinWidth="24" MinHeight="24" MaxHeight="128" MaxWidth="128">
-                
+              
                 <Canvas Name="g8" Height="86" Width="86" Opacity="0">
                     <Interaction.Behaviors>
-                        <behaviors:CompositionOpacityBehavior Duration="0:0:2" Delay="0:0:1"/>
+                        <behaviors:CompositionOpacityBehavior Duration="0:0:2" Delay="0:0:0.3"/>
                     </Interaction.Behaviors>
                     <!-- <Path  Fill="Black"   Data="M74.9 85.8h.5c5.3 0 9.7-4 10.4-9.2V41.8a43 43 0 1 0-43.6 44h32.7Z"/> -->
                     <Path  Fill="White" Data="M43 14.6a28.3 28.3 0 0 0-27.6 22.1 6.4 6.4 0 0 1 0 12.4 28.3 28.3 0 0 0 41.2 18.6V71h14.7V42.9a28.3 28.3 0 0 0-28.2-28.3ZM29.6 43a13.5 13.5 0 1 1 27.1 0 13.5 13.5 0 0 1-27 0Z"/>

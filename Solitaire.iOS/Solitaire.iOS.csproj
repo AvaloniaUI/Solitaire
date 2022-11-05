@@ -5,17 +5,16 @@
         <SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
         <ProvisioningType>manual</ProvisioningType>
         <Nullable>enable</Nullable>
-        <RuntimeIdentifier>iossimulator-x64</RuntimeIdentifier>
+<!--        <RuntimeIdentifier>iossimulator-x64</RuntimeIdentifier>-->
         <RootNamespace>Solitaire.iOS</RootNamespace>
         <UseInterpreter>True</UseInterpreter>
 
 
         <!-- These properties need to be set in order to run on a real iDevice -->
-        <!--<RuntimeIdentifier>ios-arm64</RuntimeIdentifier>-->
-        <!--<CodesignKey></CodesignKey>-->
+        <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
+        <CodesignKey>Apple Development: jumar@macato.net (S66Z98PJ8N)</CodesignKey>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <CodesignKey>Apple Development: jumar@macato.net (S66Z98PJ8N)</CodesignKey>
     </PropertyGroup>
 
     <ItemGroup>
@@ -24,5 +23,9 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Solitaire\Solitaire.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Resources" />
     </ItemGroup>
 </Project>
