@@ -15,12 +15,12 @@
         <viewModels:CasinoViewModel />
     </Design.DataContext>
     <Panel>
-        
+
         <Panel.Styles>
             <Style Selector="Panel.mainContent">
-                <Style.Animations> 
+                <Style.Animations>
 
-                    <Animation  Duration="0:0:2" FillMode="Both">
+                    <Animation Duration="0:0:2" FillMode="Both">
                         <KeyFrame Cue="0%">
                             <Setter Property="IsVisible" Value="False"></Setter>
                         </KeyFrame>
@@ -33,7 +33,7 @@
             </Style>
         </Panel.Styles>
         <Panel Classes="mainContent">
-            
+
             <Panel>
                 <Border>
                     <Border.Background>
@@ -90,7 +90,8 @@
 
                 <Canvas Name="g8" Height="86" Width="86" Opacity="0">
                     <Interaction.Behaviors>
-                        <behaviors:CompositionOpacityBehavior Duration="0:0:0.5" Easing="CubicEaseIn" InitialOpacity="0" StartOpacity="0"
+                        <behaviors:CompositionOpacityBehavior Duration="0:0:0.5" Easing="CubicEaseIn"
+                                                              InitialOpacity="0" StartOpacity="0"
                                                               FinalOpacity="1" />
                     </Interaction.Behaviors>
                     <!-- <Path  Fill="Black"   Data="M74.9 85.8h.5c5.3 0 9.7-4 10.4-9.2V41.8a43 43 0 1 0-43.6 44h32.7Z"/> -->
