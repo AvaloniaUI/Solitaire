@@ -63,7 +63,19 @@
         <Setter Property="Height" Value="{StaticResource CardHeight}" />
         <Setter Property="Margin" Value="{StaticResource CardThickness}" />
     </Style>
-
+    
+    <Style Selector="Panel.SuitMarker">
+        <Setter Property="Width" Value="{StaticResource CardWidth}" />
+        <Setter Property="Height" Value="{StaticResource CardHeight}" />
+        <Setter Property="Margin" Value="{StaticResource CardThickness}" />
+    </Style>
+    
+    <Style Selector="Panel.SuitMarker Image">
+        <Setter Property="Opacity" Value="0.2"/>
+        <Setter Property="IsHitTestVisible" Value="False"/> 
+        <Setter Property="RenderTransform" Value="scaleX(0.6) scaleY(0.6)"/>        
+    </Style>
+    
     <!-- Style for a run marker. -->
     <Style Selector="controls|CardStackPlacementControl.RunMarker">
         <Setter Property="Background" Value="Transparent" />
