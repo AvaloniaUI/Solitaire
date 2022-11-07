@@ -18,7 +18,7 @@
     animation: fadeout 0.3s linear forwards;
 }
 
-#spinner-container {
+.spinner-container {
     display: flex;
     position: absolute;
     height: 100%;
@@ -26,7 +26,14 @@
     justify-content: center;
     align-items: center;
     animation: delayedFadeIn 4s linear both;
+    background: transparent;
+}
 
+.noise-container { 
+    opacity: 70%;
+    position: absolute;
+    height: 100%;
+    width: 100%; 
 }
 
 #out {
