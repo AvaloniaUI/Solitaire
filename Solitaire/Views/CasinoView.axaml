@@ -62,7 +62,7 @@
             </Style>
             <Style Selector="Panel.mainContent">
                 <Style.Animations>
-                    <Animation Delay="0:0:1.5" Duration="0:0:1" Easing="QuadraticEaseInOut" FillMode="Both" >
+                    <Animation Delay="0:0:2" Duration="0:0:1" Easing="QuadraticEaseInOut" FillMode="Both" >
                         <KeyFrame Cue="0%">
                             <Setter Property="(ScaleTransform.ScaleX)" Value="0.7"/>
                             <Setter Property="(ScaleTransform.ScaleY)" Value="0.7"/>
