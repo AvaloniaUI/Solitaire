@@ -105,7 +105,7 @@
     <Style Selector="ContentControl.playingCard:not(.dragging)">
         <Setter Property="Transitions">
             <Transitions>
-                <IntegerTransition Property="ZIndex" Easing="1,0,1,0"  Duration="0:0:0.5" ></IntegerTransition>
+                <IntegerTransition Property="ZIndex" Easing="1,0,1,0" Duration="0:0:0.5" />
                 <DoubleTransition Property="(Canvas.Left)" Easing="CubicEaseInOut"  Duration="0:0:0.5" />
                 <DoubleTransition Property="(Canvas.Top)" Easing="CubicEaseInOut" Duration="0:0:0.5" />
             </Transitions>
