@@ -89,6 +89,12 @@
         </Panel.Styles>
         
         <Panel Classes="mainContent">
+            <Panel.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Panel.RenderTransform>
             <ContentControl Content="{Binding CurrentView, Mode=OneWay}" />
         </Panel>
 
