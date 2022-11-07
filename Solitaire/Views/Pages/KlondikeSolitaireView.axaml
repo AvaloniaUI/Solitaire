@@ -167,61 +167,7 @@
                     Command="{Binding NavigateToCasinoCommand}" />
 
         </Grid>
-
-        <!-- <Panel VerticalAlignment="Center" HorizontalAlignment="Center"> -->
-        <!--     <ContentControl> -->
-        <!--         <ContentControl.DataTemplates> -->
-        <!--             <StaticResource ResourceKey="PlayingCardDataTemplate" /> -->
-        <!--         </ContentControl.DataTemplates> -->
-        <!--         <ContentControl.Content> -->
-        <!--             <viewModels:PlayingCardViewModel CardType="HQ" /> -->
-        <!--         </ContentControl.Content> -->
-        <!--     </ContentControl> -->
-        <!-- -->
-        <!--     <Panel.Styles> -->
-        <!--         <Style Selector="Panel.playingCardBack"> -->
-        <!--             <Style.Animations> -->
-        <!--                 <Animation Duration="0:0:3" -->
-        <!--                            PlaybackDirection="Alternate" -->
-        <!--                            IterationCount="Infinite"> -->
-        <!--                     <KeyFrame Cue="0%"> -->
-        <!--                         <Setter Property="Rotate3DTransform.AngleY" Value="0" /> -->
-        <!--                         <Setter Property="IsVisible" Value="False" /> -->
-        <!--                     </KeyFrame> -->
-        <!--                     <KeyFrame Cue="50%"> -->
-        <!--                         <Setter Property="Rotate3DTransform.AngleY" Value="90" /> -->
-        <!--                         <Setter Property="IsVisible" Value="True" /> -->
-        <!--                     </KeyFrame> -->
-        <!--                     <KeyFrame Cue="100%"> -->
-        <!--                         <Setter Property="Rotate3DTransform.AngleY" Value="180" /> -->
-        <!--                         <Setter Property="IsVisible" Value="True" /> -->
-        <!--                     </KeyFrame> -->
-        <!--                 </Animation> -->
-        <!--             </Style.Animations> -->
-        <!--         </Style> -->
-        <!--         <Style Selector="Panel.playingCardFront"> -->
-        <!--             <Style.Animations> -->
-        <!--                 <Animation Duration="0:0:3" -->
-        <!--                            PlaybackDirection="Alternate" -->
-        <!--                            IterationCount="Infinite"> -->
-        <!--                     <KeyFrame Cue="0%"> -->
-        <!--                         <Setter Property="Rotate3DTransform.AngleY" Value="0" /> -->
-        <!--                         <Setter Property="IsVisible" Value="True" /> -->
-        <!--                     </KeyFrame> -->
-        <!--                     <KeyFrame Cue="50%"> -->
-        <!--                         <Setter Property="Rotate3DTransform.AngleY" Value="90" /> -->
-        <!--                         <Setter Property="IsVisible" Value="False" /> -->
-        <!--                     </KeyFrame> -->
-        <!--                     <KeyFrame Cue="100%"> -->
-        <!--                         <Setter Property="Rotate3DTransform.AngleY" Value="180" /> -->
-        <!--                         <Setter Property="IsVisible" Value="False" /> -->
-        <!--                     </KeyFrame></Animation> -->
-        <!--             </Style.Animations> -->
-        <!--         </Style> -->
-        <!--     </Panel.Styles> -->
-        <!-- </Panel> -->
-
-
+ 
         <!-- The win overlay. -->
         <Grid
             RowDefinitions="*,Auto,Auto,Auto,*" Grid.RowSpan="2" Background="#AA000000"
@@ -248,5 +194,6 @@
                     Margin="4" Content="Back to Casino" Command="{Binding NavigateToCasinoCommand}" />
             </StackPanel>
         </Grid>
+        
     </Grid>
 </UserControl>
