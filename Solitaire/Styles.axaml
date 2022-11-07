@@ -14,7 +14,7 @@
 
         <DataTemplate x:Key="PlayingCardDataTemplate" DataType="{x:Type solitaireGames:PlayingCardViewModel}">
 
-            <Panel Name="playingCard">
+            <Panel>
                 <Panel Classes="playingCardBack" IsVisible="{Binding IsFaceDown}">
 
                     <Border
@@ -102,15 +102,12 @@
     </Style>
     
     <!-- A nice clean style for a button. -->
-    <Style Selector="ContentControl.playingCard">
-        <Setter Property="(Canvas.Left)" Value="-100"/>
-        <Setter Property="(Canvas.Top)" Value="-100"/>
+    <Style Selector="ContentControl.playingCard:not(.dragging)">
         <Setter Property="Transitions">
             <Transitions>
                 <DoubleTransition Property="(Canvas.Left)" Easing="CubicEaseInOut"  Duration="0:0:0.5" />
                 <DoubleTransition Property="(Canvas.Top)" Easing="CubicEaseInOut" Duration="0:0:0.5" />
             </Transitions>
         </Setter>
-    </Style>
-
+    </Style> 
 </Styles>
