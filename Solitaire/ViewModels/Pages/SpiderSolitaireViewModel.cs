@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -20,7 +21,7 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         InitializeTableauSet();
 
         DealCardsCommand = new RelayCommand(DoDealCards, () => Stock.Count > 0);
-        NewGameCommand = new RelayCommand(DoDealNewGame);
+        NewGameCommand = new AsyncRelayCommand(DoDealNewGame);
 
         casinoViewModel.SettingsInstance.WhenAnyValue(x => x.Difficulty)
             .Do(x => Difficulty = x)
@@ -99,11 +100,25 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         return Stock.Contains(card) ? Stock : _tableauSet.FirstOrDefault(tableau => tableau.Contains(card));
     }
 
-    private void DoDealNewGame()
+    private async Task DoDealNewGame()
     {
         ResetGame();
 
         var playingCards = GetNewShuffledDeck();
+        
+        
+        using (var stock0 = Foundation.DelayNotifications())
+        {
+            stock0.AddRange(playingCards);
+        }
+        
+        await Task.Delay(1000);
+        
+        using (var stock0 = Foundation.DelayNotifications())
+        {
+            stock0.Clear();
+        }
+        
         var tableauBatches = _tableauSet.Select(x => x.DelayNotifications()).ToList();
         using var stockD = Stock.DelayNotifications();
 

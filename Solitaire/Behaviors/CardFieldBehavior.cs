@@ -87,6 +87,7 @@ public class CardFieldBehavior : Behavior<Canvas>
     private bool _isDragging;
     private Point _startPoint;
     private List<int>? _startZIndices;
+    private List<Vector>? _homePoints;
 
     private void AssociatedObjectOnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
@@ -112,8 +113,10 @@ public class CardFieldBehavior : Behavior<Canvas>
             {
                 // Save reference to current card before resetting. 
                 var targetCard = _draggingCards[0];
-                ResetDrag();
-                game.CheckAndMoveCard(fromStack.SourceItems, toStack.SourceItems, targetCard);
+               var validMove = game.CheckAndMoveCard(fromStack.SourceItems, toStack.SourceItems, targetCard);
+          
+               ResetDrag(!validMove);
+
             }
 
             break;
@@ -122,16 +125,19 @@ public class CardFieldBehavior : Behavior<Canvas>
         ResetDrag();
     }
 
-    private void ResetDrag()
+    private void ResetDrag(bool returnHome = true)
     {
         if (!_isDragging || _draggingContainers is null || _draggingCards is null) return;
 
-        // ((IPseudoClasses) _draggingContainer.Classes).Remove(".dragging");
-
-
         foreach (var pair in _draggingContainers.Select((container, i) => (container, i)))
         {
-            SetTranslateTransform(pair.container, Vector.Zero);
+            pair.container.Classes.Remove("dragging");
+
+            if (returnHome)
+            {
+                SetCanvasPosition(pair.container, _homePoints[pair.i]);
+            }
+
             pair.container.ZIndex = _startZIndices[pair.i];
         }
 
@@ -153,19 +159,19 @@ public class CardFieldBehavior : Behavior<Canvas>
         var delta = position - _startPoint;
 
 
-        foreach (var draggingContainer in _draggingContainers)
+        foreach (var draggingContainer in _draggingContainers.Select((control,i) => (control, i)))
         {
-            SetTranslateTransform(draggingContainer, delta);
+            
+            SetCanvasPosition(draggingContainer.control,  _homePoints[draggingContainer.i] + delta);
         }
     }
 
-    private static void SetTranslateTransform(IControl? control, Vector newVector)
+    private static void SetCanvasPosition(AvaloniaObject? control, Vector newVector)
     {
         if (control is null) return;
-        var transformBuilder = new TransformOperations.Builder(1);
-        transformBuilder.AppendTranslate(newVector.X, newVector.Y);
-        control.SetValue(Visual.RenderTransformProperty, transformBuilder.Build(), BindingPriority.Style);
-        // control.RenderTransform = transformBuilder.Build();
+
+        Canvas.SetLeft(control, newVector.X);
+        Canvas.SetTop(control, newVector.Y);
     }
 
     private void AssociatedObjectOnPointerPressed(object? sender, PointerPressedEventArgs e)
@@ -206,11 +212,13 @@ public class CardFieldBehavior : Behavior<Canvas>
             ActivateCommand(stack2);
 
 
-            if (card.IsPlayable && !_isDragging)
+            if (card.IsPlayable  && !_isDragging)
             {
                 _draggingContainers = new List<ContentControl>();
                 _draggingCards = new List<PlayingCardViewModel>();
                 _startZIndices = new();
+                _homePoints = new();
+                
                 if (stack2.SourceItems != null)
                 {
                     var cardIndex = stack2.SourceItems.IndexOf(card);
@@ -222,6 +230,10 @@ public class CardFieldBehavior : Behavior<Canvas>
                         _draggingContainers.Add(cachedContainer);
                         _draggingCards.Add(c.card);
                         _startZIndices.Add(cachedContainer.ZIndex);
+                        _homePoints.Add(new Vector( Canvas.GetLeft(cachedContainer), Canvas.GetTop(cachedContainer) ));
+                        cachedContainer.Classes.Add("dragging");
+
+ 
                         cachedContainer.ZIndex = int.MaxValue / 2 + c.i;
                     }
                     
@@ -229,9 +241,7 @@ public class CardFieldBehavior : Behavior<Canvas>
                 }
 
                 _isDragging = true;
-
-
-                // ((IPseudoClasses) cachedContainer.Classes).Add(".dragging");
+ 
 
                 _startPoint = e.GetCurrentPoint(_draggingContainers[0].Parent).Position;
 
@@ -291,12 +301,10 @@ public class CardFieldBehavior : Behavior<Canvas>
                 ZIndex = -1
             };
 
-            container.Classes.Add("playingCard");
             _containerCache.Add(card, container);
             AssociatedObject.Children.Add(container);
 
-            Canvas.SetLeft(container, homePosition.X);
-            Canvas.SetTop(container, homePosition.Y);
+            SetCanvasPosition(container, homePosition);
         }
 
         if (cardStacks == null) return;
@@ -343,8 +351,9 @@ public class CardFieldBehavior : Behavior<Canvas>
                 control.Bounds.Position.Y + (control.Orientation == Orientation.Vertical ? sumOffsets : 0));
 
             container.ZIndex = pair.i;
-            Canvas.SetLeft(container, pos.X);
-            Canvas.SetTop(container, pos.Y);
+            container.Classes.Add("playingCard");
+            
+            SetCanvasPosition(container, pos);
         }
     }
 

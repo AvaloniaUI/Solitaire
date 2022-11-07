@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -28,7 +29,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         //  Create the turn stock command.
         TurnStockCommand = new RelayCommand(DoTurnStock);
         AppropriateFoundationsCommand = new RelayCommand(TryMoveAllCardsToAppropriateFoundations);
-        NewGameCommand = new RelayCommand(DoDealNewGame);
+        NewGameCommand = new AsyncRelayCommand(DoDealNewGame);
     }
 
     private void InitializeFoundationsAndTableauSet()
@@ -66,14 +67,26 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// <summary>
     /// Deals a new game.
     /// </summary>
-    private void DoDealNewGame()
+    private async Task DoDealNewGame()
     {
         DrawMode = _casinoViewModel.SettingsInstance.DrawMode;
 
         ResetGame();
 
         var playingCards = GetNewShuffledDeck();
-
+        
+        using (var stock0 = Stock.DelayNotifications())
+        {
+            stock0.AddRange(playingCards);
+        }
+        
+        await Task.Delay(1000);
+        
+        using (var stock0 = Stock.DelayNotifications())
+        {
+            stock0.Clear();
+        }
+        
         //  Now distribute them - do the tableau sets first.
         for (var i = 0; i < 7; i++)
         {
