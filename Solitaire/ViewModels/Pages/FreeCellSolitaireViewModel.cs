@@ -209,6 +209,23 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
         return false;
     }
 
+    private CardSuit GetSuitForFoundations(IList<PlayingCardViewModel> cell)
+    {
+        if (cell.Equals(_foundations[0]))
+            return CardSuit.Hearts;
+
+        if (cell.Equals(_foundations[1]))
+            return CardSuit.Clubs;
+
+        if (cell.Equals(_foundations[2]))
+            return CardSuit.Diamonds;
+
+        if (cell.Equals(_foundations[3]))
+            return CardSuit.Spades;
+
+        throw new Exception();
+    }
+
     /// <summary>
     /// Moves the card.
     /// </summary>
@@ -259,8 +276,8 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
                 //  We can move to a foundation only if:
                 //  1. It is empty and we are an ace.
                 //  2. It is card SN and we are suit S and Number N+1
-                if ((to.Count == 0 && card.Value == 0) ||
-                    (to.Count > 0 && to.Last().Suit == card.Suit && to.Last().Value == card.Value - 1))
+                if (GetSuitForFoundations(to) == card.Suit && 
+                    ((to.Count == 0 && card.Value == 0) || (to.Count > 0 && to.Last().Value == card.Value - 1)))
                 {
                     //  Move from waste to foundation.
                     scoreModifier = 10;
@@ -304,8 +321,8 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
                 //  We can move to a foundation only if:
                 //  1. It is empty and we are an ace.
                 //  2. It is card SN and we are suit S and Number N+1
-                if ((to.Count == 0 && card.Value == 0) ||
-                    (to.Count > 0 && to.Last().Suit == card.Suit && to.Last().Value == card.Value - 1))
+                if (GetSuitForFoundations(to) == card.Suit && 
+                    ((to.Count == 0 && card.Value == 0) || (to.Count > 0 && to.Last().Value == card.Value - 1)))
                 {
                     //  Move from tableau to foundation.
                     scoreModifier = 10;
