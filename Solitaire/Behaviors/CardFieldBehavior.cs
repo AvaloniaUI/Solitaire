@@ -136,9 +136,8 @@ public class CardFieldBehavior : Behavior<Canvas>
             if (returnHome)
             {
                 SetCanvasPosition(pair.container, _homePoints[pair.i]);
+                pair.container.ZIndex = _startZIndices[pair.i];
             }
-
-            pair.container.ZIndex = _startZIndices[pair.i];
         }
 
         _isDragging = false;
