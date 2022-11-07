@@ -88,6 +88,7 @@ public class CardFieldBehavior : Behavior<Canvas>
     private Point _startPoint;
     private List<int>? _startZIndices;
     private List<Vector>? _homePoints;
+    private CardStackPlacementControl? _homeStack;
 
     private void AssociatedObjectOnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
@@ -101,7 +102,7 @@ public class CardFieldBehavior : Behavior<Canvas>
         foreach (var visual in AssociatedObject.GetVisualRoot()!.GetVisualsAt(absCurPos)
                      .OrderByDescending(x => x.ZIndex))
         {
-            if (visual is not CardStackPlacementControl {DataContext: CardGameViewModel game} toStack) continue;
+            if (visual is not CardStackPlacementControl { DataContext: CardGameViewModel game } toStack) continue;
 
             var cardStacks = GetCardStacks(_draggingContainers![0]);
             var fromStack =
@@ -113,10 +114,9 @@ public class CardFieldBehavior : Behavior<Canvas>
             {
                 // Save reference to current card before resetting. 
                 var targetCard = _draggingCards[0];
-               var validMove = game.CheckAndMoveCard(fromStack.SourceItems, toStack.SourceItems, targetCard);
-          
-               ResetDrag(!validMove);
+                var validMove = game.CheckAndMoveCard(fromStack.SourceItems, toStack.SourceItems, targetCard);
 
+                ResetDrag(!validMove);
             }
 
             break;
@@ -153,15 +153,15 @@ public class CardFieldBehavior : Behavior<Canvas>
 
         if (!Equals(e.Pointer.Captured, _draggingContainers[0])) return;
 
-        var position = e.GetCurrentPoint(_draggingContainers[0].Parent).Position;
+        var position = e.GetCurrentPoint(_homeStack).Position;
+
 
         var delta = position - _startPoint;
 
 
-        foreach (var draggingContainer in _draggingContainers.Select((control,i) => (control, i)))
+        foreach (var draggingContainer in _draggingContainers.Select((control, i) => (control, i)))
         {
-            
-            SetCanvasPosition(draggingContainer.control,  _homePoints[draggingContainer.i] + delta);
+            SetCanvasPosition(draggingContainer.control, _homePoints[draggingContainer.i] + delta);
         }
     }
 
@@ -191,13 +191,13 @@ public class CardFieldBehavior : Behavior<Canvas>
         foreach (var visual in AssociatedObject.GetVisualRoot()!.GetVisualsAt(absCurPos)
                      .OrderByDescending(x => x.ZIndex))
         {
-            if (visual is CardStackPlacementControl {DataContext: CardGameViewModel a} stack1)
+            if (visual is CardStackPlacementControl { DataContext: CardGameViewModel a } stack1)
             {
                 ActivateCommand(stack1);
                 break;
             }
 
-            if (visual is not Border {DataContext: PlayingCardViewModel card} container) continue;
+            if (visual is not Border { DataContext: PlayingCardViewModel card } container) continue;
 
             var cardStacks = GetCardStacks(container);
 
@@ -211,13 +211,13 @@ public class CardFieldBehavior : Behavior<Canvas>
             ActivateCommand(stack2);
 
 
-            if (card.IsPlayable  && !_isDragging)
+            if (card.IsPlayable && !_isDragging)
             {
                 _draggingContainers = new List<ContentControl>();
                 _draggingCards = new List<PlayingCardViewModel>();
                 _startZIndices = new();
                 _homePoints = new();
-                
+
                 if (stack2.SourceItems != null)
                 {
                     var cardIndex = stack2.SourceItems.IndexOf(card);
@@ -229,20 +229,20 @@ public class CardFieldBehavior : Behavior<Canvas>
                         _draggingContainers.Add(cachedContainer);
                         _draggingCards.Add(c.card);
                         _startZIndices.Add(cachedContainer.ZIndex);
-                        _homePoints.Add(new Vector( Canvas.GetLeft(cachedContainer), Canvas.GetTop(cachedContainer) ));
+                        _homePoints.Add(new Vector(Canvas.GetLeft(cachedContainer), Canvas.GetTop(cachedContainer)));
                         cachedContainer.Classes.Add("dragging");
 
- 
+
                         cachedContainer.ZIndex = int.MaxValue / 2 + c.i;
                     }
-                    
+
                     if (_draggingContainers.Count == 0) return;
                 }
 
                 _isDragging = true;
- 
 
-                _startPoint = e.GetCurrentPoint(_draggingContainers[0].Parent).Position;
+                _homeStack = stack2;
+                _startPoint = e.GetCurrentPoint(_homeStack).Position;
 
                 e.Pointer.Capture(_draggingContainers[0]);
                 break;
@@ -351,7 +351,7 @@ public class CardFieldBehavior : Behavior<Canvas>
 
             container.ZIndex = pair.i;
             container.Classes.Add("playingCard");
-            
+
             SetCanvasPosition(container, pos);
         }
     }
@@ -383,7 +383,7 @@ public class CardFieldBehavior : Behavior<Canvas>
                 break;
             case OffsetMode.EveryNthCard:
                 //  Offset only if n Mod N is zero.
-                if ((n + 1) % (int) parent.NValue == 0)
+                if ((n + 1) % (int)parent.NValue == 0)
                 {
                     faceDownOffset = parent.FaceDownOffset ?? default;
                     faceUpOffset = parent.FaceUpOffset ?? default;
@@ -394,7 +394,7 @@ public class CardFieldBehavior : Behavior<Canvas>
 
             case OffsetMode.TopNCards:
                 //  Offset only if (Total - N) <= n < Total
-                var k = (int) parent.NValue;
+                var k = (int)parent.NValue;
 
                 if ((total - k) <= n && n < total)
                 {
@@ -406,7 +406,7 @@ public class CardFieldBehavior : Behavior<Canvas>
 
             case OffsetMode.BottomNCards:
                 //  Offset only if 0 < n < N
-                if (n <= (int) (parent.NValue))
+                if (n <= (int)(parent.NValue))
                 {
                     faceDownOffset = parent.FaceDownOffset ?? default;
                     faceUpOffset = parent.FaceUpOffset ?? default;
