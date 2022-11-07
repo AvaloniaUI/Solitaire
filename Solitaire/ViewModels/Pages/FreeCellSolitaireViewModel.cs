@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using Solitaire.Models;
 using Solitaire.Utils;
 using System;
+using System.Threading.Tasks;
 
 namespace Solitaire.ViewModels.Pages;
 
@@ -26,7 +27,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
 
         AppropriateFoundationsCommand = new RelayCommand(TryMoveAllCardsToAppropriateFoundations);
 
-        NewGameCommand = new RelayCommand(DoDealNewGame);
+        NewGameCommand = new AsyncRelayCommand(DoDealNewGame);
 
         casinoViewModel.SettingsInstance.WhenAnyValue(x => x.DrawMode)
             .Subscribe(x => DrawMode = x);
@@ -76,11 +77,23 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
     /// <summary>
     /// Deals a new game.
     /// </summary>
-    private void DoDealNewGame()
+    private async Task DoDealNewGame()
     {
         ResetGame();
 
         var playingCards = GetNewShuffledDeck();
+        
+        using (var stock0 = Cell1.DelayNotifications())
+        {
+            stock0.AddRange(playingCards);
+        }
+        
+        await Task.Delay(1000);
+        
+        using (var stock0 = Cell1.DelayNotifications())
+        {
+            stock0.Clear();
+        }
 
         var tableauBatches = _tableauSet.Select(x => x.DelayNotifications()).ToList();
 
