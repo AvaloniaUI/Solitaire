@@ -8,6 +8,7 @@
              xmlns:behaviors="clr-namespace:Solitaire.Behaviors"
              FontFamily="/Assets/inter.var-webfont.ttf#Inter"
              x:DataType="viewModels:CasinoViewModel"
+             TextElement.Foreground="White"
              x:CompileBindings="True"
              mc:Ignorable="d"
              d:DesignHeight="1600" d:DesignWidth="900">
