@@ -9,7 +9,7 @@
     position: relative;
     height: 100%;
     width: 100%;
-    background: transparent;
+    background: radial-gradient(#16A757, #116336);
     justify-content: center;
     align-items: center;
 }
@@ -25,10 +25,8 @@
     width: 100%;
     justify-content: center;
     align-items: center;
-    z-index: -1;
     animation: 3s delayedFadeIn;
     animation-fill-mode: forwards;
-    visibility: hidden;
 }
 
 #out {
