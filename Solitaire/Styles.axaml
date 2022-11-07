@@ -19,7 +19,7 @@
 
                     <Border
                         Background="White"
-                        Width="140" Height="203" Cursor="Hand"
+                        Width="161" Height="233" Cursor="Hand"
                         BorderBrush="Gray"
                         BorderThickness="1" CornerRadius="6">
                         <Image Margin="4" Source="{StaticResource CardBack}">
