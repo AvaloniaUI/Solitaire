@@ -11,7 +11,7 @@
     <Design.DataContext>
         <pages:TitleViewModel />
     </Design.DataContext>
-    <Viewbox MaxWidth="1000">
+    <Viewbox MaxWidth="1000" Margin="20">
         <StackPanel VerticalAlignment="Center">
             <!-- The container for the statistics. -->
             <Viewbox Stretch="UniformToFill" MaxWidth="700">
