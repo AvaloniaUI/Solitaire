@@ -113,11 +113,11 @@
                     </Panel>
 
                     <Panel Grid.Row="0" Grid.Column="13" Classes="SuitMarker">
-                        <Image Source="{StaticResource SuitDiamond}" />
+                        <Image Source="{StaticResource SuitDiamond}" Margin="6" />
                     </Panel>
 
                     <Panel Grid.Row="0" Grid.Column="15" Classes="SuitMarker">
-                        <Image Source="{StaticResource SuitSpade}" />
+                        <Image Source="{StaticResource SuitSpade}" Margin="6"/>
                     </Panel>
 
                     <!-- The foundations. -->
