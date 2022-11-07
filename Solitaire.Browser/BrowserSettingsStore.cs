@@ -39,7 +39,6 @@ public partial class BrowserSettingsStore<T> : IRuntimeStorageProvider<T>
             var t = GetItem(Identifier + key);
             if (string.IsNullOrEmpty(t)) return default;
             var x = JsonConvert.DeserializeObject<T>(t);
-            Console.WriteLine(t);
             return x ?? default;
         }
         catch (Exception e)

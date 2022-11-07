@@ -11,40 +11,35 @@
     <Design.DataContext>
         <pages:TitleViewModel />
     </Design.DataContext>
-    <StackPanel VerticalAlignment="Center">
+    <Viewbox MaxWidth="1000" Margin="20">
+        <StackPanel VerticalAlignment="Center">
+            <!-- The container for the statistics. -->
+            <Viewbox Stretch="UniformToFill" MaxWidth="700">
+                <Grid RowDefinitions="Auto" ColumnDefinitions="*,Auto,Auto,Auto,*">
+                    <ContentControl Grid.Column="1" Grid.Row="0" Content="{Binding KlondikeStatsInstance}" />
+                    <ContentControl Grid.Column="2" Grid.Row="0" Content="{Binding  FreeCellStatsInstance}" />
+                    <ContentControl Grid.Column="3" Grid.Row="0" Content="{Binding  SpiderStatsInstance}" />
+                </Grid>
+            </Viewbox>
 
-        <!-- The title of the game. -->
-        <TextBlock
-            FontSize="34" HorizontalAlignment="Center"
-            Foreground="#99FFFFFF" Text="Solitaire" />
+            <!-- The casino commands. -->
+            <Viewbox StretchDirection="DownOnly">
+                <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto,*">
 
-        <!-- The container for the statistics. -->
-        <Viewbox Stretch="UniformToFill" MaxWidth="700">
-            <Grid RowDefinitions="Auto" ColumnDefinitions="*,Auto,Auto,Auto,*">
-                <ContentControl Grid.Column="1" Grid.Row="0" Content="{Binding KlondikeStatsInstance}" />
-                <ContentControl Grid.Column="2" Grid.Row="0" Content="{Binding  FreeCellStatsInstance}" />
-                <ContentControl Grid.Column="3" Grid.Row="0" Content="{Binding  SpiderStatsInstance}" />
-            </Grid>
-        </Viewbox>
-
-        <!-- The casino commands. -->
-        <Viewbox StretchDirection="DownOnly">
-            
-            <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto,*">
-
-                <Button
-                    Grid.Column="1" Classes="CasinoButtonStyle" Width="120"
-                    Margin="4" Content="Play Klondike" Command="{Binding NavigateToKlondikeCommand}" />
-                <Button
-                    Grid.Column="2" Classes="CasinoButtonStyle" Width="120"
-                    Margin="4" Content="Play FreeCell" Command="{Binding NavigateToFreeCellCommand}" />
-                <Button
-                    Grid.Column="3" Classes="CasinoButtonStyle" Width="120"
-                    Margin="4" Content="Play Spider" Command="{Binding NavigateToSpiderCommand}" />
-                <Button
-                    Grid.Column="4" Classes="CasinoButtonStyle" Width="120"
-                    Margin="4" Content="Settings" Command="{Binding NavigateToSettingsCommand}" />
-            </Grid>
-        </Viewbox>
-    </StackPanel>
+                    <Button
+                        Grid.Column="1" Classes="CasinoButtonStyle" Width="120"
+                        Margin="4" Content="Play Klondike" Command="{Binding NavigateToKlondikeCommand}" />
+                    <Button
+                        Grid.Column="2" Classes="CasinoButtonStyle" Width="120"
+                        Margin="4" Content="Play FreeCell" Command="{Binding NavigateToFreeCellCommand}" />
+                    <Button
+                        Grid.Column="3" Classes="CasinoButtonStyle" Width="120"
+                        Margin="4" Content="Play Spider" Command="{Binding NavigateToSpiderCommand}" />
+                    <Button
+                        Grid.Column="4" Classes="CasinoButtonStyle" Width="120"
+                        Margin="4" Content="Settings" Command="{Binding NavigateToSettingsCommand}" />
+                </Grid>
+            </Viewbox>
+        </StackPanel>
+    </Viewbox>
 </UserControl>
