@@ -11,6 +11,14 @@
              x:CompileBindings="True"
              mc:Ignorable="d"
              d:DesignHeight="1600" d:DesignWidth="900">
+    <UserControl.Background>
+        <RadialGradientBrush GradientOrigin="50%,50%">
+            <RadialGradientBrush.GradientStops>
+                <GradientStop Color="#16A757" Offset="0" />
+                <GradientStop Color="#116336" Offset="1" />
+            </RadialGradientBrush.GradientStops>
+        </RadialGradientBrush>
+    </UserControl.Background>
     <Design.DataContext>
         <viewModels:CasinoViewModel />
     </Design.DataContext>
@@ -33,18 +41,7 @@
             </Style>
         </Panel.Styles>
         <Panel Classes="mainContent">
-
-            <Panel>
-                <Border>
-                    <Border.Background>
-                        <RadialGradientBrush GradientOrigin="50%,50%">
-                            <RadialGradientBrush.GradientStops>
-                                <GradientStop Color="#16A757" Offset="0" />
-                                <GradientStop Color="#116336" Offset="1" />
-                            </RadialGradientBrush.GradientStops>
-                        </RadialGradientBrush>
-                    </Border.Background>
-                </Border>
+            
                 <Border BorderThickness="0" Opacity="0.05">
                     <Border.Background>
                         <VisualBrush TileMode="Tile" SourceRect="0,0,300,300" DestinationRect="0,0,200,200"
@@ -55,12 +52,11 @@
                         </VisualBrush>
                     </Border.Background>
                 </Border>
-            </Panel>
             <ContentControl Content="{Binding CurrentView, Mode=OneWay}" />
 
         </Panel>
 
-        <Panel Background="Black">
+        <Panel>
             <Panel.Styles>
                 <Style Selector="Panel">
                     <Style.Animations>
