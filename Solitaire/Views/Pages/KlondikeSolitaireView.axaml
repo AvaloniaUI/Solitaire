@@ -224,7 +224,7 @@
 
         <!-- The win overlay. -->
         <Grid
-            RowDefinitions="*,Auto,Auto,Auto,*" Grid.RowSpan="2" Background="#00FFFFFF"
+            RowDefinitions="*,Auto,Auto,Auto,*" Grid.RowSpan="2" Background="#AA000000"
             IsVisible="{Binding IsGameWon}">
             <RichTextBlock
                 Grid.Row="1" FontSize="34" FontWeight="SemiBold" Foreground="#99FFFFFF"

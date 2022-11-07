@@ -155,9 +155,7 @@ public class CardFieldBehavior : Behavior<Canvas>
 
         var position = e.GetCurrentPoint(_homeStack).Position;
 
-
         var delta = position - _startPoint;
-
 
         foreach (var draggingContainer in _draggingContainers.Select((control, i) => (control, i)))
         {

@@ -151,7 +151,7 @@
 
         <!-- The win overlay. -->
         <Grid
-            RowDefinitions="*,Auto,Auto,Auto,*"  Background="#00FFFFFF"
+            RowDefinitions="*,Auto,Auto,Auto,*"  Background="#AA000000"
             IsVisible="{Binding IsGameWon}">
 
             <TextBlock
