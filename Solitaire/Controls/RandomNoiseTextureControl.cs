@@ -10,7 +10,7 @@ public class RandomNoiseTextureControl : Control
 {
     private const int DesiredWidth = 300;
     private const int DesiredHeight = 300;
-    private RenderTargetBitmap? _texture;
+    private static RenderTargetBitmap? _texture;
 
     private static readonly Random Rng = new();
 

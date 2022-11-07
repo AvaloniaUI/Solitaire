@@ -32,82 +32,117 @@
             </VisualBrush>
         </Panel.Background>
         <Panel.Styles>
+            
             <Style Selector="Panel.splashContent">
                 <Style.Animations>
-                    <Animation Delay="0:0:0" Duration="0:0:2" Easing="QuadraticEaseInOut" FillMode="Both" >
+                    <Animation Delay="0:0:0" Duration="0:0:2" Easing="QuadraticEaseInOut" FillMode="Both">
                         <KeyFrame Cue="0%">
-                            <Setter Property="IsVisible" Value="True"></Setter>
-                            <Setter Property="(ScaleTransform.ScaleX)" Value="0.7"/>
-                            <Setter Property="(ScaleTransform.ScaleY)" Value="0.7"/>
+                            <Setter Property="IsVisible" Value="True"/> 
                             <Setter Property="Opacity" Value="0" />
                         </KeyFrame>
                         <KeyFrame Cue="20%"> 
-                            <Setter Property="(ScaleTransform.ScaleX)" Value="1"/>
-                            <Setter Property="(ScaleTransform.ScaleY)" Value="1"/>
                             <Setter Property="Opacity" Value="1" />
                         </KeyFrame>
                         <KeyFrame Cue="80%"> 
-                            <Setter Property="(ScaleTransform.ScaleX)" Value="1"/>
-                            <Setter Property="(ScaleTransform.ScaleY)" Value="1"/>
                             <Setter Property="Opacity" Value="1" />
                         </KeyFrame>
-                        <KeyFrame Cue="100%"> 
-                            <Setter Property="Opacity" Value="0" />
-                            <Setter Property="(ScaleTransform.ScaleX)" Value="1.5"/>
-                            <Setter Property="(ScaleTransform.ScaleY)" Value="1.5"/>
-                            <Setter Property="IsVisible" Value="False"/>
+                        <KeyFrame Cue="100%">
+                            <Setter Property="Opacity" Value="0" /> 
+                            <Setter Property="IsVisible" Value="False" />
+                        </KeyFrame>
+                    </Animation>
+                </Style.Animations>
+            </Style>
+            <Style Selector="Panel.splashContent Viewbox">
+                <Style.Animations>
+                    <Animation Delay="0:0:0" Duration="0:0:2" Easing="QuadraticEaseInOut" FillMode="Both">
+                        <KeyFrame Cue="0%"> 
+                            <Setter Property="(ScaleTransform.ScaleX)" Value="0.7" />
+                            <Setter Property="(ScaleTransform.ScaleY)" Value="0.7" /> 
+                        </KeyFrame>
+                        <KeyFrame Cue="20%">
+                            <Setter Property="(ScaleTransform.ScaleX)" Value="1" />
+                            <Setter Property="(ScaleTransform.ScaleY)" Value="1" /> 
+                        </KeyFrame>
+                        <KeyFrame Cue="80%">
+                            <Setter Property="(ScaleTransform.ScaleX)" Value="1" />
+                            <Setter Property="(ScaleTransform.ScaleY)" Value="1" /> 
+                        </KeyFrame>
+                        <KeyFrame Cue="100%">
+                            <Setter Property="(ScaleTransform.ScaleX)" Value="1.5" />
+                            <Setter Property="(ScaleTransform.ScaleY)" Value="1.5" /> 
                         </KeyFrame>
                     </Animation>
                 </Style.Animations>
             </Style>
             <Style Selector="Panel.mainContent">
                 <Style.Animations>
-                    <Animation Delay="0:0:2" Duration="0:0:1" Easing="QuadraticEaseInOut" FillMode="Both" >
+                    <Animation Delay="0:0:2" Duration="0:0:1" Easing="QuadraticEaseInOut" FillMode="Both">
                         <KeyFrame Cue="0%">
-                            <Setter Property="(ScaleTransform.ScaleX)" Value="0.7"/>
-                            <Setter Property="(ScaleTransform.ScaleY)" Value="0.7"/>
+                            <Setter Property="(ScaleTransform.ScaleX)" Value="0.7" />
+                            <Setter Property="(ScaleTransform.ScaleY)" Value="0.7" />
                             <Setter Property="Opacity" Value="0" />
                         </KeyFrame>
-                        <KeyFrame Cue="20%"> 
-                            <Setter Property="(ScaleTransform.ScaleX)" Value="1"/>
-                            <Setter Property="(ScaleTransform.ScaleY)" Value="1"/>
+                        <KeyFrame Cue="20%">
+                            <Setter Property="(ScaleTransform.ScaleX)" Value="1" />
+                            <Setter Property="(ScaleTransform.ScaleY)" Value="1" />
                             <Setter Property="Opacity" Value="1" />
                         </KeyFrame>
-                        <KeyFrame Cue="80%"> 
-                            <Setter Property="(ScaleTransform.ScaleX)" Value="1"/>
-                            <Setter Property="(ScaleTransform.ScaleY)" Value="1"/>
+                        <KeyFrame Cue="80%">
+                            <Setter Property="(ScaleTransform.ScaleX)" Value="1" />
+                            <Setter Property="(ScaleTransform.ScaleY)" Value="1" />
                             <Setter Property="Opacity" Value="1" />
                         </KeyFrame>
-                        <KeyFrame Cue="100%"> 
+                        <KeyFrame Cue="100%">
                             <Setter Property="Opacity" Value="1" />
-                            <Setter Property="(ScaleTransform.ScaleX)" Value="1"/>
-                            <Setter Property="(ScaleTransform.ScaleY)" Value="1"/>
+                            <Setter Property="(ScaleTransform.ScaleX)" Value="1" />
+                            <Setter Property="(ScaleTransform.ScaleY)" Value="1" />
                         </KeyFrame>
                     </Animation>
                 </Style.Animations>
             </Style>
         </Panel.Styles>
-        
+
         <Panel Classes="mainContent">
             <Panel.RenderTransform>
                 <TransformGroup>
-                    <ScaleTransform/>
-                    <TranslateTransform/>
+                    <ScaleTransform />
+                    <TranslateTransform />
                 </TransformGroup>
             </Panel.RenderTransform>
             <ContentControl Content="{Binding CurrentView, Mode=OneWay}" />
         </Panel>
 
         <Panel Classes="splashContent">
-            <Panel.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </Panel.RenderTransform>
-            <Viewbox MinWidth="24" MinHeight="24" MaxHeight="128" MaxWidth="128"  >
-                <Canvas Name="g8" Height="86" Width="86"  > 
-                     <Path Fill="White"
+            <Panel>
+                <Panel.Background>
+                    <RadialGradientBrush GradientOrigin="50%,50%">
+                        <RadialGradientBrush.GradientStops>
+                            <GradientStop Color="#16A757" Offset="0" />
+                            <GradientStop Color="#116336" Offset="1" />
+                        </RadialGradientBrush.GradientStops>
+                    </RadialGradientBrush>
+                </Panel.Background>
+                <Panel>
+                    <Panel.Background>
+                        <VisualBrush Opacity="0.05" TileMode="Tile" SourceRect="0,0,300,300" DestinationRect="0,0,200,200"
+                                     BitmapInterpolationMode="HighQuality">
+                            <VisualBrush.Visual>
+                                <controls:RandomNoiseTextureControl />
+                            </VisualBrush.Visual>
+                        </VisualBrush>
+                    </Panel.Background>
+                </Panel>
+            </Panel>
+            <Viewbox MinWidth="24" MinHeight="24" MaxHeight="128" MaxWidth="128">
+                <Viewbox.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform />
+                        <TranslateTransform />
+                    </TransformGroup>
+                </Viewbox.RenderTransform>
+                <Canvas Height="86" Width="86">
+                    <Path Fill="White"
                           Data="M43 14.6a28.3 28.3 0 0 0-27.6 22.1 6.4 6.4 0 0 1 0 12.4 28.3 28.3 0 0 0 41.2 18.6V71h14.7V42.9a28.3 28.3 0 0 0-28.2-28.3ZM29.6 43a13.5 13.5 0 1 1 27.1 0 13.5 13.5 0 0 1-27 0Z" />
                     <Path RenderTransformOrigin="50%, 50%" Fill="White"
                           Data="M18.1 42.9a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
