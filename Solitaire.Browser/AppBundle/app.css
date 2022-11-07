@@ -18,15 +18,15 @@
     animation: fadeout 0.3s linear forwards;
 }
 
-.spinner-container {
+#spinner-container {
     display: flex;
     position: absolute;
     height: 100%;
     width: 100%;
     justify-content: center;
     align-items: center;
-    animation: 4s delayedFadeIn;
-    animation-fill-mode: forwards;
+    animation: delayedFadeIn 4s linear both;
+
 }
 
 #out {
@@ -47,8 +47,11 @@
 }
 
 @keyframes delayedFadeIn {
+    0% {
+        visibility: collapse;
+    }
     99% {
-        visibility: hidden;
+        visibility: collapse;
     }
     100% {
         visibility: visible;
