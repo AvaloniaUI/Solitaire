@@ -9,17 +9,17 @@
         <converters:PlayingCardToBrushConverter x:Key="PlayingCardToBrushConverter" />
         <converters:EnumToListConverter x:Key="EnumToListConverter" />
         <converters:EnumToIntConverter x:Key="EnumToIntConverter" />
-
+        <x:Double x:Key="CardWidth">160</x:Double>
+        <x:Double x:Key="CardHeight">232</x:Double>
         <Thickness x:Key="CardThickness">8,10,40,40</Thickness>
-
         <DataTemplate x:Key="PlayingCardDataTemplate" DataType="{x:Type solitaireGames:PlayingCardViewModel}">
-
-            <Panel>
+            <Panel 
+                Width="{StaticResource CardWidth}"
+                Height="{StaticResource CardHeight}">
                 <Panel Classes="playingCardBack" IsVisible="{Binding IsFaceDown}">
 
                     <Border
-                        Background="White"
-                        Width="161" Height="233" Cursor="Hand"
+                        Background="White" Cursor="Hand"
                         BorderBrush="Gray"
                         BorderThickness="1" CornerRadius="6">
                         <Image Margin="4" Source="{StaticResource CardBack}">
@@ -35,7 +35,7 @@
                     <Border
                         Background="White"
                         Classes.isFaceDown="{Binding IsFaceDown}"
-                        Width="140" Height="203" Cursor="Hand"
+                       Cursor="Hand"
                         BorderBrush="Gray"
                         BorderThickness="1" CornerRadius="6">
                         <Image Margin="4"
@@ -59,15 +59,15 @@
         <Setter Property="BorderThickness" Value="6" />
         <Setter Property="CornerRadius" Value="15" />
         <Setter Property="BorderBrush" Value="#33FFFFFF" />
-        <Setter Property="Width" Value="140" />
-        <Setter Property="Height" Value="203" />
+        <Setter Property="Width" Value="{StaticResource CardWidth}" />
+        <Setter Property="Height" Value="{StaticResource CardHeight}" />
         <Setter Property="Margin" Value="{StaticResource CardThickness}" />
     </Style>
 
     <!-- Style for a run marker. -->
     <Style Selector="controls|CardStackPlacementControl.RunMarker">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Width" Value="140" />
+        <Setter Property="Width" Value="{StaticResource CardWidth}" />
         <Setter Property="BorderThickness" Value="6" />
         <Setter Property="CornerRadius" Value="15" />
         <Setter Property="BorderBrush">
