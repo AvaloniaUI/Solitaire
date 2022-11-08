@@ -36,8 +36,15 @@ public class CardFieldBehavior : Behavior<Canvas>
 
     private readonly Dictionary<PlayingCardViewModel, ContentControl> _containerCache = new();
 
-    public static readonly StyledProperty<List<PlayingCardViewModel>> CardsProperty =
-        AvaloniaProperty.Register<CardFieldBehavior, List<PlayingCardViewModel>>("Cards");
+
+    public static readonly AttachedProperty<Vector?> HomePositionProperty =
+        AvaloniaProperty.RegisterAttached<CardFieldBehavior, Control, Vector?>(
+            "HomePosition");
+
+    public static void SetHomePosition(Control obj, Vector? value) =>
+        obj.SetValue(HomePositionProperty, value);
+
+    public static Vector? GetHomePosition(Control obj) => obj.GetValue(HomePositionProperty);
 
 
     private void EnsureImplicitAnimations()
@@ -227,9 +234,9 @@ public class CardFieldBehavior : Behavior<Canvas>
                         _draggingContainers.Add(cachedContainer);
                         _draggingCards.Add(c.card);
                         _startZIndices.Add(cachedContainer.ZIndex);
-                        _homePoints.Add(new Vector(Canvas.GetLeft(cachedContainer), Canvas.GetTop(cachedContainer)));
-                        cachedContainer.Classes.Add("dragging");
+                        _homePoints.Add(GetHomePosition(cachedContainer) ?? throw new InvalidOperationException());
 
+                        cachedContainer.Classes.Add("dragging");
 
                         cachedContainer.ZIndex = int.MaxValue / 2 + c.i;
                     }
@@ -353,10 +360,11 @@ public class CardFieldBehavior : Behavior<Canvas>
             {
                 container.Classes.Add("lastCard");
             }
-            
+
             container.ZIndex = pair.i;
             container.Classes.Add("playingCard");
 
+            SetHomePosition(container, pos);
             SetCanvasPosition(container, pos);
         }
     }
