@@ -6,7 +6,6 @@
         xmlns:viewModels="clr-namespace:Solitaire.ViewModels"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Solitaire.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
         Title="Solitaire">
     <Design.DataContext>
         <viewModels:CasinoViewModel />
