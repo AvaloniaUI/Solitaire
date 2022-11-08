@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel.__Internals;
 using CommunityToolkit.Mvvm.Input;
 using Solitaire.Models;
 using Solitaire.Utils;
@@ -25,7 +26,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
     {
         InitializeFoundationsAndTableauSet();
 
-        AutoMoveCommand = new RelayCommand(TryMoveAllCardsToAppropriateFoundations);
+        AutoMoveCommand = new AsyncRelayCommand(TryMoveAllCardsToAppropriateFoundations);
 
         NewGameCommand = new AsyncRelayCommand(DoDealNewGame);
 
@@ -144,33 +145,46 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
     /// <summary>
     /// Tries the move all cards to appropriate foundations.
     /// </summary>
-    private void TryMoveAllCardsToAppropriateFoundations()
+    private async Task TryMoveAllCardsToAppropriateFoundations()
     {
         //  Go through the top card in each tableau - keeping
         //  track of whether we moved one.
-        if (Cell1.Count > 0)
-            TryMoveCardToAppropriateFoundation(Cell1.Last());
+        if (Cell1.Count > 0 && TryMoveCardToAppropriateFoundation(Cell1.Last()))
+        {
+            await Task.Delay(75);
+        }
         
-        if (Cell2.Count > 0)
-            TryMoveCardToAppropriateFoundation(Cell2.Last());
+        if (Cell2.Count > 0 && TryMoveCardToAppropriateFoundation(Cell2.Last()))
+        {
+            await Task.Delay(75);
+        }
         
-        if (Cell3.Count > 0)
-            TryMoveCardToAppropriateFoundation(Cell3.Last());
+        if (Cell3.Count > 0 && TryMoveCardToAppropriateFoundation(Cell3.Last()))
+        {
+            await Task.Delay(75);
+        }
         
-        if (Cell4.Count > 0)
-            TryMoveCardToAppropriateFoundation(Cell4.Last());
-
+        if (Cell4.Count > 0 && TryMoveCardToAppropriateFoundation(Cell4.Last()))
+        {
+            await Task.Delay(75);
+        }
+        
         var keepTrying = true;
+        
         while (keepTrying)
         {
             var movedACard = false;
-
-
+            
             foreach (var tableau in _tableauSet)
             {
                 if (tableau.Count > 0)
+                {
                     if (TryMoveCardToAppropriateFoundation(tableau.Last()))
+                    {
                         movedACard = true;
+                        await Task.Delay(75);
+                    }
+                }
             }
 
             //  We'll keep trying if we moved a card.

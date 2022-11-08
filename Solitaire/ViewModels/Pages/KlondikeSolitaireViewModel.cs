@@ -27,7 +27,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
         //  Create the turn stock command.
         TurnStockCommand = new RelayCommand(DoTurnStock);
-        AutoMoveCommand = new RelayCommand(TryMoveAllCardsToAppropriateFoundations);
+        AutoMoveCommand = new AsyncRelayCommand(TryMoveAllCardsToAppropriateFoundations);
         NewGameCommand = new AsyncRelayCommand(DoDealNewGame);
     }
 
@@ -227,22 +227,35 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// <summary>
     /// Tries the move all cards to appropriate foundations.
     /// </summary>
-    private void TryMoveAllCardsToAppropriateFoundations()
+    private async Task TryMoveAllCardsToAppropriateFoundations()
     {
         //  Go through the top card in each tableau - keeping
         //  track of whether we moved one.
         var keepTrying = true;
+        
         while (keepTrying)
         {
             var movedACard = false;
+            
             if (Waste.Count > 0)
+            {
                 if (TryMoveCardToAppropriateFoundation(Waste.Last()))
+                {
                     movedACard = true;
+                    await Task.Delay(75);
+                }
+            }
+
             foreach (var tableau in _tableauSet)
             {
                 if (tableau.Count > 0)
+                {
                     if (TryMoveCardToAppropriateFoundation(tableau.Last()))
+                    {
                         movedACard = true;
+                        await Task.Delay(75);
+                    }
+                }
             }
 
             //  We'll keep trying if we moved a card.
