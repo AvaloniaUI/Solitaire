@@ -1,5 +1,6 @@
 using System.Windows.Input;
 using Avalonia;
+using Avalonia.Animation.Animators;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Xaml.Interactivity;
@@ -64,6 +65,8 @@ public class ExecuteOnPointerPressedBehavior : Behavior<Control>
 
     private void PointerPressed(object? sender, PointerPressedEventArgs e)
     {
+         
+        
         if (!Command.CanExecute(CommandParameter)) return;
 
         var properties = e.GetCurrentPoint(AssociatedObject).Properties;

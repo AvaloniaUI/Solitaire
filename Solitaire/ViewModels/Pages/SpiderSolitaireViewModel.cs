@@ -112,7 +112,7 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
             stock0.AddRange(playingCards);
         }
         
-        await Task.Delay(1000);
+        await Task.Delay(600);
         
         using (var stock0 = Foundation.DelayNotifications())
         {

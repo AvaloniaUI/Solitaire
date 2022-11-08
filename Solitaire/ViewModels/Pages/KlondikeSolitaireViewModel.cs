@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -64,6 +65,23 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         return _tableauSet.FirstOrDefault(tableau => tableau.Contains(card));
     }
 
+    private CardSuit GetSuitForFoundations(IList<PlayingCardViewModel> cell)
+    {
+        if (ReferenceEquals(cell, _foundations[0]))
+            return CardSuit.Hearts;
+
+        if (ReferenceEquals(cell, _foundations[1]))
+            return CardSuit.Clubs;
+
+        if (ReferenceEquals(cell, _foundations[2]))
+            return CardSuit.Diamonds;
+
+        if (ReferenceEquals(cell, _foundations[3]))
+            return CardSuit.Spades;
+
+        throw new InvalidConstraintException();
+    }
+    
     /// <summary>
     /// Deals a new game.
     /// </summary>
@@ -80,7 +98,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
             stock0.AddRange(playingCards);
         }
         
-        await Task.Delay(1000);
+        await Task.Delay(600);
         
         using (var stock0 = Stock.DelayNotifications())
         {
@@ -291,7 +309,8 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
                 //  We can move to a foundation only if:
                 //  1. It is empty and we are an ace.
                 //  2. It is card SN and we are suit S and Number N+1
-                if ((to.Count == 0 && card.Value == 0) ||
+               var s = GetSuitForFoundations(to);
+                if (GetSuitForFoundations(to) == card.Suit || (to.Count == 0 && card.Value == 0) ||
                     (to.Count > 0 && to.Last().Suit == card.Suit && to.Last().Value == card.Value - 1))
                 {
                     //  Move from waste to foundation.

@@ -56,6 +56,22 @@
                                                     FaceUpOffset="30"
                                                     OffsetMode="TopNCards" />
 
+                <Panel Grid.Row="0" Grid.Column="0" Classes="SuitMarker">
+                    <Image Source="{StaticResource SuitHeart}" />
+                </Panel>
+
+                <Panel Grid.Row="0" Grid.Column="1" Classes="SuitMarker">
+                    <Image Source="{StaticResource SuitClub}" />
+                </Panel>
+
+                <Panel Grid.Row="0" Grid.Column="2" Classes="SuitMarker">
+                    <Image Source="{StaticResource SuitDiamond}" Margin="6" />
+                </Panel>
+
+                <Panel Grid.Row="0" Grid.Column="3" Classes="SuitMarker">
+                    <Image Source="{StaticResource SuitSpade}" Margin="6"/>
+                </Panel>
+
                 <!-- The foundations. -->
                 <controls:CardStackPlacementControl Name="Foundation1"
 
@@ -142,6 +158,17 @@
             </Grid>
         </Viewbox>
 
+        <Panel Grid.Row="1" Height="64" MaxWidth="640"> 
+            <Border Classes="goldenTrayBorder" Margin="0,0,0,-12">
+                <Border Classes="goldenTrayInner">
+                    <Border Classes="goldenTrayInnerBg">
+                        
+                    </Border>
+                </Border>
+            </Border>
+        </Panel>
+
+
         <!-- A padded grid is used to layout commands and info at the bottom of the screen. -->
         <Grid
             Grid.Row="1" ColumnDefinitions="Auto,*,Auto,Auto,Auto,*,Auto">
@@ -167,7 +194,7 @@
                     Command="{Binding NavigateToCasinoCommand}" />
 
         </Grid>
- 
+
         <!-- The win overlay. -->
         <Grid
             RowDefinitions="*,Auto,Auto,Auto,*" Grid.RowSpan="2" Background="#AA000000"
@@ -194,6 +221,7 @@
                     Margin="4" Content="Back to Casino" Command="{Binding NavigateToCasinoCommand}" />
             </StackPanel>
         </Grid>
-        
+
+
     </Grid>
 </UserControl>

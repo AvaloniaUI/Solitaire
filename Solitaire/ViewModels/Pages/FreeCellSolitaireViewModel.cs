@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using Solitaire.Models;
 using Solitaire.Utils;
 using System;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace Solitaire.ViewModels.Pages;
@@ -88,7 +89,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
             stock0.AddRange(playingCards);
         }
         
-        await Task.Delay(1000);
+        await Task.Delay(600);
         
         using (var stock0 = Cell1.DelayNotifications())
         {
@@ -211,19 +212,19 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
 
     private CardSuit GetSuitForFoundations(IList<PlayingCardViewModel> cell)
     {
-        if (cell.Equals(_foundations[0]))
+        if (ReferenceEquals(cell, _foundations[0]))
             return CardSuit.Hearts;
 
-        if (cell.Equals(_foundations[1]))
+        if (ReferenceEquals(cell, _foundations[1]))
             return CardSuit.Clubs;
 
-        if (cell.Equals(_foundations[2]))
+        if (ReferenceEquals(cell, _foundations[2]))
             return CardSuit.Diamonds;
 
-        if (cell.Equals(_foundations[3]))
+        if (ReferenceEquals(cell, _foundations[3]))
             return CardSuit.Spades;
 
-        throw new Exception();
+        throw new InvalidConstraintException();
     }
 
     /// <summary>

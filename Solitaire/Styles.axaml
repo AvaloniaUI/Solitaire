@@ -13,8 +13,26 @@
         <x:Double x:Key="CardHeight">232</x:Double>
         <Thickness x:Key="CardThickness">8,10,40,40</Thickness>
         <Thickness x:Key="CardThicknessMobile">8,10,8,8</Thickness>
+
+        <GradientStops x:Key="GoldBrush">
+            <GradientStop Offset="0" Color="#FFFCFC80" />
+            <GradientStop Offset="0.06861601" Color="#FFD09C14" />
+            <GradientStop Offset="0.13723001" Color="#FFFCFC80" />
+            <GradientStop Offset="0.2105" Color="#FFD09C14" />
+            <GradientStop Offset="0.28178003" Color="#FFFCFC80" />
+            <GradientStop Offset="0.36184004" Color="#FFD09C14" />
+            <GradientStop Offset="0.45447004" Color="#FFFCFC80" />
+            <GradientStop Offset="0.51927006" Color="#FFD09C14" />
+            <GradientStop Offset="0.62017" Color="#FFFCFC80" />
+            <GradientStop Offset="0.69228" Color="#FFD09C14" />
+            <GradientStop Offset="0.78029996" Color="#FFFCFC80" />
+            <GradientStop Offset="0.85488003" Color="#FFD09C14" />
+            <GradientStop Offset="0.94064" Color="#FFFCFC80" />
+            <GradientStop Offset="1" Color="#FFD09C14" />
+        </GradientStops>
+
         <DataTemplate x:Key="PlayingCardDataTemplate" DataType="{x:Type solitaireGames:PlayingCardViewModel}">
-            <Panel 
+            <Panel
                 Width="{StaticResource CardWidth}"
                 Height="{StaticResource CardHeight}">
                 <Panel Classes="playingCardBack" IsVisible="{Binding IsFaceDown}">
@@ -36,12 +54,12 @@
                     <Border
                         Background="White"
                         Classes.isFaceDown="{Binding IsFaceDown}"
-                       Cursor="Hand"
+                        Cursor="Hand"
                         BorderBrush="Gray"
                         BorderThickness="1" CornerRadius="6">
                         <Image Margin="4"
                                Source="{Binding CardType, Converter={StaticResource PlayingCardToBrushConverter}}" />
-                    </Border> 
+                    </Border>
                 </Panel>
             </Panel>
         </DataTemplate>
@@ -62,21 +80,23 @@
         <Setter Property="BorderBrush" Value="#33FFFFFF" />
         <Setter Property="Width" Value="{StaticResource CardWidth}" />
         <Setter Property="Height" Value="{StaticResource CardHeight}" />
-        <Setter Property="Margin" Value="{OnFormFactor {StaticResource CardThickness}, Mobile={StaticResource CardThicknessMobile}}" />
+        <Setter Property="Margin"
+                Value="{OnFormFactor {StaticResource CardThickness}, Mobile={StaticResource CardThicknessMobile}}" />
     </Style>
-    
+
     <Style Selector="Panel.SuitMarker">
         <Setter Property="Width" Value="{StaticResource CardWidth}" />
         <Setter Property="Height" Value="{StaticResource CardHeight}" />
-        <Setter Property="Margin" Value="{OnFormFactor {StaticResource CardThickness}, Mobile={StaticResource CardThicknessMobile}}" />
+        <Setter Property="Margin"
+                Value="{OnFormFactor {StaticResource CardThickness}, Mobile={StaticResource CardThicknessMobile}}" />
     </Style>
-    
+
     <Style Selector="Panel.SuitMarker Image">
-        <Setter Property="Opacity" Value="0.2"/>
-        <Setter Property="IsHitTestVisible" Value="False"/> 
-        <Setter Property="RenderTransform" Value="scaleX(0.6) scaleY(0.6)"/>        
+        <Setter Property="Opacity" Value="0.2" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Setter Property="RenderTransform" Value="scaleX(0.6) scaleY(0.6)" />
     </Style>
-    
+
     <!-- Style for a run marker. -->
     <Style Selector="controls|CardStackPlacementControl.RunMarker">
         <Setter Property="Background" Value="Transparent" />
@@ -91,7 +111,8 @@
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
-        <Setter Property="Margin" Value="{OnFormFactor {StaticResource CardThickness}, Mobile={StaticResource CardThicknessMobile}}" />
+        <Setter Property="Margin"
+                Value="{OnFormFactor {StaticResource CardThickness}, Mobile={StaticResource CardThicknessMobile}}" />
     </Style>
 
     <!-- A nice clean style for a button. -->
@@ -113,16 +134,94 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
-    <!-- A nice clean style for a button. -->
+
     <Style Selector="ContentControl.playingCard:not(.dragging)">
         <Setter Property="Transitions">
             <Transitions>
                 <IntegerTransition Property="ZIndex" Easing="1,0,1,0" Duration="0:0:0.5" />
-                <DoubleTransition Property="(Canvas.Left)" Easing="CubicEaseInOut"  Duration="0:0:0.5" />
+                <DoubleTransition Property="(Canvas.Left)" Easing="CubicEaseInOut" Duration="0:0:0.5" />
                 <DoubleTransition Property="(Canvas.Top)" Easing="CubicEaseInOut" Duration="0:0:0.5" />
             </Transitions>
         </Setter>
-    </Style> 
-     
+    </Style>
+
+
+    <Style Selector="Border.goldenTrayBorder">
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="Padding" Value="6" />
+        <Style.Animations>
+            <Animation Duration="0:0:20" IterationCount="Infinite" PlaybackDirection="Alternate">
+                <KeyFrame Cue="0%">
+                    <Setter Property="BorderBrush">
+                        <LinearGradientBrush StartPoint="0,1254.2" EndPoint="1526.4,0"
+                                             GradientStops="{StaticResource GoldBrush}" />
+                    </Setter>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="BorderBrush">
+                        <LinearGradientBrush StartPoint="-1000,1254.2" EndPoint="1526.4,-344.22"
+                                             GradientStops="{StaticResource GoldBrush}" />
+                    </Setter>
+                </KeyFrame>
+            </Animation>
+
+            <Animation Duration="0:1:0" IterationCount="Infinite" PlaybackDirection="Alternate">
+                <KeyFrame Cue="0%">
+                    <Setter Property="Background">
+                        <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
+                                             GradientStops="{StaticResource GoldBrush}"
+                                             Transform="rotate(120deg)" />
+                    </Setter>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Background">
+                        <LinearGradientBrush StartPoint="-2000,1000" EndPoint="0,-1000"
+                                             GradientStops="{StaticResource GoldBrush}" />
+                    </Setter>
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+
+    <Style Selector="Border.goldenTrayInner">
+        <Setter Property="Background" Value="Black" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Style.Animations>
+            <Animation Duration="0:0:30" IterationCount="Infinite" PlaybackDirection="Alternate">
+                <KeyFrame Cue="0%">
+                    <Setter Property="BorderBrush">
+                        <LinearGradientBrush StartPoint="1200,600" EndPoint="1500,0"
+                                             GradientStops="{StaticResource GoldBrush}" />
+                    </Setter>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="BorderBrush">
+                        <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1500,-600"
+                                             GradientStops="{StaticResource GoldBrush}" />
+                    </Setter>
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
+                                 GradientStops="{StaticResource GoldBrush}" Transform="rotate(120deg)" />
+        </Setter>
+    </Style>
+
+    <Style Selector="Border.goldenTrayInnerBg">
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Background">
+            <VisualBrush TileMode="Tile" SourceRect="0,0,300,300"
+                         DestinationRect="0,0,200,200"
+                         BitmapInterpolationMode="HighQuality">
+                <VisualBrush.Visual>
+                    <Border Background="Black">
+                        <controls:RandomNoiseTextureControl Opacity="0.2" />
+                    </Border>
+                </VisualBrush.Visual>
+            </VisualBrush>
+        </Setter>
+    </Style>
 </Styles>
