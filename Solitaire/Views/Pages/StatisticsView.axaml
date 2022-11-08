@@ -52,12 +52,13 @@
 
 
                                 </Viewbox>
-                                <Grid ColumnDefinitions="*,*,*"   MinWidth="600" Margin="10">
+                                <Grid ColumnDefinitions="*,*,*" MinWidth="600" Margin="10">
 
 
-                                    <ContentControl Grid.Column="0" Grid.ColumnSpan="1" Content="{Binding KlondikeStatsInstance}" />
-                                    <ContentControl Grid.Column="1" Grid.ColumnSpan="1" Margin="30 0" Content="{Binding  FreeCellStatsInstance}" />
-                                    <ContentControl Grid.Column="2" Grid.ColumnSpan="1" Content="{Binding  SpiderStatsInstance}" />
+                                    <ContentControl Grid.Column="0" Content="{Binding KlondikeStatsInstance}" />
+                                    <ContentControl Grid.Column="1" Margin="30 0"
+                                                    Content="{Binding  FreeCellStatsInstance}" />
+                                    <ContentControl Grid.Column="2" Content="{Binding  SpiderStatsInstance}" />
 
                                 </Grid>
                             </DockPanel>

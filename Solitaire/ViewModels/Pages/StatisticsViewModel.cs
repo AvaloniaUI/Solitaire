@@ -38,7 +38,7 @@ public partial class StatisticsViewModel : ViewModelBase
         
         ResetKlondikeStatsCommand = new RelayCommand(() =>
         {
-            SpiderStatsInstance?.ResetCommand?.Execute(null);
+            KlondikeStatsInstance?.ResetCommand?.Execute(null);
         });
         
         ResetSpiderStatsCommand = new RelayCommand(() =>
