@@ -19,6 +19,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     public override string GameName => "Klondike Solitaire";
 
     [ObservableProperty] private DrawMode _drawMode;
+    private bool _isTurning;
  
     public KlondikeSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel)
     {
@@ -26,7 +27,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         InitializeFoundationsAndTableauSet();
 
         //  Create the turn stock command.
-        TurnStockCommand = new RelayCommand(DoTurnStock);
+        TurnStockCommand = new AsyncRelayCommand(DoTurnStock);
         AutoMoveCommand = new AsyncRelayCommand(TryMoveAllCardsToAppropriateFoundations);
         NewGameCommand = new AsyncRelayCommand(DoDealNewGame);
     }
@@ -181,21 +182,25 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// <summary>
     /// Turns cards from the stock into the waste.
     /// </summary>
-    private void DoTurnStock()
+    private async Task DoTurnStock()
     {
-        using var wasteD = Waste.DelayNotifications();
-        using var stockD = Stock.DelayNotifications();
+        if(_isTurning)
+            return;
+
+        _isTurning = true;
         
         //  If the stock is empty, put every card from the waste back into the stock.
-        if (stockD.Count == 0)
+        if (Stock.Count == 0)
         {
-            foreach (var card in wasteD)
+            foreach (var card in Waste)
             {
                 card.IsFaceDown = true;
                 card.IsPlayable = false;
-                stockD.Insert(0, card);
+                Stock.Insert(0, card);
+
+                await Task.Delay(175);
             }
-            wasteD.Clear();
+            Waste.Clear();
         }
         else
         { 
@@ -210,19 +215,23 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
             //  Put up to three cards in the waste.
             for (var i = 0; i < cardsToDraw; i++)
             {
-                if (stockD.Count <= 0) continue;
-                var card = stockD.Last();
-                stockD.Remove(card);
+                if (Stock.Count <= 0) continue;
+                var card = Stock.Last();
+                Stock.Remove(card);
                 card.IsFaceDown = false;
                 card.IsPlayable = false;
-                wasteD.Add(card);
+                Waste.Add(card);
+
+                await Task.Delay(175);
             }
         }
 
         //  Everything in the waste must be not playable,
         //  apart from the top card.
-        foreach (var wasteCard in wasteD)
+        foreach (var wasteCard in Waste)
             wasteCard.IsPlayable = wasteCard == Waste.Last();
+
+        _isTurning = false;
     }
     /// <summary>
     /// Tries the move all cards to appropriate foundations.
