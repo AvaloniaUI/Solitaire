@@ -39,7 +39,7 @@
 
                     <Border
                         Background="White" Cursor="Hand"
-                        BorderBrush="Gray"
+                        BorderBrush="Gray" 
                         BorderThickness="1" CornerRadius="6">
                         <Image Margin="4" Source="{StaticResource CardBack}">
                         </Image>
@@ -52,7 +52,6 @@
                 </Panel>
                 <Panel Classes="playingCardFront" IsVisible="{Binding !IsFaceDown}">
                     <Border
-                        BoxShadow="0 5 40 -8 #EE000000"
                         Background="White"
                         Classes.isFaceDown="{Binding IsFaceDown}"
                         Cursor="Hand"
@@ -66,12 +65,19 @@
         </DataTemplate>
     </Styles.Resources>
 
- 
+    <Style Selector="ContentControl.playingCard.lastCard Panel.playingCardFront Border">
+        <Setter Property="BoxShadow" Value="0 5 40 -8 #EE000000"/>  
+    </Style>
+    
+    <Style Selector="ContentControl.playingCard.lastCard Panel.playingCardBack Border">
+        <Setter Property="BoxShadow" Value="0 5 40 -8 #88000000"/>  
+    </Style>
+
     <Style Selector="TextBlock.CasinoTextStyle">
         <Setter Property="Foreground" Value="#99FFFFFF" />
         <Setter Property="FontSize" Value="16" />
     </Style>
- 
+
     <Style Selector="controls|CardStackPlacementControl.StackMarker">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="6" />
@@ -95,7 +101,7 @@
         <Setter Property="IsHitTestVisible" Value="False" />
         <Setter Property="RenderTransform" Value="scaleX(0.6) scaleY(0.6)" />
     </Style>
- 
+
     <Style Selector="controls|CardStackPlacementControl.RunMarker">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Width" Value="{StaticResource CardWidth}" />
@@ -106,13 +112,14 @@
                 <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
                     <GradientStop Color="#33FFFFFF" Offset="0" />
                     <GradientStop Color="#00FFFFFF" Offset="0.8" />
+
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
         <Setter Property="Margin"
                 Value="{OnFormFactor {StaticResource CardThickness}, Mobile={StaticResource CardThicknessMobile}}" />
     </Style>
- 
+
     <Style Selector="Button.CasinoButtonStyle">
         <Setter Property="Template">
             <Setter.Value>
@@ -132,6 +139,49 @@
         </Setter>
     </Style>
 
+
+    <Style Selector="Button.goldenTray">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border BorderThickness="2"
+                            ClipToBounds="True"
+                            CornerRadius="6"
+                            Cursor="Hand">
+                        <Border.Background>
+
+                            <ConicGradientBrush Center="50%, -20%" Angle="270">
+                                <GradientStop Offset="0" Color="#FFFCFC80" />
+                                <GradientStop Offset="0.5" Color="#FFD09C14" />
+                                <GradientStop Offset="1" Color="#FFFCFC80" />
+                            </ConicGradientBrush>
+                        </Border.Background>
+                        <Border.BorderBrush>
+                            <ConicGradientBrush Center="110%, -20%" Angle="180">
+                                <GradientStop Offset="0" Color="#FFD09C14" />
+                                <GradientStop Offset="0.3" Color="#FFFCFC80" />
+                                <GradientStop Offset="0.5" Color="#FFD09C14" />
+                                <GradientStop Offset="0.6" Color="#FFFCFC80" />
+                                <GradientStop Offset="1" Color="#FFD09C14" />
+                            </ConicGradientBrush>
+                        </Border.BorderBrush>
+                        <Panel>
+                            <ContentPresenter
+                                Margin="5,2,5,0"
+                                TextElement.FontSize="24"
+                                TextElement.Foreground="Black"
+                                TextElement.FontWeight="Bold"
+                                HorizontalAlignment="Center"
+                                Content="{TemplateBinding Content}" />
+                        </Panel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
     <Style Selector="ContentControl.playingCard:not(.dragging)">
         <Setter Property="Transitions">
             <Transitions>
@@ -142,12 +192,22 @@
         </Setter>
     </Style>
 
-
     <Style Selector="Border.goldenTrayBorder">
+        <Setter Property="(TranslateTransform.Y)" Value="70"/>
+
         <Setter Property="CornerRadius" Value="10" />
         <Setter Property="BorderThickness" Value="2" />
         <Setter Property="Padding" Value="6" />
         <Style.Animations>
+            <Animation Duration="0:0:1" Easing="QuinticEaseIn">
+                <KeyFrame Cue="0%">
+                    <Setter Property="(TranslateTransform.Y)" Value="70"/>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="(TranslateTransform.Y)" Value="0"/>
+                </KeyFrame>
+            </Animation>
+            
             <Animation Duration="0:0:20" IterationCount="Infinite" PlaybackDirection="Alternate">
                 <KeyFrame Cue="0%">
                     <Setter Property="BorderBrush">

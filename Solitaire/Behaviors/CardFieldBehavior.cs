@@ -348,6 +348,12 @@ public class CardFieldBehavior : Behavior<Canvas>
                                 (control.Orientation == Orientation.Horizontal ? sumOffsets : 0),
                 control.Bounds.Position.Y + (control.Orientation == Orientation.Vertical ? sumOffsets : 0));
 
+            container.Classes.Remove("lastCard");
+            if (pair.i == control.SourceItems.Count - 1)
+            {
+                container.Classes.Add("lastCard");
+            }
+            
             container.ZIndex = pair.i;
             container.Classes.Add("playingCard");
 
