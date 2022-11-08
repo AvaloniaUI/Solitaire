@@ -51,6 +51,7 @@
     100% {
         opacity: 0;
         visibility: collapse;
+        left: 100%;
     }
 }
 
@@ -63,7 +64,6 @@
     }
     100% {
         visibility: visible;
-        left: 100%;
     }
 }
 
