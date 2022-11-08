@@ -38,7 +38,7 @@
                                                     TargetCanvas="{Binding #PlayingField}"
                                                     CommandOnCardClick="{Binding TurnStockCommand}"
                                                     Grid.Row="0"
-                                                    Grid.Column="0"
+                                                    Grid.Column="6"
                                                     SourceItems="{Binding Stock}" Cursor="Hand"
                                                     Orientation="Horizontal">
                 </controls:CardStackPlacementControl>
@@ -49,7 +49,7 @@
                                                     Classes="StackMarker"
                                                     NValue="{Binding DrawMode}"
                                                     Grid.Row="0"
-                                                    Grid.Column="1"
+                                                    Grid.Column="4"
                                                     Grid.ColumnSpan="2"
                                                     SourceItems="{Binding Waste}"
                                                     Orientation="Horizontal"
@@ -61,25 +61,25 @@
 
                                                     TargetCanvas="{Binding #PlayingField}"
                                                     Classes="StackMarker"
-                                                    Grid.Row="0" Grid.Column="3" SourceItems="{Binding Foundation1}"
+                                                    Grid.Row="0" Grid.Column="0" SourceItems="{Binding Foundation1}"
                                                     Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" />
 
                 <controls:CardStackPlacementControl Name="Foundation2"
                                                     TargetCanvas="{Binding #PlayingField}"
                                                     Classes="StackMarker"
-                                                    Grid.Row="0" Grid.Column="4" SourceItems="{Binding Foundation2}"
+                                                    Grid.Row="0" Grid.Column="1" SourceItems="{Binding Foundation2}"
                                                     Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" />
 
                 <controls:CardStackPlacementControl Name="Foundation3"
                                                     TargetCanvas="{Binding #PlayingField}"
                                                     Classes="StackMarker"
-                                                    Grid.Row="0" Grid.Column="5" SourceItems="{Binding Foundation3}"
+                                                    Grid.Row="0" Grid.Column="2" SourceItems="{Binding Foundation3}"
                                                     Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" />
 
                 <controls:CardStackPlacementControl Name="Foundation4"
                                                     TargetCanvas="{Binding #PlayingField}"
                                                     Classes="StackMarker"
-                                                    Grid.Row="0" Grid.Column="6" SourceItems="{Binding Foundation4}"
+                                                    Grid.Row="0" Grid.Column="3" SourceItems="{Binding Foundation4}"
                                                     Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" />
 
                 <!-- The tableaus. -->
