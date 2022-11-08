@@ -64,19 +64,19 @@
                                                         Orientation="Horizontal" OffsetMode="UseCardValues" />
 
                     <Panel Grid.Row="0" Grid.Column="9" Classes="SuitMarker">
-                        <Image Source="{StaticResource SuitHeart}" />
+                        <Image Margin="25 0" Source="{StaticResource SuitHeart}" />
                     </Panel>
 
                     <Panel Grid.Row="0" Grid.Column="11" Classes="SuitMarker">
-                        <Image Source="{StaticResource SuitClub}" />
+                        <Image Margin="25 0" Source="{StaticResource SuitClub}" />
                     </Panel>
 
                     <Panel Grid.Row="0" Grid.Column="13" Classes="SuitMarker">
-                        <Image Source="{StaticResource SuitDiamond}" Margin="6" />
+                        <Image Margin="25 0" Source="{StaticResource SuitDiamond}" />
                     </Panel>
 
                     <Panel Grid.Row="0" Grid.Column="15" Classes="SuitMarker">
-                        <Image Source="{StaticResource SuitSpade}" Margin="6" />
+                        <Image Margin="25 0" Source="{StaticResource SuitSpade}" />
                     </Panel>
 
                     <!-- The foundations. -->

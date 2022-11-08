@@ -54,19 +54,19 @@
                                                         OffsetMode="TopNCards" />
 
                     <Panel Grid.Row="0" Grid.Column="0" Classes="SuitMarker">
-                        <Image Source="{StaticResource SuitHeart}" />
+                        <Image Margin="25 0" Source="{StaticResource SuitHeart}" />
                     </Panel>
 
                     <Panel Grid.Row="0" Grid.Column="1" Classes="SuitMarker">
-                        <Image Source="{StaticResource SuitClub}" />
+                        <Image Margin="25 0" Source="{StaticResource SuitClub}" />
                     </Panel>
 
                     <Panel Grid.Row="0" Grid.Column="2" Classes="SuitMarker">
-                        <Image Source="{StaticResource SuitDiamond}" Margin="6" />
+                        <Image Margin="25 0" Source="{StaticResource SuitDiamond}" />
                     </Panel>
 
                     <Panel Grid.Row="0" Grid.Column="3" Classes="SuitMarker">
-                        <Image Source="{StaticResource SuitSpade}" Margin="6" />
+                        <Image Margin="25 0" Source="{StaticResource SuitSpade}" />
                     </Panel>
 
                     <!-- The foundations. -->
