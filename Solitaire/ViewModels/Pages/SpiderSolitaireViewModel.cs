@@ -226,7 +226,7 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
 
         //  If we've got here we've passed all tests
         //  and move the card and update the score.
-        DoMoveCard(from, to, card);
+        DoMoveCard(from, to, card, scoreModifier);
         Score += scoreModifier;
         Moves++;
 
@@ -239,7 +239,7 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
 
     private void DoMoveCard(IList<PlayingCardViewModel> from,
         IList<PlayingCardViewModel> to,
-        PlayingCardViewModel card)
+        PlayingCardViewModel card, int scoreModifier)
     {
         //  Identify the run of cards we're moving.
         var run = new List<PlayingCardViewModel>();
@@ -260,6 +260,12 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
 
         topCard.IsFaceDown = false;
         topCard.IsPlayable = true;
+        
+        RecordMoves(new MoveOperation(from, to, run, scoreModifier), new GenericOperation(()=>
+        {
+            topCard.IsFaceDown = true;
+            topCard.IsPlayable = false;
+        }));
     }
 
     /// <summary>

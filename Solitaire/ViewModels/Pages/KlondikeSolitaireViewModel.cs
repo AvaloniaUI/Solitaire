@@ -467,8 +467,12 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
             topCardViewModel.IsFaceDown = false;
             topCardViewModel.IsPlayable = true;
-            
-            RecordMoves(new MoveOperation(from, to, run, scoreModifier), new FlipOperation(topCardViewModel), new GenericOperation(()=>topCardViewModel.IsPlayable = false));
+
+            RecordMoves(new MoveOperation(from, to, run, scoreModifier), new GenericOperation(() =>
+            {
+                topCardViewModel.IsFaceDown = true;
+                topCardViewModel.IsPlayable = false;
+            }));
         }
         else
         {

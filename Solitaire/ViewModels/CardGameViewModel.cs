@@ -242,21 +242,6 @@ public abstract partial class CardGameViewModel : ViewModelBase
         }
     }
 
-    public class FlipOperation : CardOperation
-    {
-        public FlipOperation(PlayingCardViewModel flipped)
-        {
-            Flipped = flipped;
-        }
-        
-        public PlayingCardViewModel Flipped { get; }
-        
-        public override void Revert(CardGameViewModel game)
-        {
-            Flipped.IsFaceDown = !Flipped.IsFaceDown;
-        }
-    }
-
     public class MoveOperation : CardOperation
     {
         public MoveOperation(IList<PlayingCardViewModel> from, IList<PlayingCardViewModel> to, IList<PlayingCardViewModel> run,
