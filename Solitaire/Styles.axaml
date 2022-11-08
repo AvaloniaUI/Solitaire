@@ -12,7 +12,10 @@
         <x:Double x:Key="CardHeight">232</x:Double>
         <Thickness x:Key="CardThickness">8,10,40,40</Thickness>
         <Thickness x:Key="CardThicknessMobile">8,10,8,8</Thickness>
-
+        <FontFamily x:Key="CasinoFont">/Assets/*.ttf#Quentell CF</FontFamily>
+        <FontFamily x:Key="Inter">/Assets/*.ttf#Inter</FontFamily>
+        <FontFamily x:Key="Nunito">/Assets/*.ttf#Nunito</FontFamily>
+         
         <GradientStops x:Key="GoldBrush">
             <GradientStop Offset="0" Color="#FFFCFC80" />
             <GradientStop Offset="0.06861601" Color="#FFD09C14" />
@@ -302,7 +305,7 @@
     </Style>
 
     <Style Selector="Border.goldenTrayBorder">
-        <Setter Property="(TextElement.FontFamily)" Value="/Assets/*.ttf#Quentell CF" />
+        <Setter Property="(TextElement.FontFamily)" Value="{StaticResource CasinoFont}" />
         <Setter Property="CornerRadius" Value="10" />
         <Setter Property="BorderThickness" Value="2" />
         <Setter Property="Padding" Value="6" />

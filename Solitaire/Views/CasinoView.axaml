@@ -5,12 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:Solitaire.ViewModels"
              xmlns:controls="clr-namespace:Solitaire.Controls"
-             FontFamily="/Assets/inter.var-webfont.ttf#Inter"
              x:DataType="viewModels:CasinoViewModel"
              TextElement.Foreground="White"
              x:CompileBindings="True"
              mc:Ignorable="d"
-             d:DesignHeight="1600" d:DesignWidth="900">
+             d:DesignHeight="400" d:DesignWidth="800">
     <UserControl.Background>
         <RadialGradientBrush GradientOrigin="50%,50%">
             <RadialGradientBrush.GradientStops>
@@ -32,45 +31,44 @@
             </VisualBrush>
         </Panel.Background>
         <Panel.Styles>
-            
             <Style Selector="Panel.splashContent">
                 <Style.Animations>
                     <Animation Delay="0:0:0" Duration="0:0:2" Easing="QuadraticEaseInOut" FillMode="Both">
                         <KeyFrame Cue="0%">
-                            <Setter Property="IsVisible" Value="True"/> 
+                            <Setter Property="IsVisible" Value="True" />
                             <Setter Property="Opacity" Value="0" />
                         </KeyFrame>
-                        <KeyFrame Cue="20%"> 
+                        <KeyFrame Cue="20%">
                             <Setter Property="Opacity" Value="1" />
                         </KeyFrame>
-                        <KeyFrame Cue="80%"> 
+                        <KeyFrame Cue="80%">
                             <Setter Property="Opacity" Value="1" />
                         </KeyFrame>
                         <KeyFrame Cue="100%">
-                            <Setter Property="Opacity" Value="0" /> 
+                            <Setter Property="Opacity" Value="0" />
                             <Setter Property="IsVisible" Value="False" />
                         </KeyFrame>
                     </Animation>
                 </Style.Animations>
             </Style>
-            <Style Selector="Panel.splashContent Viewbox">
+            <Style Selector="Panel.splashContent Image">
                 <Style.Animations>
                     <Animation Delay="0:0:0" Duration="0:0:2" Easing="QuadraticEaseInOut" FillMode="Both">
-                        <KeyFrame Cue="0%"> 
+                        <KeyFrame Cue="0%">
                             <Setter Property="(ScaleTransform.ScaleX)" Value="0.7" />
-                            <Setter Property="(ScaleTransform.ScaleY)" Value="0.7" /> 
+                            <Setter Property="(ScaleTransform.ScaleY)" Value="0.7" />
                         </KeyFrame>
                         <KeyFrame Cue="20%">
                             <Setter Property="(ScaleTransform.ScaleX)" Value="1" />
-                            <Setter Property="(ScaleTransform.ScaleY)" Value="1" /> 
+                            <Setter Property="(ScaleTransform.ScaleY)" Value="1" />
                         </KeyFrame>
                         <KeyFrame Cue="80%">
                             <Setter Property="(ScaleTransform.ScaleX)" Value="1" />
-                            <Setter Property="(ScaleTransform.ScaleY)" Value="1" /> 
+                            <Setter Property="(ScaleTransform.ScaleY)" Value="1" />
                         </KeyFrame>
                         <KeyFrame Cue="100%">
                             <Setter Property="(ScaleTransform.ScaleX)" Value="1.5" />
-                            <Setter Property="(ScaleTransform.ScaleY)" Value="1.5" /> 
+                            <Setter Property="(ScaleTransform.ScaleY)" Value="1.5" />
                         </KeyFrame>
                     </Animation>
                 </Style.Animations>
@@ -110,7 +108,8 @@
                     <TranslateTransform />
                 </TransformGroup>
             </Panel.RenderTransform>
-            <ContentControl Content="{Binding CurrentView, Mode=OneWay}" />
+            <ContentControl Content="{Binding CurrentView, Mode=OneWay}"   />
+          
         </Panel>
 
         <Panel Classes="splashContent">
@@ -125,7 +124,8 @@
                 </Panel.Background>
                 <Panel>
                     <Panel.Background>
-                        <VisualBrush Opacity="0.05" TileMode="Tile" SourceRect="0,0,300,300" DestinationRect="0,0,200,200"
+                        <VisualBrush Opacity="0.05" TileMode="Tile" SourceRect="0,0,300,300"
+                                     DestinationRect="0,0,200,200"
                                      BitmapInterpolationMode="HighQuality">
                             <VisualBrush.Visual>
                                 <controls:RandomNoiseTextureControl />
@@ -134,20 +134,15 @@
                     </Panel.Background>
                 </Panel>
             </Panel>
-            <Viewbox MinWidth="24" MinHeight="24" MaxHeight="128" MaxWidth="128">
-                <Viewbox.RenderTransform>
+            <Image Source="{StaticResource Avalonia}" MinWidth="24" MinHeight="24" MaxHeight="128" MaxWidth="128">
+                <Image.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform />
                         <TranslateTransform />
                     </TransformGroup>
-                </Viewbox.RenderTransform>
-                <Canvas Height="86" Width="86">
-                    <Path Fill="White"
-                          Data="M43 14.6a28.3 28.3 0 0 0-27.6 22.1 6.4 6.4 0 0 1 0 12.4 28.3 28.3 0 0 0 41.2 18.6V71h14.7V42.9a28.3 28.3 0 0 0-28.2-28.3ZM29.6 43a13.5 13.5 0 1 1 27.1 0 13.5 13.5 0 0 1-27 0Z" />
-                    <Path RenderTransformOrigin="50%, 50%" Fill="White"
-                          Data="M18.1 42.9a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
-                </Canvas>
-            </Viewbox>
+                </Image.RenderTransform> 
+            </Image>
         </Panel>
     </Panel>
+
 </UserControl>
