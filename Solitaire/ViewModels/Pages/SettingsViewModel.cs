@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -14,6 +15,9 @@ public partial class SettingsViewModel : ViewModelBase
     public ICommand NavigateToTitleCommand { get; }
     public ICommand ResetKlondikeStatsCommand { get; }
     public ICommand ResetSpiderStatsCommand { get; }
+    public ICommand DrawModeOneCommand { get; }
+    public ICommand DrawModeThreeCommand { get; }
+
     public SettingsViewModel(CasinoViewModel casinoViewModel)
     {
         var casinoViewModel1 = casinoViewModel;
@@ -31,5 +35,17 @@ public partial class SettingsViewModel : ViewModelBase
         {
             casinoViewModel1.TitleInstance.SpiderStatsInstance?.ResetCommand?.Execute(null);
         });
+
+
+        DrawModeOneCommand = new RelayCommand(() =>
+        {
+            DrawMode = DrawMode.DrawOne;
+        }, () => DrawMode != DrawMode.DrawOne);
+
+        DrawModeThreeCommand = new RelayCommand(() =>
+        {
+            DrawMode = DrawMode.DrawThree;
+        }, () => DrawMode != DrawMode.DrawThree);
+
     }
 }
