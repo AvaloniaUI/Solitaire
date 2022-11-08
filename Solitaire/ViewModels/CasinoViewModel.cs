@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Solitaire.Utils;
 using Solitaire.ViewModels.Pages;
 
@@ -12,6 +14,8 @@ public partial class CasinoViewModel : ViewModelBase
 {
     [ObservableProperty] private ViewModelBase? _currentView;
 
+
+    
     /// <summary>
     /// Initializes a new instance of the <see cref="CasinoViewModel"/> class.
     /// </summary>
@@ -23,6 +27,7 @@ public partial class CasinoViewModel : ViewModelBase
         FreeCellInstance = new FreeCellSolitaireViewModel(this);
         TitleInstance = new TitleViewModel(this);
         CurrentView = TitleInstance;
+        
     }
 
     public TitleViewModel TitleInstance { get; }

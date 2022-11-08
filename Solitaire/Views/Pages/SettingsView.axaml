@@ -8,6 +8,7 @@
              x:Class="Solitaire.Views.Pages.SettingsView"
              x:DataType="pages:SettingsViewModel"
              x:CompileBindings="True"
+             TextElement.FontFamily="{StaticResource CasinoFont}"
              d:DesignHeight="300" d:DesignWidth="300">
 
     <!-- The main container for the settings. -->
@@ -32,12 +33,20 @@
                        HorizontalAlignment="Center" Classes="CasinoTextStyle" />
             <TextBlock Margin="4"
                        Grid.Row="4" Grid.Column="0" Text="Draw Mode"
-                       HorizontalAlignment="Right" Classes="CasinoTextStyle" />
-            <ComboBox Margin="4"
-                      Grid.Row="4" Grid.Column="1" SelectedItem="{Binding DrawMode}"
-                      Items="{Binding ., 
-                Converter={StaticResource EnumToListConverter}, 
-                ConverterParameter={x:Type models:DrawMode}}" />
+                       HorizontalAlignment="Right" Classes="CasinoTextStyle" /> 
+             
+            <StackPanel  Grid.Row="4" Grid.Column="1"  Orientation="Horizontal" >
+                
+                <Button DockPanel.Dock="Top" VerticalAlignment="Center"
+                        Classes="goldenDeck" Content="Draw One"
+                        Command="{Binding DrawModeOneCommand}" />
+                
+                <Button DockPanel.Dock="Top" VerticalAlignment="Center" 
+                        Classes="goldenDeck" Content="Draw Three"
+                        Command="{Binding DrawModeThreeCommand}" />
+            </StackPanel>
+
+            
             <TextBlock Margin="4"
                        Grid.Row="5" Grid.Column="0" Text="Statistics"
                        HorizontalAlignment="Right" Classes="CasinoTextStyle" />
