@@ -91,7 +91,7 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
     }
 
     /// <inheritdoc />
-    public override string GameName => "Spider Solitaire";
+    public override string GameName => "Spider";
 
     public override IList<PlayingCardViewModel>? GetCardCollection(PlayingCardViewModel card)
     {

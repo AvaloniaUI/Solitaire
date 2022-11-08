@@ -17,7 +17,7 @@ namespace Solitaire.ViewModels.Pages;
 public partial class FreeCellSolitaireViewModel : CardGameViewModel
 {
     /// <inheritdoc />
-    public override string GameName => "FreeCell Solitaire";
+    public override string GameName => "FreeCell";
 
     [ObservableProperty] private DrawMode _drawMode;
     [ObservableProperty] private List<PlayingCardViewModel>? _playingCards;

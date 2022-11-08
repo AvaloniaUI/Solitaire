@@ -16,7 +16,7 @@ namespace Solitaire.ViewModels.Pages;
 public partial class KlondikeSolitaireViewModel : CardGameViewModel
 {
     /// <inheritdoc />
-    public override string GameName => "Klondike Solitaire";
+    public override string GameName => "Klondike";
 
     [ObservableProperty] private DrawMode _drawMode;
     private bool _isTurning;

@@ -2,7 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:converters="clr-namespace:Solitaire.Converters"
         xmlns:vm="clr-namespace:Solitaire.ViewModels"
-        xmlns:controls="clr-namespace:Solitaire.Controls">
+        xmlns:controls="clr-namespace:Solitaire.Controls"
+        xmlns:pages="clr-namespace:Solitaire.ViewModels.Pages">
     <Styles.Resources>
         <converters:TimeSpanToShortStringConverter x:Key="TimeSpanToShortStringConverter" />
         <converters:PlayingCardToBrushConverter x:Key="PlayingCardToBrushConverter" />
@@ -15,7 +16,7 @@
         <FontFamily x:Key="CasinoFont">/Assets/*.ttf#Quentell CF</FontFamily>
         <FontFamily x:Key="Inter">/Assets/*.ttf#Inter</FontFamily>
         <FontFamily x:Key="Nunito">/Assets/*.ttf#Nunito</FontFamily>
-         
+
         <GradientStops x:Key="GoldBrush">
             <GradientStop Offset="0" Color="#FFFCFC80" />
             <GradientStop Offset="0.06861601" Color="#FFD09C14" />
@@ -32,7 +33,7 @@
             <GradientStop Offset="0.94064" Color="#FFFCFC80" />
             <GradientStop Offset="1" Color="#FFD09C14" />
         </GradientStops>
-
+ 
         <ControlTemplate x:Key="WinDialog">
             <Border Background="#AA000000" x:CompileBindings="True" x:DataType="vm:CardGameViewModel">
                 <Border Classes="goldenTrayBorder" Padding="0" MaxHeight="200" MaxWidth="400"
@@ -78,7 +79,7 @@
         <ControlTemplate x:Key="DeckControls">
             <Panel Height="64" x:CompileBindings="True" x:DataType="vm:CardGameViewModel">
                 <Viewbox Stretch="Uniform" VerticalAlignment="Bottom">
-                    <Border Classes="goldenTrayBorder downDeck"  
+                    <Border Classes="goldenTrayBorder downDeck"
                             Classes.animateUp="{Binding !IsGameWon}" Margin="0,0,0,-15"
                             BoxShadow="0 -6 30 -9 Black">
                         <Border Classes="goldenTrayInner">
