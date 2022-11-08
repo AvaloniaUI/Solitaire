@@ -25,6 +25,11 @@ public abstract partial class CardGameViewModel : ViewModelBase
 
     public abstract string? GameName { get; }
 
+    private void ClearUndoStack()
+    {
+        _moveStack.Clear();
+    }
+    
     protected void RecordMove(IList<PlayingCardViewModel> from, IList<PlayingCardViewModel> to,
         IList<PlayingCardViewModel> range, int score)
     {
@@ -120,6 +125,8 @@ public abstract partial class CardGameViewModel : ViewModelBase
     /// </summary>
     protected void ResetInternalState()
     {
+        ClearUndoStack();
+        
         //  Stop the timer and reset the game data.
         StopTimer();
         ElapsedTime = TimeSpan.FromSeconds(0);
