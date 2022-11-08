@@ -58,6 +58,11 @@ public partial class TitleViewModel : ViewModelBase
         {
             casinoViewModel.CurrentView = casinoViewModel.SettingsInstance;
         });
+
+        NavigateToStatisticsCommand = new RelayCommand(() =>
+        {
+            casinoViewModel.CurrentView = casinoViewModel.StatisticsInstance;
+        });
         
     }
 }
