@@ -11,64 +11,106 @@
              TextElement.FontFamily="{StaticResource CasinoFont}"
              d:DesignHeight="300" d:DesignWidth="300">
 
-    <!-- The main container for the settings. -->
-    <Grid RowDefinitions="Auto,Auto,*,Auto">
 
-        <!-- The title. -->
-        <TextBlock
-            Grid.Row="0" FontSize="34" HorizontalAlignment="Center"
-            Foreground="#99FFFFFF" Text="Settings" />
+    <Viewbox MaxWidth="400" Margin="20">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10">
 
-        <!-- The container for the statistics. -->
-        <Grid Grid.Row="1" ColumnDefinitions="*,*" Width="500" 
-              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
 
-            <TextBlock Margin="4"
-                       Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                       Text="Solitaire" FontWeight="Bold"
-                       HorizontalAlignment="Center" Classes="CasinoTextStyle" />
-            <TextBlock Margin="4"
-                       Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
-                       Text="Klondike Solitaire" FontWeight="Bold"
-                       HorizontalAlignment="Center" Classes="CasinoTextStyle" />
-            <TextBlock Margin="4"
-                       Grid.Row="4" Grid.Column="0" Text="Draw Mode"
-                       HorizontalAlignment="Right" Classes="CasinoTextStyle" /> 
-             
-            <Button DockPanel.Dock="Top" VerticalAlignment="Center"
-                    Classes="goldenDeck" Content="{Binding DrawModeText}"
-                    Command="{Binding DrawModeCommand}"  Grid.Row="4" Grid.Column="1" />
-            
-            <TextBlock Margin="4"
-                       Grid.Row="5" Grid.Column="0" Text="Statistics"
-                       HorizontalAlignment="Right" Classes="CasinoTextStyle" />
-            <Button Margin="4"
-                    Grid.Row="5" Grid.Column="1" Content="Reset" HorizontalAlignment="Left"
-                    Width="80" Classes="CasinoButtonStyle" Command="{Binding ResetKlondikeStatsCommand}" />
-            <TextBlock Margin="4"
-                       Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"
-                       Text="Spider Solitaire" FontWeight="Bold"
-                       HorizontalAlignment="Center" Classes="CasinoTextStyle" />
-            <TextBlock Margin="4"
-                       Grid.Row="7" Grid.Column="0" Text="Difficulty"
-                       HorizontalAlignment="Right" Classes="CasinoTextStyle" />
-            <ComboBox Margin="4"
-                      Grid.Row="7" Grid.Column="1" SelectedItem="{Binding Difficulty}"
-                      Items="{Binding ., 
-                Converter={StaticResource EnumToListConverter}, 
-                ConverterParameter={x:Type models:Difficulty}}" />
-            <TextBlock Margin="4"
-                       Grid.Row="8" Grid.Column="0" Text="Statistics"
-                       HorizontalAlignment="Right" Classes="CasinoTextStyle" />
-            <Button Margin="4"
-                    Grid.Row="8" Grid.Column="1" Content="Reset" HorizontalAlignment="Left"
-                    Width="80" Classes="CasinoButtonStyle" Command="{Binding ResetSpiderStatsCommand}" />
+            <Viewbox Margin="40,10,40,40" StretchDirection="DownOnly" ClipToBounds="False">
+                <!-- The casino commands. -->
+                <Border Classes="goldenTrayBorder downDeck"
 
-        </Grid>
+                        BoxShadow="0 20 60 -20 Black">
+                    <Border.RenderTransform>
+                        <ScaleTransform></ScaleTransform>
+                    </Border.RenderTransform>
+                    <Border Classes="goldenTrayInner">
+                        <Border Classes="goldenTrayInnerBg">
 
-        <Button
-            Grid.Row="3" Classes="CasinoButtonStyle" Width="120"
-            Margin="4" Content="Casino" Command="{Binding NavigateToTitleCommand}" />
+                            <StackPanel Spacing="10" Orientation="Vertical" Margin="10">
 
-    </Grid>
+                                <Grid ColumnDefinitions="*,Auto,*" VerticalAlignment="Center" Margin="5">
+
+                                    <Border Height="2" Grid.Column="0">
+                                        <Border.Background>
+                                            <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
+                                                                 GradientStops="{StaticResource GoldBrush}"
+                                                                 Transform="rotate(120deg)" />
+                                        </Border.Background>
+                                    </Border>
+
+                                    <TextBlock Grid.Column="1" FontSize="16" Margin="10 0"
+                                               Text="KLONDIKE - CARDS TO DRAW">
+
+                                        <TextBlock.Foreground>
+
+                                            <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
+                                                                 GradientStops="{StaticResource GoldBrush}"
+                                                                 Transform="rotate(120deg)" />
+                                        </TextBlock.Foreground>
+                                    </TextBlock>
+
+                                    <Border Grid.Column="2" Height="2">
+                                        <Border.Background>
+                                            <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
+                                                                 GradientStops="{StaticResource GoldBrush}"
+                                                                 Transform="rotate(120deg)" />
+                                        </Border.Background>
+                                    </Border>
+
+                                </Grid>
+                                <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="230"
+                                        Classes="goldenDeck" Content="{Binding DrawModeText}"
+                                        Command="{Binding  DrawModeCommand}" />
+
+                                <Grid ColumnDefinitions="*,Auto,*" VerticalAlignment="Center" Margin="5">
+
+                                    <Border Height="2" Grid.Column="0">
+                                        <Border.Background>
+                                            <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
+                                                                 GradientStops="{StaticResource GoldBrush}"
+                                                                 Transform="rotate(120deg)" />
+                                        </Border.Background>
+                                    </Border>
+
+                                    <TextBlock Grid.Column="1" FontSize="16" Margin="10 0" Text="SPIDER - DIFFICULTY">
+
+                                        <TextBlock.Foreground>
+
+                                            <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
+                                                                 GradientStops="{StaticResource GoldBrush}"
+                                                                 Transform="rotate(120deg)" />
+                                        </TextBlock.Foreground>
+                                    </TextBlock>
+
+                                    <Border Grid.Column="2" Height="2">
+                                        <Border.Background>
+                                            <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
+                                                                 GradientStops="{StaticResource GoldBrush}"
+                                                                 Transform="rotate(120deg)" />
+                                        </Border.Background>
+                                    </Border>
+
+                                </Grid>
+                                <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="230"
+                                        Classes="goldenDeck" Content="{Binding DifficultyText}"
+                                        Command="{Binding DifficultyCommand}" />
+
+
+                                <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="230"
+                                        Classes="goldenDeck" Content="Back"
+                                        Command="{Binding NavigateToTitleCommand}" />
+
+
+                                
+                            </StackPanel>
+
+                        </Border>
+                    </Border>
+                </Border>
+
+            </Viewbox>
+        </StackPanel>
+    </Viewbox>
+
 </UserControl>

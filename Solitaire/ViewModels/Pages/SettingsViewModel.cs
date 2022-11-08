@@ -12,15 +12,16 @@ public partial class SettingsViewModel : ViewModelBase
     [ObservableProperty] private Difficulty _difficulty = Difficulty.Easy;
     [ObservableProperty] private DrawMode _drawMode = DrawMode.DrawOne;
     [ObservableProperty] private string _drawModeText;
-    
+    [ObservableProperty] private string _difficultyText;
     public ICommand NavigateToTitleCommand { get; }
     public ICommand ResetKlondikeStatsCommand { get; }
     public ICommand ResetSpiderStatsCommand { get; }
     
-    public ICommand DrawModeCommand { get; }
-    public ICommand DrawModeOneCommand { get; }
-    public ICommand DrawModeThreeCommand { get; }
+    public ICommand DrawModeCommand { get; } 
 
+    public ICommand DifficultyCommand { get; } 
+
+    
     public SettingsViewModel(CasinoViewModel casinoViewModel)
     {
         var casinoViewModel1 = casinoViewModel;
@@ -41,20 +42,31 @@ public partial class SettingsViewModel : ViewModelBase
 
         DrawModeCommand = new RelayCommand(() =>
         {
-            if (DrawMode == DrawMode.DrawOne)
-            {
-                DrawMode = DrawMode.DrawThree;
-            }
-            else
-            {
-                DrawMode = DrawMode.DrawOne;
-            }
+            DrawMode = DrawMode == DrawMode.DrawOne ? DrawMode.DrawThree : DrawMode.DrawOne;
         });
 
+
+        DifficultyCommand = new RelayCommand(() =>
+        {
+            Difficulty = Difficulty switch
+            {
+                Difficulty.Easy => Difficulty.Medium,
+                Difficulty.Medium => Difficulty.Hard,
+                Difficulty.Hard => Difficulty.Easy
+            };
+        });
+        
         this.WhenAnyValue(x => x.DrawMode)
             .Subscribe(x =>
             {
-                DrawModeText = $"Draw Mode: {DrawMode}";
+                DrawModeText = $"{DrawMode.ToString()
+                    .Replace("Draw", "")} Card{(DrawMode == DrawMode.DrawThree? "s" : "")}" ;
+            });
+
+        this.WhenAnyValue(x => x.Difficulty)
+            .Subscribe(x =>
+            {
+                DifficultyText = $"{Difficulty}";
             });
 
     }
