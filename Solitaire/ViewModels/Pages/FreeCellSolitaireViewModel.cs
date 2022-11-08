@@ -26,7 +26,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
     {
         InitializeFoundationsAndTableauSet();
 
-        AppropriateFoundationsCommand = new RelayCommand(TryMoveAllCardsToAppropriateFoundations);
+        AutoMoveCommand = new RelayCommand(TryMoveAllCardsToAppropriateFoundations);
 
         NewGameCommand = new AsyncRelayCommand(DoDealNewGame);
 
@@ -470,5 +470,4 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
 
     public BatchObservableCollection<PlayingCardViewModel> Cell4 { get; } = new();
 
-    public ICommand? AppropriateFoundationsCommand { get; }
 }

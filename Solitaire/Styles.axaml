@@ -37,7 +37,6 @@
                     <Border Classes="goldenTrayInner" Margin="2">
                         <Border Classes="goldenTrayInnerBg">
                             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Vertical">
-
                                 <TextBlock Name="header" TextAlignment="Center" Text="YOU WIN!" FontSize="64">
                                     <TextBlock.Foreground>
                                         <ConicGradientBrush Center="110%, -20%" Angle="180">
@@ -92,24 +91,28 @@
 
                                 <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,-2,10,0"
                                         Classes="goldenTray" Content="Back"
-                                        Command="{Binding NavigateToCasinoCommand}" />
+                                        Command="{Binding  NavigateToCasinoCommand}" />
+
+                                <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,-2,10,0"
+                                        Classes="goldenTray" Content="Auto"
+                                        Command="{Binding AutoMoveCommand}" />
 
                                 <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center"
                                             HorizontalAlignment="Center" Margin="4">
 
-                                    <RichTextBlock TextAlignment="Center" Width="50">
+                                    <RichTextBlock TextAlignment="Center" VerticalAlignment="Center">
                                         <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
                                              Text="SCORE" />
                                         <LineBreak />
                                         <Run FontSize="24" Text="{Binding Score}" />
                                     </RichTextBlock>
-                                    <RichTextBlock TextAlignment="Center" Width="50">
+                                    <RichTextBlock TextAlignment="Center" VerticalAlignment="Center">
                                         <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
                                              Text="MOVES" />
                                         <LineBreak />
                                         <Run FontSize="24" Text="{Binding Moves}" />
                                     </RichTextBlock>
-                                    <RichTextBlock TextAlignment="Center" Width="100">
+                                    <RichTextBlock TextAlignment="Center" VerticalAlignment="Center">
                                         <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
                                              Text="TIME" />
                                         <LineBreak />
@@ -130,14 +133,12 @@
                 Width="{StaticResource CardWidth}"
                 Height="{StaticResource CardHeight}">
                 <Panel Classes="playingCardBack" IsVisible="{Binding IsFaceDown}">
-
                     <Border
                         Background="White" Cursor="Hand"
                         BorderBrush="Gray"
                         BorderThickness="1" CornerRadius="6">
                         <Image Margin="4" Source="{StaticResource CardBack}">
                         </Image>
-
                         <Border.RenderTransform>
                             <Rotate3DTransform
                                 AngleY="180" />
@@ -232,8 +233,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-
-
     <Style Selector="Button.goldenTray">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Template">
@@ -272,6 +271,10 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style Selector="Button.goldenTray[IsEnabled=False], Button.goldenTray:disabled">
+        <Setter Property="Opacity" Value="0.5" />
     </Style>
 
     <Style Selector="ContentControl.playingCard:not(.dragging)">

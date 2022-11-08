@@ -19,6 +19,8 @@ public abstract partial class CardGameViewModel : ViewModelBase
 {
     public ImmutableArray<PlayingCardViewModel>? Deck;
 
+    public ICommand? AutoMoveCommand { get; protected set; }
+
     private Stack<Move> _moveStack = new();
 
     public abstract string? GameName { get; }
@@ -200,7 +202,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
     /// <value>The deal new game command.</value>
     public ICommand? NewGameCommand { get; protected set; }
 
-    public ICommand? UndoCommand { get; protected set; }
+    public ICommand? UndoCommand { get; protected set; } = new RelayCommand(() => { }, () => false);
 
     /// <summary>
     /// Occurs when the game is won.

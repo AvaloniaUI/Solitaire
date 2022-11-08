@@ -150,12 +150,7 @@
                             Grid.Row="0"
                             Grid.RowSpan="2">
                         <Interaction.Behaviors>
-                            <BehaviorCollection>
-                                <behaviors:CardFieldBehavior />
-                                <behaviors:ExecuteOnPointerPressedBehavior
-                                    ActivateOn="RightButton"
-                                    Command="{Binding AppropriateFoundationsCommand}" />
-                            </BehaviorCollection>
+                            <behaviors:CardFieldBehavior />
                         </Interaction.Behaviors>
                     </Canvas>
                 </Grid>

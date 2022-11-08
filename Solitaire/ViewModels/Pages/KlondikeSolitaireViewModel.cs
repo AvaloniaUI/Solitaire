@@ -29,7 +29,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
         //  Create the turn stock command.
         TurnStockCommand = new RelayCommand(DoTurnStock);
-        AppropriateFoundationsCommand = new RelayCommand(TryMoveAllCardsToAppropriateFoundations);
+        AutoMoveCommand = new RelayCommand(TryMoveAllCardsToAppropriateFoundations);
         NewGameCommand = new AsyncRelayCommand(DoDealNewGame);
     }
 
@@ -529,5 +529,4 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// </summary> 
     public ICommand? TurnStockCommand { get; }
 
-    public ICommand? AppropriateFoundationsCommand { get; }
 }
