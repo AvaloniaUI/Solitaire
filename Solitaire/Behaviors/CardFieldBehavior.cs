@@ -349,7 +349,7 @@ public class CardFieldBehavior : Behavior<Canvas>
                 control.Bounds.Position.Y + (control.Orientation == Orientation.Vertical ? sumOffsets : 0));
 
             container.Classes.Remove("lastCard");
-            if (pair.i == control.SourceItems.Count - 1)
+            if (pair.i == control.SourceItems.Count - 1 || pair.i == control.SourceItems.Count - 2)
             {
                 container.Classes.Add("lastCard");
             }

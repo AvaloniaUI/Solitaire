@@ -75,21 +75,21 @@ public abstract partial class CardGameViewModel : ViewModelBase
         _timer.Tick += timer_Tick;
         InitializeDeck();
     }
-    
+
     protected virtual void InitializeDeck()
     {
-        if(Deck is { }) return;
-        
+        if (Deck is { }) return;
+
         var playingCards = Enum
             .GetValuesAsUnderlyingType(typeof(CardType))
             .Cast<CardType>()
             .Select(cardType => new PlayingCardViewModel(this)
-                {CardType = cardType, IsFaceDown = true})
+                { CardType = cardType, IsFaceDown = true })
             .ToImmutableArray();
 
         Deck = playingCards;
     }
-    
+
     protected IList<PlayingCardViewModel> GetNewShuffledDeck()
     {
         foreach (var card in Deck!)
@@ -124,6 +124,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
         Moves = 0;
         Score = 0;
         IsGameWon = false;
+        OnPropertyChanged(nameof(IsGameWon));
     }
 
     /// <summary>

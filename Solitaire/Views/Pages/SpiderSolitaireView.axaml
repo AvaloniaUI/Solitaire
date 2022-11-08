@@ -6,50 +6,22 @@
              xmlns:behaviors="clr-namespace:Solitaire.Behaviors"
              xmlns:pages="clr-namespace:Solitaire.ViewModels.Pages"
              xmlns:generic="clr-namespace:System.Collections.Generic;assembly=System.Collections"
-             xmlns:viewModels="clr-namespace:Solitaire.ViewModels"
              mc:Ignorable="d"
              x:Class="Solitaire.Views.Pages.SpiderSolitaireView"
              x:DataType="pages:SpiderSolitaireViewModel"
              x:CompileBindings="True"
              d:DesignHeight="300" d:DesignWidth="300">
-
     <Design.DataContext>
         <pages:SpiderSolitaireViewModel />
     </Design.DataContext>
     <Panel>
-
-        <!-- The main grid - the game is at the top and the commands are at the bottom. -->
-        <DockPanel LastChildFill="True" ClipToBounds="False">
-            <Grid
-                DockPanel.Dock="Bottom" ColumnDefinitions="Auto,*,Auto,Auto,Auto,*,Auto">
-                <Button
-                    Classes="CasinoButtonStyle" Margin="4" Grid.Column="0" Width="120" Content="Deal New Game"
-                    Command="{Binding NewGameCommand}" />
-                <RichTextBlock Grid.Column="2" Classes="CasinoTextStyle" VerticalAlignment="Center" Margin="4">
-                    <Run Text="Score:" />
-                    <Run Text="{Binding Score}" />
-                </RichTextBlock>
-                <RichTextBlock Grid.Column="3" Classes="CasinoTextStyle" VerticalAlignment="Center" Margin="4">
-                    <Run Text="Moves:" />
-                    <Run Text="{Binding Moves}" />
-                </RichTextBlock>
-                <RichTextBlock Grid.Column="4" Classes="CasinoTextStyle" VerticalAlignment="Center" Margin="4">
-                    <Run Text="Time:" />
-                    <Run Text="{Binding ElapsedTime, Converter={StaticResource TimeSpanToShortStringConverter}}" />
-                </RichTextBlock>
-                <Button Margin="4"
-                        Classes="CasinoButtonStyle" Grid.Column="6" Width="120" Content="Go to Casino"
-                        Command="{Binding NavigateToCasinoCommand}" />
-            </Grid>
-
-            <!-- The cards etc are all in a Viewbox so that they resize in a sensible -->
-            <!-- way when we resize the window.  -->
+        <DockPanel LastChildFill="True">
+            <ContentControl DockPanel.Dock="Bottom"
+                            Template="{StaticResource DeckControls}" />
             <Viewbox Margin="10" ClipToBounds="False" StretchDirection="Both" Stretch="Uniform">
                 <behaviors:CardFieldBehavior.CardStacks>
                     <generic:List x:TypeArguments="controls:CardStackPlacementControl" />
                 </behaviors:CardFieldBehavior.CardStacks>
-
-                <!-- This is the layout grid for the tableaus, foundations etc. -->
                 <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*,*" RowDefinitions="640,200"
                       ClipToBounds="False">
                     <!-- The tableaus. -->
@@ -144,37 +116,8 @@
                     </Canvas>
                 </Grid>
             </Viewbox>
-
-            <!-- A padded grid is used to layout commands and info at the bottom of the screen. -->
-
         </DockPanel>
-
-        <!-- The win overlay. -->
-        <Grid
-            RowDefinitions="*,Auto,Auto,Auto,*"  Background="#AA000000"
-            IsVisible="{Binding IsGameWon}">
-
-            <TextBlock
-                Grid.Row="1" FontSize="34" FontWeight="SemiBold" Foreground="#99FFFFFF"
-                HorizontalAlignment="Center" Text="You Win!" />
-            <RichTextBlock
-                Grid.Row="2" FontSize="18" Foreground="#99FFFFFF"
-                HorizontalAlignment="Center" TextWrapping="Wrap">
-                <Run Text="You scored" />
-                <Run Text="{Binding Score}" />
-                <Run Text="in" />
-                <Run Text="{Binding Moves}" />
-                <Run Text="moves!" />
-            </RichTextBlock>
-            <StackPanel
-                Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button
-                    Classes="CasinoButtonStyle" Width="120"
-                    Margin="4" Content="Play Again" Command="{Binding NewGameCommand}" />
-                <Button
-                    Classes="CasinoButtonStyle" Width="120"
-                    Margin="4" Content="Back to Casino" Command="{Binding NavigateToCasinoCommand}" />
-            </StackPanel>
-        </Grid>
+        <ContentControl IsVisible="{Binding IsGameWon}"
+                        Template="{StaticResource WinDialog}" />
     </Panel>
 </UserControl>
