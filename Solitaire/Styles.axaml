@@ -73,58 +73,60 @@
         </ControlTemplate>
 
         <ControlTemplate x:Key="DeckControls">
-            <Panel Height="64" MinWidth="400" MaxWidth="600" x:CompileBindings="True" x:DataType="vm:CardGameViewModel">
-                <Border Classes="goldenTrayBorder downDeck"
-                        Classes.animateUp="{Binding !IsGameWon}" Margin="0,0,0,-15"
-                        BoxShadow="0 -6 30 -9 Black">
-                    <Border Classes="goldenTrayInner">
-                        <Border Classes="goldenTrayInnerBg">
-                            <DockPanel LastChildFill="True">
+            <Panel Height="64" x:CompileBindings="True" x:DataType="vm:CardGameViewModel">
+                <Viewbox Stretch="Uniform" VerticalAlignment="Bottom">
+                    <Border Classes="goldenTrayBorder downDeck"  
+                            Classes.animateUp="{Binding !IsGameWon}" Margin="0,0,0,-15"
+                            BoxShadow="0 -6 30 -9 Black">
+                        <Border Classes="goldenTrayInner">
+                            <Border Classes="goldenTrayInnerBg">
+                                <DockPanel LastChildFill="True">
+                                    <Button DockPanel.Dock="Left" VerticalAlignment="Center" Margin="10,-2,0,0"
+                                            Classes="goldenTray" Content="Deal"
+                                            Command="{Binding NewGameCommand}" />
 
-                                <Button DockPanel.Dock="Left" VerticalAlignment="Center" Margin="10,-2,0,0"
-                                        Classes="goldenTray" Content="Deal"
-                                        Command="{Binding NewGameCommand}" />
+                                    <Button DockPanel.Dock="Left" VerticalAlignment="Center" Margin="10,-2,0,0"
+                                            Classes="goldenTray" Content="Undo"
+                                            Command="{Binding UndoCommand}" />
 
-                                <Button DockPanel.Dock="Left" VerticalAlignment="Center" Margin="10,-2,0,0"
-                                        Classes="goldenTray" Content="Undo"
-                                        Command="{Binding UndoCommand}" />
+                                    <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,-2,10,0"
+                                            Classes="goldenTray" Content="Back"
+                                            Command="{Binding  NavigateToCasinoCommand}" />
 
-                                <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,-2,10,0"
-                                        Classes="goldenTray" Content="Back"
-                                        Command="{Binding  NavigateToCasinoCommand}" />
+                                    <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,-2,10,0"
+                                            Classes="goldenTray" Content="Auto"
+                                            Command="{Binding AutoMoveCommand}" />
 
-                                <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,-2,10,0"
-                                        Classes="goldenTray" Content="Auto"
-                                        Command="{Binding AutoMoveCommand}" />
+                                    <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center"
+                                                HorizontalAlignment="Center" Margin="20,5">
 
-                                <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center"
-                                            HorizontalAlignment="Center" Margin="4">
+                                        <RichTextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="60">
+                                            <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
+                                                 Text="SCORE" />
+                                            <LineBreak />
+                                            <Run FontSize="24" Text="{Binding Score}" />
+                                        </RichTextBlock>
+                                        <RichTextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="60">
+                                            <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
+                                                 Text="MOVES" />
+                                            <LineBreak />
+                                            <Run FontSize="24" Text="{Binding Moves}" />
+                                        </RichTextBlock>
+                                        <RichTextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="70">
+                                            <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
+                                                 Text="TIME" />
+                                            <LineBreak />
+                                            <Run FontSize="24"
+                                                 Text="{Binding ElapsedTime, Converter={StaticResource TimeSpanToShortStringConverter}, Mode=OneWay}" />
+                                        </RichTextBlock>
 
-                                    <RichTextBlock TextAlignment="Center" VerticalAlignment="Center">
-                                        <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
-                                             Text="SCORE" />
-                                        <LineBreak />
-                                        <Run FontSize="24" Text="{Binding Score}" />
-                                    </RichTextBlock>
-                                    <RichTextBlock TextAlignment="Center" VerticalAlignment="Center">
-                                        <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
-                                             Text="MOVES" />
-                                        <LineBreak />
-                                        <Run FontSize="24" Text="{Binding Moves}" />
-                                    </RichTextBlock>
-                                    <RichTextBlock TextAlignment="Center" VerticalAlignment="Center">
-                                        <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
-                                             Text="TIME" />
-                                        <LineBreak />
-                                        <Run FontSize="24"
-                                             Text="{Binding ElapsedTime, Converter={StaticResource TimeSpanToShortStringConverter}, Mode=OneWay}" />
-                                    </RichTextBlock>
-
-                                </StackPanel>
-                            </DockPanel>
+                                    </StackPanel>
+                                </DockPanel>
+                            </Border>
                         </Border>
                     </Border>
-                </Border>
+
+                </Viewbox>
             </Panel>
         </ControlTemplate>
 
@@ -358,7 +360,7 @@
                     </Setter>
                 </KeyFrame>
             </Animation>
-        </Style.Animations> 
+        </Style.Animations>
     </Style>
 
     <Style Selector="Border.goldenTrayInnerBg">
