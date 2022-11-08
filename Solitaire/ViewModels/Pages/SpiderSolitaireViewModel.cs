@@ -116,9 +116,6 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         {
             stock0.Clear();
         }
-        
-        var tableauBatches = _tableauSet.Select(x => x.DelayNotifications()).ToList();
-        using var stockD = Stock.DelayNotifications();
 
         //  Now distribute them - do the tableau set first.
         for (var i = 0; i < 54; i++)
@@ -126,20 +123,25 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
             var card = playingCards.First();
             playingCards.Remove(card);
             card.IsFaceDown = true;
-            tableauBatches[i % 10].Add(card);
+            _tableauSet[i % 10].Add(card);
+
+            await Task.Delay(50);
         }
 
         for (var i = 0; i < 10; i++)
         {
-            tableauBatches[i].Last().IsFaceDown = false;
-            tableauBatches[i].Last().IsPlayable = true;
+            _tableauSet[i].Last().IsFaceDown = false;
+            _tableauSet[i].Last().IsPlayable = true;
         }
 
         //  Finally we add every card that's left over to the stock.
-        stockD.AddRange(playingCards);
+        foreach (var card in playingCards)
+        {
+            Stock.Add(card);
+            await Task.Delay(50);
+        }
+        
         playingCards.Clear();
-
-        tableauBatches.ForEach(x => x.Dispose());
         
         //  And we're done.
         StartTimer();

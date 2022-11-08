@@ -124,8 +124,13 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
             faceUpCardViewModel.IsPlayable = true;
             tempTableau.Add(faceUpCardViewModel);
 
-            using var tableauSetD = _tableauSet[i].DelayNotifications();
-            tableauSetD.AddRange(tempTableau);
+
+            foreach (var card in tempTableau)
+            {
+                _tableauSet[i].Add(card);
+
+                await Task.Delay(75);
+            }
         }
 
         //  Finally we add every card that's left over to the stock.

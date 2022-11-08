@@ -95,8 +95,6 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
             stock0.Clear();
         }
 
-        var tableauBatches = _tableauSet.Select(x => x.DelayNotifications()).ToList();
-
         //  Now distribute them - do the tableau sets first.
         while (playingCards.Count > 0)
         {
@@ -112,13 +110,13 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
                 faceUpCardViewModel.IsFaceDown = false;
                 faceUpCardViewModel.IsPlayable = true;
 
-                tableauBatches[i].Add(faceUpCardViewModel);
+                _tableauSet[i].Add(faceUpCardViewModel);
 
                 playingCards.Remove(faceUpCardViewModel);
+
+                await Task.Delay(75);
             }
         }
-
-        tableauBatches.ForEach(x => x.Dispose());
 
         //  And we're done.
         StartTimer();
