@@ -422,7 +422,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
         //  If we've got here we've passed all tests
         //  and move the card and update the score.
-        MoveCard(from, to, card);
+        MoveCard(from, to, card, scoreModifier);
         Score += scoreModifier;
         Moves++;
 
@@ -445,7 +445,7 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// <param name="card">The card.</param>
     private void MoveCard(IList<PlayingCardViewModel> from,
         IList<PlayingCardViewModel> to,
-        PlayingCardViewModel card)
+        PlayingCardViewModel card, int scoreModifier)
     {
         //  Identify the run of cards we're moving.
         var run = new List<PlayingCardViewModel>();
@@ -467,6 +467,12 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
             topCardViewModel.IsFaceDown = false;
             topCardViewModel.IsPlayable = true;
+            
+            RecordMoves(new MoveOperation(from, to, run, scoreModifier), new FlipOperation(topCardViewModel), new GenericOperation(()=>topCardViewModel.IsPlayable = false));
+        }
+        else
+        {
+            RecordMoves(new MoveOperation(from, to, run, scoreModifier));
         }
     }
 

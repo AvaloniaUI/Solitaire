@@ -227,6 +227,21 @@ public abstract partial class CardGameViewModel : ViewModelBase
         public abstract void Revert(CardGameViewModel game);
     }
 
+    public class GenericOperation : CardOperation
+    {
+        private readonly Action _action;
+        
+        public GenericOperation(Action action)
+        {
+            _action = action;
+        }
+
+        public override void Revert(CardGameViewModel game)
+        {
+            _action();
+        }
+    }
+
     public class FlipOperation : CardOperation
     {
         public FlipOperation(PlayingCardViewModel flipped)
