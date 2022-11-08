@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Linq;
-using System.Windows.Input;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Solitaire.Models;
 using Solitaire.Utils;
-using System;
-using System.Data;
-using System.Threading.Tasks;
 
 namespace Solitaire.ViewModels.Pages;
 
@@ -20,7 +19,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
     public override string GameName => "FreeCell Solitaire";
 
     [ObservableProperty] private DrawMode _drawMode;
-    [ObservableProperty] private List<PlayingCardViewModel> _playingCards;
+    [ObservableProperty] private List<PlayingCardViewModel>? _playingCards;
 
     public FreeCellSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel)
     {
@@ -188,13 +187,13 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
     /// <returns>True if card moved.</returns>
     private bool TryMoveCardToAppropriateFoundation(PlayingCardViewModel card)
     {
-        var _tableauPlusCells = _tableauSet.Concat(_cells).ToList();
+        var tableauPlusCells = _tableauSet.Concat(_cells).ToList();
 
         //  Is the card in a tableau?
         var movable = false;
         var i = 0;
-        for (; i < _tableauPlusCells.Count && movable == false; i++)
-            movable = _tableauPlusCells[i].Contains(card);
+        for (; i < tableauPlusCells.Count && movable == false; i++)
+            movable = tableauPlusCells[i].Contains(card);
 
         //  It's if its not in a tableau and it's not the top
         //  of the waste, we cannot move it.
@@ -203,7 +202,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
 
         //  Try and move to each foundation.
         foreach (var foundation in _foundations)
-            if (CheckAndMoveCard(_tableauPlusCells[i - 1], foundation, card))
+            if (CheckAndMoveCard(tableauPlusCells[i - 1], foundation, card))
                 return true;
 
         //  We couldn't move the card.
@@ -381,9 +380,6 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
     /// <summary>
     /// Actually moves the card.
     /// </summary>
-    /// <param name="from">The stack to move from.</param>
-    /// <param name="to">The stack to move to.</param>
-    /// <param name="card">The card.</param>
     private void MoveCard(IList<PlayingCardViewModel> from,
         IList<PlayingCardViewModel> to,
         PlayingCardViewModel card, int scoreModifier)

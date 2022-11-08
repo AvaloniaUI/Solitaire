@@ -12,6 +12,7 @@
              x:CompileBindings="True"
              d:DesignHeight="300" d:DesignWidth="300">
     <Design.DataContext>
+        <!-- ReSharper disable once Xaml.ConstructorWarning -->
         <pages:SpiderSolitaireViewModel />
     </Design.DataContext>
     <Panel>
@@ -103,8 +104,7 @@
                                                         CommandOnCardClick="{Binding DealCardsCommand}"
                                                         HorizontalAlignment="Left"
                                                         Orientation="Horizontal" FaceDownOffset="30" FaceUpOffset="0"
-                                                        OffsetMode="EveryNthCard" NValue="10">
-                    </controls:CardStackPlacementControl>
+                                                        OffsetMode="EveryNthCard" NValue="10" />
                     <Canvas x:Name="PlayingField"
                             Grid.ColumnSpan="10"
                             Grid.Column="0"

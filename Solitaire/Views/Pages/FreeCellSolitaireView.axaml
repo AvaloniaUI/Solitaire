@@ -7,7 +7,6 @@
     xmlns:controls="clr-namespace:Solitaire.Controls"
     xmlns:behaviors="clr-namespace:Solitaire.Behaviors"
     xmlns:pages="clr-namespace:Solitaire.ViewModels.Pages"
-    xmlns:viewModels="clr-namespace:Solitaire.ViewModels"
     xmlns:generic="clr-namespace:System.Collections.Generic;assembly=System.Collections"
     mc:Ignorable="d"
     x:DataType="pages:FreeCellSolitaireViewModel"
@@ -15,6 +14,7 @@
     d:DesignWidth="700"
     d:DesignHeight="400">
     <Design.DataContext>
+        <!-- ReSharper disable once Xaml.ConstructorWarning -->
         <pages:FreeCellSolitaireViewModel />
     </Design.DataContext>
     <Panel>

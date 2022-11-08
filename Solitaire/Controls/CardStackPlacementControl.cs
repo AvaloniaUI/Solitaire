@@ -1,9 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
-using Avalonia.Styling;
 using Solitaire.Behaviors;
 using Solitaire.Models;
 using Solitaire.Utils;
@@ -17,7 +15,7 @@ public class CardStackPlacementControl : Border
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         var stacks = CardFieldBehavior.GetCardStacks(this);
-        stacks?.Add(this);
+        stacks.Add(this);
         base.OnAttachedToVisualTree(e);
     }
 
@@ -25,7 +23,7 @@ public class CardStackPlacementControl : Border
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         var stacks = CardFieldBehavior.GetCardStacks(this);
-        stacks?.Remove(this);
+        stacks.Remove(this);
         base.OnDetachedFromVisualTree(e);
     }
 

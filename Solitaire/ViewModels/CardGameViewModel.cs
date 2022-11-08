@@ -21,7 +21,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
 
     public ICommand? AutoMoveCommand { get; protected set; }
 
-    private Stack<Move> _moveStack = new();
+    private readonly Stack<Move> _moveStack = new();
 
     public abstract string? GameName { get; }
 
@@ -31,7 +31,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
         _moveStack.Push(new Move(from, to, range, score));
     }
 
-    protected void UndoMove()
+    private void UndoMove()
     {
         if (_moveStack.Count > 0)
         {
@@ -99,7 +99,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
             card.Reset();
         }
 
-        var playingCards = Deck.Value.OrderBy(x => PlatformProviders.NextRandomDouble()).ToList();
+        var playingCards = Deck.Value.OrderBy(_ => PlatformProviders.NextRandomDouble()).ToList();
 
         return playingCards.Count == 0
             ? throw new InvalidOperationException("Starting deck cannot be empty.")
@@ -202,7 +202,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
     /// <value>The deal new game command.</value>
     public ICommand? NewGameCommand { get; protected set; }
 
-    public ICommand? UndoCommand { get; protected set; } = new RelayCommand(() => { }, () => false);
+    public ICommand? UndoCommand { get; protected set; }
 
     /// <summary>
     /// Occurs when the game is won.

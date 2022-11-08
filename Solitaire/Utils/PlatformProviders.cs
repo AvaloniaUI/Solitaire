@@ -18,7 +18,7 @@ public static class VisualExtensions
     public static Rect TransformToVisualRect(this IVisual visual, IVisual relativeTo)
     {
         var sourceBounds = visual.Bounds;
-        if (visual.TransformToVisual(relativeTo) is Matrix sourceTransform)
+        if (visual.TransformToVisual(relativeTo) is { } sourceTransform)
         {
             return sourceBounds.TransformToAABB(sourceTransform);
         }

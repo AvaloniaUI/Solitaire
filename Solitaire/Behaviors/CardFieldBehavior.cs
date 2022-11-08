@@ -2,17 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Media;
-using Avalonia.Media.Transformation;
-using Avalonia.Rendering.Composition;
-using Avalonia.Rendering.Composition.Animations;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
 using Solitaire.Controls;
@@ -22,8 +17,6 @@ namespace Solitaire.Behaviors;
 
 public class CardFieldBehavior : Behavior<Canvas>
 {
-    private static ImplicitAnimationCollection? ImplicitAnimations;
-
     public static readonly AttachedProperty<List<CardStackPlacementControl>> CardStacksProperty =
         AvaloniaProperty.RegisterAttached<CardFieldBehavior, Control, List<CardStackPlacementControl>>(
             "CardStacks", inherits: true);
@@ -31,44 +24,20 @@ public class CardFieldBehavior : Behavior<Canvas>
     public static void SetCardStacks(Control obj, List<CardStackPlacementControl> value) =>
         obj.SetValue(CardStacksProperty, value);
 
-    public static List<CardStackPlacementControl>? GetCardStacks(Control obj) => obj.GetValue(CardStacksProperty);
+    public static List<CardStackPlacementControl> GetCardStacks(Control obj) => obj.GetValue(CardStacksProperty);
 
 
     private readonly Dictionary<PlayingCardViewModel, ContentControl> _containerCache = new();
 
 
-    public static readonly AttachedProperty<Vector?> HomePositionProperty =
-        AvaloniaProperty.RegisterAttached<CardFieldBehavior, Control, Vector?>(
+    private static readonly AttachedProperty<Vector?> HomePositionProperty =
+        AvaloniaProperty.RegisterAttached<CardFieldBehavior, AvaloniaObject, Vector?>(
             "HomePosition");
 
-    public static void SetHomePosition(Control obj, Vector? value) =>
+    private static void SetHomePosition(AvaloniaObject obj, Vector? value) =>
         obj.SetValue(HomePositionProperty, value);
 
-    public static Vector? GetHomePosition(Control obj) => obj.GetValue(HomePositionProperty);
-
-
-    private void EnsureImplicitAnimations()
-    {
-        if (ImplicitAnimations != null || AssociatedObject == null) return;
-
-
-        var x = AssociatedObject.GetVisualParent() as Visual;
-        var u = ElementComposition.GetElementVisual(x);
-        var compositor = u.Compositor;
-
-        var offsetAnimation = compositor.CreateVector3KeyFrameAnimation();
-        offsetAnimation.Target = "Offset";
-        offsetAnimation.InsertExpressionKeyFrame(0.0f, "this.InitialValue");
-        offsetAnimation.InsertExpressionKeyFrame(1.0f, "this.FinalValue");
-        offsetAnimation.Duration = TimeSpan.FromMilliseconds(500);
-
-        var animationGroup = compositor.CreateAnimationGroup();
-        animationGroup.Add(offsetAnimation);
-
-        ImplicitAnimations = compositor.CreateImplicitAnimationCollection();
-        ImplicitAnimations["Offset"] = animationGroup;
-    }
-
+    private static Vector? GetHomePosition(AvaloniaObject obj) => obj.GetValue(HomePositionProperty);
 
     /// <inheritdoc />
     protected override void OnAttached()
@@ -113,10 +82,10 @@ public class CardFieldBehavior : Behavior<Canvas>
 
             var cardStacks = GetCardStacks(_draggingContainers![0]);
             var fromStack =
-                cardStacks?.FirstOrDefault(x => x.SourceItems != null && x.SourceItems.Contains(_draggingCards[0]));
+                cardStacks.FirstOrDefault(x => x.SourceItems != null && x.SourceItems.Contains(_draggingCards[0]));
 
             // Trigger on different stack.
-            if (fromStack?.SourceItems != null && toStack?.SourceItems != null &&
+            if (fromStack?.SourceItems != null && toStack.SourceItems != null &&
                 !fromStack.SourceItems.SequenceEqual(toStack.SourceItems))
             {
                 // Save reference to current card before resetting. 
@@ -140,11 +109,10 @@ public class CardFieldBehavior : Behavior<Canvas>
         {
             pair.container.Classes.Remove("dragging");
 
-            if (returnHome)
-            {
-                SetCanvasPosition(pair.container, _homePoints[pair.i]);
-                pair.container.ZIndex = _startZIndices[pair.i];
-            }
+            if (!returnHome || _homePoints is null || _startZIndices is null) continue;
+
+            SetCanvasPosition(pair.container, _homePoints[pair.i]);
+            pair.container.ZIndex = _startZIndices[pair.i];
         }
 
         _isDragging = false;
@@ -166,6 +134,7 @@ public class CardFieldBehavior : Behavior<Canvas>
 
         foreach (var draggingContainer in _draggingContainers.Select((control, i) => (control, i)))
         {
+            if (_homePoints == null) continue;
             SetCanvasPosition(draggingContainer.control, _homePoints[draggingContainer.i] + delta);
         }
     }
@@ -196,7 +165,7 @@ public class CardFieldBehavior : Behavior<Canvas>
         foreach (var visual in AssociatedObject.GetVisualRoot()!.GetVisualsAt(absCurPos)
                      .OrderByDescending(x => x.ZIndex))
         {
-            if (visual is CardStackPlacementControl { DataContext: CardGameViewModel a } stack1)
+            if (visual is CardStackPlacementControl { DataContext: CardGameViewModel } stack1)
             {
                 ActivateCommand(stack1);
                 break;
@@ -205,8 +174,6 @@ public class CardFieldBehavior : Behavior<Canvas>
             if (visual is not Border { DataContext: PlayingCardViewModel card } container) continue;
 
             var cardStacks = GetCardStacks(container);
-
-            if (cardStacks is null) return;
 
             var stack2 =
                 cardStacks.FirstOrDefault(x => x.SourceItems != null && x.SourceItems.Contains(card));
@@ -227,17 +194,15 @@ public class CardFieldBehavior : Behavior<Canvas>
                 {
                     var cardIndex = stack2.SourceItems.IndexOf(card);
 
-                    foreach (var c in stack2.SourceItems.Select((card, i) => (card, i))
+                    foreach (var c in stack2.SourceItems.Select((card2, i) => (card2, i))
                                  .Where(a => a.i >= cardIndex))
                     {
-                        if (!_containerCache.TryGetValue(c.card, out var cachedContainer)) continue;
+                        if (!_containerCache.TryGetValue(c.card2, out var cachedContainer)) continue;
                         _draggingContainers.Add(cachedContainer);
-                        _draggingCards.Add(c.card);
+                        _draggingCards.Add(c.card2);
                         _startZIndices.Add(cachedContainer.ZIndex);
                         _homePoints.Add(GetHomePosition(cachedContainer) ?? throw new InvalidOperationException());
-
                         cachedContainer.Classes.Add("dragging");
-
                         cachedContainer.ZIndex = int.MaxValue / 2 + c.i;
                     }
 
@@ -250,7 +215,6 @@ public class CardFieldBehavior : Behavior<Canvas>
                 _startPoint = e.GetCurrentPoint(_homeStack).Position;
 
                 e.Pointer.Capture(_draggingContainers[0]);
-                break;
             }
 
             break;
@@ -262,7 +226,7 @@ public class CardFieldBehavior : Behavior<Canvas>
         if (sender is Canvas s)
         {
             var cardStacks = GetCardStacks(s);
-            cardStacks?.Clear();
+            cardStacks.Clear();
             s.Children.Clear();
         }
 
@@ -295,24 +259,24 @@ public class CardFieldBehavior : Behavior<Canvas>
 
         AssociatedObject.DataTemplates.Add(y);
 
-        var homePosition = cardStacks?.FirstOrDefault(i => i.IsHomeStack)?.Bounds.Position ?? new Point();
+        var homePosition = cardStacks.FirstOrDefault(i => i.IsHomeStack)?.Bounds.Position ?? new Point();
 
-        foreach (var card in cardsList)
-        {
-            var container = new ContentControl
+        if (cardsList != null)
+            foreach (var card in cardsList)
             {
-                Content = card,
-                ZIndex = -1,
-                ClipToBounds = false
-            };
+                var container = new ContentControl
+                {
+                    Content = card,
+                    ZIndex = -1,
+                    ClipToBounds = false
+                };
 
-            _containerCache.Add(card, container);
-            AssociatedObject.Children.Add(container);
+                _containerCache.Add(card, container);
+                AssociatedObject.Children.Add(container);
 
-            SetCanvasPosition(container, homePosition);
-        }
+                SetCanvasPosition(container, homePosition);
+            }
 
-        if (cardStacks == null) return;
         foreach (var cardStack in cardStacks.Where(cardStack => cardStack.SourceItems != null))
         {
             if (cardStack.SourceItems != null)
@@ -369,15 +333,6 @@ public class CardFieldBehavior : Behavior<Canvas>
         }
     }
 
-    private static void AddImplicitAnimations(Visual container)
-    {
-        if (ElementComposition.GetElementVisual(container) is { } compositionVisual)
-        {
-            compositionVisual.ImplicitAnimations = ImplicitAnimations;
-        }
-    }
-
-
     private static void GetOffsets(CardStackPlacementControl parent, PlayingCardViewModel card, int n, int total,
         out double faceDownOffset,
         out double faceUpOffset)
@@ -431,14 +386,6 @@ public class CardFieldBehavior : Behavior<Canvas>
                 faceDownOffset = card.FaceDownOffset;
                 faceUpOffset = card.FaceUpOffset;
                 break;
-        }
-    }
-
-    private static void RemoveImplicitAnimations(Visual container)
-    {
-        if (ElementComposition.GetElementVisual(container) is { } compositionVisual)
-        {
-            compositionVisual.ImplicitAnimations = null;
         }
     }
 }

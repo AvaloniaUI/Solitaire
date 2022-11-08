@@ -137,8 +137,7 @@
                         Background="White" Cursor="Hand"
                         BorderBrush="Gray"
                         BorderThickness="1" CornerRadius="6">
-                        <Image Margin="4" Source="{StaticResource CardBack}">
-                        </Image>
+                        <Image Margin="4" Source="{StaticResource CardBack}" />
                         <Border.RenderTransform>
                             <Rotate3DTransform
                                 AngleY="180" />
@@ -359,11 +358,7 @@
                     </Setter>
                 </KeyFrame>
             </Animation>
-        </Style.Animations>
-        <Setter Property="Background">
-            <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
-                                 GradientStops="{StaticResource GoldBrush}" Transform="rotate(120deg)" />
-        </Setter>
+        </Style.Animations> 
     </Style>
 
     <Style Selector="Border.goldenTrayInnerBg">

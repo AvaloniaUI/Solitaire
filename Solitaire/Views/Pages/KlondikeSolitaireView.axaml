@@ -8,14 +8,13 @@
     xmlns:behaviors="clr-namespace:Solitaire.Behaviors"
     xmlns:pages="clr-namespace:Solitaire.ViewModels.Pages"
     xmlns:generic="clr-namespace:System.Collections.Generic;assembly=System.Collections"
-    xmlns:viewModels="clr-namespace:Solitaire.ViewModels"
-    xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System.ObjectModel"
     mc:Ignorable="d"
     x:DataType="pages:KlondikeSolitaireViewModel"
     x:CompileBindings="True"
     d:DesignWidth="700"
     d:DesignHeight="400">
     <Design.DataContext>
+        <!-- ReSharper disable once Xaml.ConstructorWarning -->
         <pages:KlondikeSolitaireViewModel />
     </Design.DataContext>
 
@@ -39,8 +38,7 @@
                                                         Grid.Row="0"
                                                         Grid.Column="6"
                                                         SourceItems="{Binding Stock}" Cursor="Hand"
-                                                        Orientation="Horizontal">
-                    </controls:CardStackPlacementControl>
+                                                        Orientation="Horizontal" />
 
                     <!-- The waste. -->
                     <controls:CardStackPlacementControl Name="Waste"

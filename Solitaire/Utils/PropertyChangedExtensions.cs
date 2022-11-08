@@ -30,19 +30,19 @@ public static class PropertyChangedExtensions
                 _target = target;
                 _info = info;
                 _observer = observer;
-                _target.PropertyChanged += OnPropertyChanged;
-                _observer.OnNext((T)_info.GetValue(_target));
+                _target.PropertyChanged += OnPropertyChanged!;
+                _observer.OnNext(((T)_info.GetValue(_target)!));
             }
 
             private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
             {
                 if (e.PropertyName == _info.Name)
-                    _observer.OnNext((T)_info.GetValue(_target));
+                    _observer.OnNext(((T)_info.GetValue(_target)!));
             }
 
             public void Dispose()
             {
-                _target.PropertyChanged -= OnPropertyChanged;
+                _target.PropertyChanged -= OnPropertyChanged!;
                 _observer.OnCompleted();
             }
         }
@@ -67,9 +67,7 @@ public static class PropertyChangedExtensions
         Expression<Func<TModel, T2>> v2,
         Func<T1, T2, TRes> cb
     ) where TModel : INotifyPropertyChanged =>
-        Observable.CombineLatest(
-            model.WhenAnyValue(v1),
-            model.WhenAnyValue(v2),
+        model.WhenAnyValue(v1).CombineLatest(model.WhenAnyValue(v2),
             cb);
 
     public static IObservable<TRes> WhenAnyValue<TModel, T1, T2, T3, TRes>(this TModel model,
@@ -78,9 +76,7 @@ public static class PropertyChangedExtensions
         Expression<Func<TModel, T3>> v3,
         Func<T1, T2, T3, TRes> cb
     ) where TModel : INotifyPropertyChanged =>
-        Observable.CombineLatest(
-            model.WhenAnyValue(v1),
-            model.WhenAnyValue(v2),
+        model.WhenAnyValue(v1).CombineLatest(model.WhenAnyValue(v2),
             model.WhenAnyValue(v3),
             cb);
 }

@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:Solitaire.ViewModels"
              xmlns:controls="clr-namespace:Solitaire.Controls"
-             xmlns:behaviors="clr-namespace:Solitaire.Behaviors"
              FontFamily="/Assets/inter.var-webfont.ttf#Inter"
              x:DataType="viewModels:CasinoViewModel"
              TextElement.Foreground="White"

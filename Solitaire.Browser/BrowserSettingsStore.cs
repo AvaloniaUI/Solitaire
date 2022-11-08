@@ -32,10 +32,11 @@ public partial class BrowserSettingsStore<T> : IRuntimeStorageProvider<T>
     }
 
     /// <inheritdoc />
-    public async Task<T?> LoadObject(string key)
+    public async Task<T> LoadObject(string key)
     {
         try
         {
+            await Task.Delay(1);
             var t = GetItem(Identifier + key);
             if (string.IsNullOrEmpty(t)) return default;
             var x = JsonConvert.DeserializeObject<T>(t);
