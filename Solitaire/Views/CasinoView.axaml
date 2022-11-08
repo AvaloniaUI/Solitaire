@@ -109,7 +109,6 @@
                 </TransformGroup>
             </Panel.RenderTransform>
             <ContentControl Content="{Binding CurrentView, Mode=OneWay}"   />
-          
         </Panel>
 
         <Panel Classes="splashContent">

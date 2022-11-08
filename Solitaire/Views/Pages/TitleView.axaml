@@ -75,7 +75,7 @@
                                         Classes="goldenDeck" Content="Statistics" />
 
                                 <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="230"
-                                        Classes="goldenDeck" Content="Setting"
+                                        Classes="goldenDeck" Content="Settings"
                                         Command="{Binding NavigateToSettingsCommand}" />
 
                             </StackPanel>

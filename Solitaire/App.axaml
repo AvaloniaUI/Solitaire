@@ -5,10 +5,111 @@
     <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
+    
+    <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
 
-    <Application.Styles>
-        <FluentTheme Mode="Dark" />
-        <StyleInclude Source="/Styles.axaml" />
-        <StyleInclude Source="/CardsStyle.axaml" />
-    </Application.Styles>
+        <ResourceDictionary>
+          <ControlTheme x:Key="{x:Type EmbeddableControlRoot}" TargetType="EmbeddableControlRoot">
+            <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAltHighBrush}"/>
+            <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}"/>
+            <Setter Property="Template">
+              <ControlTemplate>
+                <Panel>
+                  <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
+                  <Border Background="{TemplateBinding Background}">
+                    <VisualLayerManager>
+                      <ContentPresenter Name="PART_ContentPresenter"
+                                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                                        Content="{TemplateBinding Content}"
+                                        Margin="{TemplateBinding Padding}"/>
+                    </VisualLayerManager>
+                  </Border>
+                </Panel>
+              </ControlTemplate>
+            </Setter>
+          </ControlTheme>
+        </ResourceDictionary>
+
+        <ResourceDictionary>
+          <ControlTheme x:Key="{x:Type Window}" TargetType="Window">
+            <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAltHighBrush}"/>
+            <Setter Property="TransparencyBackgroundFallback" Value="{DynamicResource SystemControlBackgroundAltHighBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+            <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}"/>
+            <!-- <Setter Property="FontFamily" Value="{DynamicResource ContentControlThemeFontFamily}" /> -->
+            <Setter Property="Template">
+              <ControlTemplate>
+                <Panel>
+                  <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
+                  <Border Background="{TemplateBinding Background}" IsHitTestVisible="False" />
+                  <Panel Background="Transparent" Margin="{TemplateBinding WindowDecorationMargin}" />
+                  <VisualLayerManager>
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Content="{TemplateBinding Content}"
+                                      Margin="{TemplateBinding Padding}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                  </VisualLayerManager>
+                </Panel>
+              </ControlTemplate>
+            </Setter>
+          </ControlTheme>
+        </ResourceDictionary>
+        
+        <ResourceDictionary>
+          <ControlTheme x:Key="{x:Type ContentControl}" TargetType="ContentControl">
+            <Setter Property="Template">
+              <ControlTemplate>
+                <ContentPresenter Name="PART_ContentPresenter"
+                                  Background="{TemplateBinding Background}"
+                                  BorderBrush="{TemplateBinding BorderBrush}"
+                                  BorderThickness="{TemplateBinding BorderThickness}"
+                                  CornerRadius="{TemplateBinding CornerRadius}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  Content="{TemplateBinding Content}"
+                                  Padding="{TemplateBinding Padding}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+              </ControlTemplate>
+            </Setter>
+          </ControlTheme>
+        </ResourceDictionary>
+
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Application.Resources>
+  
+  <Application.Styles>
+
+    <!-- <FluentTheme Mode="Light" /> -->
+
+    <Style Selector=":is(UserControl)">
+      <Style.Resources>
+        <ControlTheme x:Key="FluentUserControl" TargetType="UserControl">
+          <Setter Property="Template">
+            <ControlTemplate>
+              <ContentPresenter Name="PART_ContentPresenter"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                Content="{TemplateBinding Content}"
+                                Padding="{TemplateBinding Padding}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+            </ControlTemplate>
+          </Setter>
+        </ControlTheme>
+      </Style.Resources>
+      <Setter Property="Theme" Value="{StaticResource FluentUserControl}" />
+    </Style>
+    
+    <StyleInclude Source="/Styles.axaml" />
+    <StyleInclude Source="/CardsStyle.axaml" />
+
+  </Application.Styles>
 </Application>
