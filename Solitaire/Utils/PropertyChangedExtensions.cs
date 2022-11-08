@@ -61,22 +61,4 @@ public static class PropertyChangedExtensions
         var prop = (PropertyInfo)ma.Member;
         return new PropertyObservable<TRes>(model, prop);
     }
-
-    public static IObservable<TRes> WhenAnyValue<TModel, T1, T2, TRes>(this TModel model,
-        Expression<Func<TModel, T1>> v1,
-        Expression<Func<TModel, T2>> v2,
-        Func<T1, T2, TRes> cb
-    ) where TModel : INotifyPropertyChanged =>
-        model.WhenAnyValue(v1).CombineLatest(model.WhenAnyValue(v2),
-            cb);
-
-    public static IObservable<TRes> WhenAnyValue<TModel, T1, T2, T3, TRes>(this TModel model,
-        Expression<Func<TModel, T1>> v1,
-        Expression<Func<TModel, T2>> v2,
-        Expression<Func<TModel, T3>> v3,
-        Func<T1, T2, T3, TRes> cb
-    ) where TModel : INotifyPropertyChanged =>
-        model.WhenAnyValue(v1).CombineLatest(model.WhenAnyValue(v2),
-            model.WhenAnyValue(v3),
-            cb);
 }

@@ -19,7 +19,4 @@
     <ItemGroup>
       <UpToDateCheckInput Remove="Assets\Backgrounds\Background.jpg" />
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Assets\Fonts" />
-    </ItemGroup>
 </Project>

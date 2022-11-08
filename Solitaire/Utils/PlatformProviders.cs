@@ -11,22 +11,6 @@ using Solitaire.Models;
 using Solitaire.ViewModels;
 
 namespace Solitaire.Utils;
-
-public static class VisualExtensions
-{
-    
-    public static Rect TransformToVisualRect(this IVisual visual, IVisual relativeTo)
-    {
-        var sourceBounds = visual.Bounds;
-        if (visual.TransformToVisual(relativeTo) is { } sourceTransform)
-        {
-            return sourceBounds.TransformToAABB(sourceTransform);
-        }
-        return default;
-    }
-
-}
-
 public static class PlatformProviders
 {
     public static double NextRandomDouble()
