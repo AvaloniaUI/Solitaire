@@ -7,10 +7,6 @@ namespace Solitaire.ViewModels.Pages;
 
 public partial class TitleViewModel : ViewModelBase
 {
-    [ObservableProperty] private GameStatisticsViewModel? _klondikeStatsInstance;
-    [ObservableProperty] private GameStatisticsViewModel? _spiderStatsInstance;
-    [ObservableProperty] private GameStatisticsViewModel? _freeCellStatsInstance;
-
     
 #if DEBUG
     public TitleViewModel() { }
@@ -21,6 +17,8 @@ public partial class TitleViewModel : ViewModelBase
     public ICommand? NavigateToSpiderCommand { get; }
     
     public ICommand? NavigateToFreeCellCommand { get; }
+    
+    public ICommand? NavigateToStatisticsCommand { get; }
 
     public ICommand? NavigateToSettingsCommand { get; }
 
@@ -61,8 +59,5 @@ public partial class TitleViewModel : ViewModelBase
             casinoViewModel.CurrentView = casinoViewModel.SettingsInstance;
         });
         
-        SpiderStatsInstance = new GameStatisticsViewModel(casinoViewModel.SpiderInstance);
-        KlondikeStatsInstance = new GameStatisticsViewModel(casinoViewModel.KlondikeInstance);
-        FreeCellStatsInstance = new GameStatisticsViewModel(casinoViewModel.FreeCellInstance);
     }
 }

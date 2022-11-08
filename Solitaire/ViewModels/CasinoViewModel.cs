@@ -26,9 +26,11 @@ public partial class CasinoViewModel : ViewModelBase
         SpiderInstance = new SpiderSolitaireViewModel(this);
         FreeCellInstance = new FreeCellSolitaireViewModel(this);
         TitleInstance = new TitleViewModel(this);
+        StatisticsInstance = new StatisticsViewModel(this);
         CurrentView = TitleInstance;
         
     }
+    public StatisticsViewModel StatisticsInstance { get; }
 
     public TitleViewModel TitleInstance { get; }
     public SettingsViewModel SettingsInstance { get; }

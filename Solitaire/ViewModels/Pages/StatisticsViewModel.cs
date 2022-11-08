@@ -9,19 +9,18 @@ namespace Solitaire.ViewModels.Pages;
 
 public partial class StatisticsViewModel : ViewModelBase
 {
-    [ObservableProperty] private Difficulty _difficulty = Difficulty.Easy;
-    [ObservableProperty] private DrawMode _drawMode = DrawMode.DrawOne;
-    [ObservableProperty] private string _drawModeText;
-    [ObservableProperty] private string _difficultyText;
     public ICommand NavigateToTitleCommand { get; }
     public ICommand ResetKlondikeStatsCommand { get; }
+    public ICommand ResetFreeCellStatsCommand { get; }
     public ICommand ResetSpiderStatsCommand { get; }
-    
-    public ICommand DrawModeCommand { get; } 
 
-    public ICommand DifficultyCommand { get; } 
+     
 
-    
+    [ObservableProperty] private GameStatisticsViewModel? _klondikeStatsInstance;
+    [ObservableProperty] private GameStatisticsViewModel? _spiderStatsInstance;
+    [ObservableProperty] private GameStatisticsViewModel? _freeCellStatsInstance;
+
+
     public StatisticsViewModel(CasinoViewModel casinoViewModel)
     {
         var casinoViewModel1 = casinoViewModel;
@@ -31,43 +30,25 @@ public partial class StatisticsViewModel : ViewModelBase
             casinoViewModel1.CurrentView = casinoViewModel1.TitleInstance;
             PlatformProviders.CasinoStorage.SaveObject(casinoViewModel1, "mainSettings");
         });
+        
+        SpiderStatsInstance = new GameStatisticsViewModel(casinoViewModel.SpiderInstance);
+        KlondikeStatsInstance = new GameStatisticsViewModel(casinoViewModel.KlondikeInstance);
+        FreeCellStatsInstance = new GameStatisticsViewModel(casinoViewModel.FreeCellInstance);
+        
+        
         ResetKlondikeStatsCommand = new RelayCommand(() =>
         {
-            casinoViewModel1.TitleInstance.KlondikeStatsInstance?.ResetCommand?.Execute(null);
-        });
-        ResetSpiderStatsCommand = new RelayCommand(() =>
-        {
-            casinoViewModel1.TitleInstance.SpiderStatsInstance?.ResetCommand?.Execute(null);
-        });
-
-        DrawModeCommand = new RelayCommand(() =>
-        {
-            DrawMode = DrawMode == DrawMode.DrawOne ? DrawMode.DrawThree : DrawMode.DrawOne;
-        });
-
-
-        DifficultyCommand = new RelayCommand(() =>
-        {
-            Difficulty = Difficulty switch
-            {
-                Difficulty.Easy => Difficulty.Medium,
-                Difficulty.Medium => Difficulty.Hard,
-                Difficulty.Hard => Difficulty.Easy
-            };
+            SpiderStatsInstance?.ResetCommand?.Execute(null);
         });
         
-        this.WhenAnyValue(x => x.DrawMode)
-            .Subscribe(x =>
-            {
-                DrawModeText = $"{DrawMode.ToString()
-                    .Replace("Draw", "")} Card{(DrawMode == DrawMode.DrawThree? "s" : "")}" ;
-            });
-
-        this.WhenAnyValue(x => x.Difficulty)
-            .Subscribe(x =>
-            {
-                DifficultyText = $"{Difficulty}";
-            });
-
+        ResetSpiderStatsCommand = new RelayCommand(() =>
+        {
+            SpiderStatsInstance?.ResetCommand?.Execute(null);
+        });
+        
+        ResetFreeCellStatsCommand = new RelayCommand(() =>
+        {
+            FreeCellStatsInstance?.ResetCommand?.Execute(null);
+        });
     }
 }

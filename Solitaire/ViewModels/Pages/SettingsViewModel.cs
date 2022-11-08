@@ -14,8 +14,6 @@ public partial class SettingsViewModel : ViewModelBase
     [ObservableProperty] private string _drawModeText;
     [ObservableProperty] private string _difficultyText;
     public ICommand NavigateToTitleCommand { get; }
-    public ICommand ResetKlondikeStatsCommand { get; }
-    public ICommand ResetSpiderStatsCommand { get; }
     
     public ICommand DrawModeCommand { get; } 
 
@@ -31,14 +29,7 @@ public partial class SettingsViewModel : ViewModelBase
             casinoViewModel1.CurrentView = casinoViewModel1.TitleInstance;
             PlatformProviders.CasinoStorage.SaveObject(casinoViewModel1, "mainSettings");
         });
-        ResetKlondikeStatsCommand = new RelayCommand(() =>
-        {
-            casinoViewModel1.TitleInstance.KlondikeStatsInstance?.ResetCommand?.Execute(null);
-        });
-        ResetSpiderStatsCommand = new RelayCommand(() =>
-        {
-            casinoViewModel1.TitleInstance.SpiderStatsInstance?.ResetCommand?.Execute(null);
-        });
+        
 
         DrawModeCommand = new RelayCommand(() =>
         {
