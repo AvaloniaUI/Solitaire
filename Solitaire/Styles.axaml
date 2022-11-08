@@ -81,20 +81,20 @@
                         <Border Classes="goldenTrayInner">
                             <Border Classes="goldenTrayInnerBg">
                                 <DockPanel LastChildFill="True">
-                                    <Button DockPanel.Dock="Left" VerticalAlignment="Center" Margin="10,-2,0,0"
-                                            Classes="goldenTray" Content="Deal"
+                                    <Button DockPanel.Dock="Left" VerticalAlignment="Center" Margin="10,0,0,0"
+                                            Classes="goldenDeck" Content="Deal"
                                             Command="{Binding NewGameCommand}" />
 
-                                    <Button DockPanel.Dock="Left" VerticalAlignment="Center" Margin="10,-2,0,0"
-                                            Classes="goldenTray" Content="Undo"
+                                    <Button DockPanel.Dock="Left" VerticalAlignment="Center" Margin="10,0,0,0"
+                                            Classes="goldenDeck" Content="Undo"
                                             Command="{Binding UndoCommand}" />
 
-                                    <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,-2,10,0"
-                                            Classes="goldenTray" Content="Back"
+                                    <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,10,0"
+                                            Classes="goldenDeck" Content="Back"
                                             Command="{Binding  NavigateToCasinoCommand}" />
 
-                                    <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,-2,10,0"
-                                            Classes="goldenTray" Content="Auto"
+                                    <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,10,0"
+                                            Classes="goldenDeck" Content="Auto"
                                             Command="{Binding AutoMoveCommand}" />
 
                                     <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center"
@@ -234,7 +234,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style Selector="Button.goldenTray">
+    <Style Selector="Button.goldenDeck">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Template">
             <Setter.Value>
@@ -261,7 +261,7 @@
                         </Border.BorderBrush>
                         <Panel>
                             <ContentPresenter
-                                Margin="5,2,5,0"
+                                Margin="5,0,5,0"
                                 TextElement.FontSize="24"
                                 TextElement.Foreground="Black"
                                 TextElement.FontWeight="Bold"
