@@ -1,9 +1,9 @@
-using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Solitaire.Models;
 using Solitaire.Utils;
+using System;
 
 namespace Solitaire.ViewModels.Pages;
 
@@ -11,10 +11,13 @@ public partial class SettingsViewModel : ViewModelBase
 {
     [ObservableProperty] private Difficulty _difficulty = Difficulty.Easy;
     [ObservableProperty] private DrawMode _drawMode = DrawMode.DrawOne;
+    [ObservableProperty] private string _drawModeText;
     
     public ICommand NavigateToTitleCommand { get; }
     public ICommand ResetKlondikeStatsCommand { get; }
     public ICommand ResetSpiderStatsCommand { get; }
+    
+    public ICommand DrawModeCommand { get; }
     public ICommand DrawModeOneCommand { get; }
     public ICommand DrawModeThreeCommand { get; }
 
@@ -36,16 +39,23 @@ public partial class SettingsViewModel : ViewModelBase
             casinoViewModel1.TitleInstance.SpiderStatsInstance?.ResetCommand?.Execute(null);
         });
 
-
-        DrawModeOneCommand = new RelayCommand(() =>
+        DrawModeCommand = new RelayCommand(() =>
         {
-            DrawMode = DrawMode.DrawOne;
-        }, () => DrawMode != DrawMode.DrawOne);
+            if (DrawMode == DrawMode.DrawOne)
+            {
+                DrawMode = DrawMode.DrawThree;
+            }
+            else
+            {
+                DrawMode = DrawMode.DrawOne;
+            }
+        });
 
-        DrawModeThreeCommand = new RelayCommand(() =>
-        {
-            DrawMode = DrawMode.DrawThree;
-        }, () => DrawMode != DrawMode.DrawThree);
+        this.WhenAnyValue(x => x.DrawMode)
+            .Subscribe(x =>
+            {
+                DrawModeText = $"Draw Mode: {DrawMode}";
+            });
 
     }
 }

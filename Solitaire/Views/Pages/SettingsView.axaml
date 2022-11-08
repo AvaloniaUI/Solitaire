@@ -35,17 +35,9 @@
                        Grid.Row="4" Grid.Column="0" Text="Draw Mode"
                        HorizontalAlignment="Right" Classes="CasinoTextStyle" /> 
              
-            <StackPanel  Grid.Row="4" Grid.Column="1"  Orientation="Horizontal" >
-                
-                <Button DockPanel.Dock="Top" VerticalAlignment="Center"
-                        Classes="goldenDeck" Content="Draw One"
-                        Command="{Binding DrawModeOneCommand}" />
-                
-                <Button DockPanel.Dock="Top" VerticalAlignment="Center" 
-                        Classes="goldenDeck" Content="Draw Three"
-                        Command="{Binding DrawModeThreeCommand}" />
-            </StackPanel>
-
+            <Button DockPanel.Dock="Top" VerticalAlignment="Center"
+                    Classes="goldenDeck" Content="{Binding DrawModeText}"
+                    Command="{Binding DrawModeCommand}"  Grid.Row="4" Grid.Column="1" />
             
             <TextBlock Margin="4"
                        Grid.Row="5" Grid.Column="0" Text="Statistics"
