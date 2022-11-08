@@ -6,7 +6,7 @@
 }
 
 #avalonia-splash {
-    position: relative;
+    position: absolute;
     height: 100%;
     width: 100%;
     background: radial-gradient(#16A757, #116336);
@@ -34,6 +34,7 @@
     position: absolute;
     height: 100%;
     width: 100%; 
+    overflow: hidden;
 }
 
 #out {
