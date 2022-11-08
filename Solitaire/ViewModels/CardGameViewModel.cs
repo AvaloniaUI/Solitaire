@@ -21,7 +21,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
 
     public ICommand? AutoMoveCommand { get; protected set; }
 
-    private readonly Stack<Move> _moveStack = new();
+    private readonly Stack<CardOperation[]> _moveStack = new();
 
     public abstract string? GameName { get; }
 
@@ -30,26 +30,25 @@ public abstract partial class CardGameViewModel : ViewModelBase
         _moveStack.Clear();
     }
     
-    protected void RecordMove(IList<PlayingCardViewModel> from, IList<PlayingCardViewModel> to,
-        IList<PlayingCardViewModel> range, int score)
+    
+    
+    protected void RecordMoves(params CardOperation[] operations)
     {
-        _moveStack.Push(new Move(from, to, range, score));
+        _moveStack.Push(operations);
     }
 
     private void UndoMove()
     {
         if (_moveStack.Count > 0)
         {
-            var move = _moveStack.Pop();
+            var operations = _moveStack.Pop();
 
-            Score -= move.Score;
+            foreach (var operation in operations)
+            {
+                operation.Revert(this);
+            }
 
-            foreach (var runCard in move.Run)
-                move.From.Add(runCard);
-            foreach (var runCard in move.Run)
-                move.To.Remove(runCard);
-
-            Moves--;
+           
         }
     }
 
@@ -223,9 +222,29 @@ public abstract partial class CardGameViewModel : ViewModelBase
         _gameStats = gameStatsInstance;
     }
 
-    private class Move
+    public abstract class CardOperation
     {
-        public Move(IList<PlayingCardViewModel> from, IList<PlayingCardViewModel> to, IList<PlayingCardViewModel> run,
+        public abstract void Revert(CardGameViewModel game);
+    }
+
+    public class FlipOperation : CardOperation
+    {
+        public FlipOperation(PlayingCardViewModel flipped)
+        {
+            Flipped = flipped;
+        }
+        
+        public PlayingCardViewModel Flipped { get; }
+        
+        public override void Revert(CardGameViewModel game)
+        {
+            Flipped.IsFaceDown = !Flipped.IsFaceDown;
+        }
+    }
+
+    public class MoveOperation : CardOperation
+    {
+        public MoveOperation(IList<PlayingCardViewModel> from, IList<PlayingCardViewModel> to, IList<PlayingCardViewModel> run,
             int score)
         {
             From = from;
@@ -241,5 +260,18 @@ public abstract partial class CardGameViewModel : ViewModelBase
         public IList<PlayingCardViewModel> Run { get; }
 
         public int Score { get; }
+        
+        public override void Revert(CardGameViewModel game)
+        {
+
+            game.Score -= Score;
+
+            foreach (var runCard in Run)
+                From.Add(runCard);
+            foreach (var runCard in Run)
+                To.Remove(runCard);
+
+            game.Moves--;
+        }
     }
 }

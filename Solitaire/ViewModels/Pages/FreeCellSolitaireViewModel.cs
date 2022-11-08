@@ -396,7 +396,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
         foreach (var runCard in run)
             to.Add(runCard);
 
-        RecordMove(from, to, run, scoreModifier);
+        RecordMoves(new MoveOperation(from, to, run, scoreModifier));
 
         //  Are there any cards left in the from pile?
         if (from.Count > 0)
