@@ -258,13 +258,15 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         //  Reveal the top card and make it playable.
         var topCard = from.Last();
 
+        var wasFaceDown = topCard.IsFaceDown;
+        var wasPlayable = topCard.IsPlayable;
         topCard.IsFaceDown = false;
         topCard.IsPlayable = true;
         
         RecordMoves(new MoveOperation(from, to, run, scoreModifier), new GenericOperation(()=>
         {
-            topCard.IsFaceDown = true;
-            topCard.IsPlayable = false;
+            topCard.IsFaceDown = wasFaceDown;
+            topCard.IsPlayable = wasPlayable;
         }));
     }
 
