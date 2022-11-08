@@ -295,7 +295,8 @@ public class CardFieldBehavior : Behavior<Canvas>
             var container = new ContentControl
             {
                 Content = card,
-                ZIndex = -1
+                ZIndex = -1,
+                ClipToBounds = false
             };
 
             _containerCache.Add(card, container);

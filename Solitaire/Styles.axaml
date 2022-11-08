@@ -52,6 +52,7 @@
                 </Panel>
                 <Panel Classes="playingCardFront" IsVisible="{Binding !IsFaceDown}">
                     <Border
+                        BoxShadow="0 5 40 -8 #EE000000"
                         Background="White"
                         Classes.isFaceDown="{Binding IsFaceDown}"
                         Cursor="Hand"
@@ -65,14 +66,12 @@
         </DataTemplate>
     </Styles.Resources>
 
-
-    <!--The style for text etc in a game. -->
+ 
     <Style Selector="TextBlock.CasinoTextStyle">
         <Setter Property="Foreground" Value="#99FFFFFF" />
         <Setter Property="FontSize" Value="16" />
     </Style>
-
-    <!-- The style for a stack marker. -->
+ 
     <Style Selector="controls|CardStackPlacementControl.StackMarker">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="6" />
@@ -96,8 +95,7 @@
         <Setter Property="IsHitTestVisible" Value="False" />
         <Setter Property="RenderTransform" Value="scaleX(0.6) scaleY(0.6)" />
     </Style>
-
-    <!-- Style for a run marker. -->
+ 
     <Style Selector="controls|CardStackPlacementControl.RunMarker">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Width" Value="{StaticResource CardWidth}" />
@@ -114,8 +112,7 @@
         <Setter Property="Margin"
                 Value="{OnFormFactor {StaticResource CardThickness}, Mobile={StaticResource CardThicknessMobile}}" />
     </Style>
-
-    <!-- A nice clean style for a button. -->
+ 
     <Style Selector="Button.CasinoButtonStyle">
         <Setter Property="Template">
             <Setter.Value>
@@ -218,7 +215,7 @@
                          BitmapInterpolationMode="HighQuality">
                 <VisualBrush.Visual>
                     <Border Background="Black">
-                        <controls:RandomNoiseTextureControl Opacity="0.2" />
+                        <controls:RandomNoiseTextureControl Opacity="0.1" />
                     </Border>
                 </VisualBrush.Visual>
             </VisualBrush>
