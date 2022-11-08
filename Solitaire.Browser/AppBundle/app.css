@@ -63,6 +63,7 @@
     }
     100% {
         visibility: visible;
+        left: 100%;
     }
 }
 
