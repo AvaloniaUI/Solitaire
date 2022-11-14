@@ -52,14 +52,14 @@
                                         </ConicGradientBrush>
                                     </TextBlock.Foreground>
                                 </TextBlock>
-                                <RichTextBlock FontSize="18" Margin="0,-10,0,10"
-                                               HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center">
+                                <TextBlock FontSize="18" Margin="0,-10,0,10"
+                                           HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center">
                                     <Run Text="You scored" />
                                     <Run Text="{Binding Score}" FontWeight="Bold" />
                                     <Run Text="in" />
                                     <Run Text="{Binding Moves}" FontWeight="Bold" />
                                     <Run Text="moves!" />
-                                </RichTextBlock>
+                                </TextBlock>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <Button
                                         Classes="CasinoButtonStyle" Width="120"
@@ -104,25 +104,25 @@
                                     <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center"
                                                 HorizontalAlignment="Center" Margin="20,5">
 
-                                        <RichTextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="60">
+                                        <TextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="60">
                                             <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
                                                  Text="SCORE" />
                                             <LineBreak />
                                             <Run FontSize="24" Text="{Binding Score}" />
-                                        </RichTextBlock>
-                                        <RichTextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="60">
+                                        </TextBlock>
+                                        <TextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="60">
                                             <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
                                                  Text="MOVES" />
                                             <LineBreak />
                                             <Run FontSize="24" Text="{Binding Moves}" />
-                                        </RichTextBlock>
-                                        <RichTextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="70">
+                                        </TextBlock>
+                                        <TextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="70">
                                             <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
                                                  Text="TIME" />
                                             <LineBreak />
                                             <Run FontSize="24"
                                                  Text="{Binding ElapsedTime, Converter={StaticResource TimeSpanToShortStringConverter}, Mode=OneWay}" />
-                                        </RichTextBlock>
+                                        </TextBlock>
 
                                     </StackPanel>
                                 </DockPanel>
