@@ -25,8 +25,8 @@
                     <TextBlock FontFamily="{StaticResource  CasinoFont}" FontSize="130" Text="SOLITAIRE"
                                TextAlignment="Center"
                                VerticalAlignment="Center" />
-                    <RichTextBlock Height="40" Margin="0 -30 0 0" FontFamily="{StaticResource Nunito}" FontSize="16"
-                                   HorizontalAlignment="Right">
+                    <TextBlock Height="40" Margin="0 -30 0 0" FontFamily="{StaticResource Nunito}" FontSize="16"
+                               HorizontalAlignment="Right">
                         <Run Foreground="White" Text="Built with " />
                         <InlineUIContainer>
                             <Image Width="16" Height="16" Margin="-3 3  3 0" Source="{StaticResource Avalonia}" />
@@ -34,7 +34,7 @@
                         </InlineUIContainer>
                         <Run Foreground="White" Text="Avalonia UI" />
 
-                    </RichTextBlock>
+                    </TextBlock>
                 </StackPanel>
 
             </Viewbox>
