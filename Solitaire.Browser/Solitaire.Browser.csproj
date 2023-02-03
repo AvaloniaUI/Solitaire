@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.Web" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.Browser" Version="$(AvaloniaVersion)" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
   </ItemGroup>
 
