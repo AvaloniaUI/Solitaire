@@ -70,12 +70,12 @@ public class CardFieldBehavior : Behavior<Canvas>
     {
         if (!_isDragging || _draggingContainers is null || _draggingCards is null) return;
 
-        var absCur = e.GetCurrentPoint(AssociatedObject?.GetVisualRoot());
+        var absCur = e.GetCurrentPoint(TopLevel.GetTopLevel(AssociatedObject));
         var absCurPos = absCur.Position;
 
         if (AssociatedObject is null) return;
 
-        foreach (var visual in AssociatedObject.GetVisualRoot()!.GetVisualsAt(absCurPos)
+        foreach (var visual in TopLevel.GetTopLevel(AssociatedObject)!.GetVisualsAt(absCurPos)
                      .OrderByDescending(x => x.ZIndex))
         {
             if (visual is not CardStackPlacementControl { DataContext: CardGameViewModel game } toStack) continue;
@@ -149,7 +149,7 @@ public class CardFieldBehavior : Behavior<Canvas>
 
     private void AssociatedObjectOnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        var absCur = e.GetCurrentPoint(AssociatedObject?.GetVisualRoot());
+        var absCur = e.GetCurrentPoint(TopLevel.GetTopLevel(AssociatedObject));
         var absCurPos = absCur.Position;
 
         void ActivateCommand(CardStackPlacementControl? stack)
@@ -162,7 +162,7 @@ public class CardFieldBehavior : Behavior<Canvas>
 
         if (!absCur.Properties.IsLeftButtonPressed || AssociatedObject == null) return;
 
-        foreach (var visual in AssociatedObject.GetVisualRoot()!.GetVisualsAt(absCurPos)
+        foreach (var visual in TopLevel.GetTopLevel(AssociatedObject)!.GetVisualsAt(absCurPos)
                      .OrderByDescending(x => x.ZIndex))
         {
             if (visual is CardStackPlacementControl { DataContext: CardGameViewModel } stack1)
@@ -254,7 +254,7 @@ public class CardFieldBehavior : Behavior<Canvas>
         var cardStacks = GetCardStacks(AssociatedObject);
 
         if (Application.Current == null ||
-            !Application.Current.Styles.TryGetResource("PlayingCardDataTemplate", out var x) ||
+            !Application.Current.Styles.TryGetResource("PlayingCardDataTemplate", null, out var x) ||
             x is not DataTemplate y) return;
 
         AssociatedObject.DataTemplates.Add(y);

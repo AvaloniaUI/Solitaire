@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Solitaire.Models;
 using Solitaire.Utils;
+using Avalonia.Reactive;
 
 namespace Solitaire.ViewModels.Pages;
 
@@ -21,9 +21,10 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         DealCardsCommand = new RelayCommand(DoDealCards, () => Stock.Count > 0);
         NewGameCommand = new AsyncRelayCommand(DoDealNewGame);
 
-        casinoViewModel.SettingsInstance.WhenAnyValue(x => x.Difficulty)
-            .Do(x => Difficulty = x)
-            .Subscribe();
+        casinoViewModel.SettingsInstance
+            .WhenAnyValue(x => x.Difficulty)
+            .Subscribe(new AnonymousObserver<Difficulty>(x => Difficulty = x));
+
     }
 
     /// <inheritdoc />

@@ -7,13 +7,13 @@ namespace Solitaire;
 
 public class ViewLocator : IDataTemplate
 {
-    public IControl? Build(object? data)
+    public Control? Build(object? data)
     {
         if (data is null)
             return null;
 
         var name = data.GetType().FullName!.Replace("ViewModel", "View");
-        IControl? returnVal = null;
+        Control? returnVal = null;
         Exception? ex = null;
 
         try

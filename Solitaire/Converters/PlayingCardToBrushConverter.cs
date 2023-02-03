@@ -57,7 +57,7 @@ public class PlayingCardToBrushConverter : IValueConverter
             return retDrawingImage;
         }
  
-        if (!Application.Current!.Styles.TryGetResource(cardName, out var test) ||
+        if (!Application.Current!.Styles.TryGetResource(cardName, null, out var test) ||
             test is not DrawingImage faceImage) return null;
 
         Brushes.Add(cardName, faceImage);
