@@ -11,8 +11,8 @@ public partial class SettingsViewModel : ViewModelBase
 {
     [ObservableProperty] private Difficulty _difficulty = Difficulty.Easy;
     [ObservableProperty] private DrawMode _drawMode = DrawMode.DrawOne;
-    [ObservableProperty] private string _drawModeText;
-    [ObservableProperty] private string _difficultyText;
+    [ObservableProperty] private string? _drawModeText;
+    [ObservableProperty] private string? _difficultyText;
     public ICommand NavigateToTitleCommand { get; }
     
     public ICommand DrawModeCommand { get; } 
@@ -43,7 +43,8 @@ public partial class SettingsViewModel : ViewModelBase
             {
                 Difficulty.Easy => Difficulty.Medium,
                 Difficulty.Medium => Difficulty.Hard,
-                Difficulty.Hard => Difficulty.Easy
+                Difficulty.Hard => Difficulty.Easy,
+                _ => throw new ArgumentOutOfRangeException()
             };
         });
         
