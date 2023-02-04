@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using Solitaire.Models;
 using Solitaire.Utils;
 using System;
+using Avalonia.Reactive;
 
 namespace Solitaire.ViewModels.Pages;
 
@@ -49,17 +50,17 @@ public partial class SettingsViewModel : ViewModelBase
         });
         
         this.WhenAnyValue(x => x.DrawMode)
-            .Subscribe(x =>
+            .Subscribe(new AnonymousObserver<DrawMode>(x =>
             {
                 DrawModeText = $"{DrawMode.ToString()
                     .Replace("Draw", "")} Card{(DrawMode == DrawMode.DrawThree? "s" : "")}" ;
-            });
+            }));
 
         this.WhenAnyValue(x => x.Difficulty)
-            .Subscribe(x =>
+            .Subscribe(new AnonymousObserver<Difficulty>(x =>
             {
                 DifficultyText = $"{Difficulty}";
-            });
+            }));
     }
 
     public void ApplyState(SettingsState state)
