@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+using Solitaire.Models;
 using Solitaire.Utils;
 using Solitaire.ViewModels.Pages;
 
@@ -43,7 +42,12 @@ public partial class CasinoViewModel : ViewModelBase
     /// </summary>
     public async void Save()
     {
-        await PlatformProviders.CasinoStorage.SaveObject(this, "mainSettings");
+        var state = new PersistentState(
+            SettingsInstance.GetState(),
+            StatisticsInstance.KlondikeStatsInstance.GetState(),
+            StatisticsInstance.SpiderStatsInstance.GetState(),
+            StatisticsInstance.FreeCellStatsInstance.GetState());
+        await PlatformProviders.CasinoStorage.SaveObject(state, "mainSettings");
     }
 
     /// <summary>
@@ -52,13 +56,15 @@ public partial class CasinoViewModel : ViewModelBase
     /// <returns></returns>
     public static async Task<CasinoViewModel> CreateOrLoadFromDisk()
     {
-        var ret = await PlatformProviders.CasinoStorage.LoadObject("mainSettings");
-        if (ret is null) return new CasinoViewModel();
-
-        // Refresh game logics.
-        ret.FreeCellInstance.ResetGame();
-        ret.KlondikeInstance.ResetGame();
-        ret.SpiderInstance.ResetGame();
+        var ret = new CasinoViewModel();
+        var state = await PlatformProviders.CasinoStorage.LoadObject("mainSettings");
+        if (state is not null)
+        {
+            ret.SettingsInstance.ApplyState(state.Settings);
+            ret.StatisticsInstance.KlondikeStatsInstance.ApplyState(state.KlondikeStatsInstance);
+            ret.StatisticsInstance.SpiderStatsInstance.ApplyState(state.SpiderStatsInstance);
+            ret.StatisticsInstance.FreeCellStatsInstance.ApplyState(state.FreeCellStatsInstance);
+        }
         return ret;
     }
 }

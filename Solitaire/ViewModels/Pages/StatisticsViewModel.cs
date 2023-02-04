@@ -16,9 +16,9 @@ public partial class StatisticsViewModel : ViewModelBase
 
      
 
-    [ObservableProperty] private GameStatisticsViewModel? _klondikeStatsInstance;
-    [ObservableProperty] private GameStatisticsViewModel? _spiderStatsInstance;
-    [ObservableProperty] private GameStatisticsViewModel? _freeCellStatsInstance;
+    [ObservableProperty] private GameStatisticsViewModel _klondikeStatsInstance;
+    [ObservableProperty] private GameStatisticsViewModel _spiderStatsInstance;
+    [ObservableProperty] private GameStatisticsViewModel _freeCellStatsInstance;
 
 
     public StatisticsViewModel(CasinoViewModel casinoViewModel)
@@ -28,12 +28,12 @@ public partial class StatisticsViewModel : ViewModelBase
         NavigateToTitleCommand = new RelayCommand(() =>
         {
             casinoViewModel1.CurrentView = casinoViewModel1.TitleInstance;
-            PlatformProviders.CasinoStorage.SaveObject(casinoViewModel1, "mainSettings");
+            casinoViewModel1.Save();
         });
         
-        SpiderStatsInstance = new GameStatisticsViewModel(casinoViewModel.SpiderInstance);
-        KlondikeStatsInstance = new GameStatisticsViewModel(casinoViewModel.KlondikeInstance);
-        FreeCellStatsInstance = new GameStatisticsViewModel(casinoViewModel.FreeCellInstance);
+        _spiderStatsInstance = new GameStatisticsViewModel(casinoViewModel.SpiderInstance);
+        _klondikeStatsInstance = new GameStatisticsViewModel(casinoViewModel.KlondikeInstance);
+        _freeCellStatsInstance = new GameStatisticsViewModel(casinoViewModel.FreeCellInstance);
         
         
         ResetKlondikeStatsCommand = new RelayCommand(() =>

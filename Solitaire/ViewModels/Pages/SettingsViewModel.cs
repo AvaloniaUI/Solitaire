@@ -27,7 +27,7 @@ public partial class SettingsViewModel : ViewModelBase
         NavigateToTitleCommand = new RelayCommand(() =>
         {
             casinoViewModel1.CurrentView = casinoViewModel1.TitleInstance;
-            PlatformProviders.CasinoStorage.SaveObject(casinoViewModel1, "mainSettings");
+            casinoViewModel1.Save();
         });
         
 
@@ -60,6 +60,16 @@ public partial class SettingsViewModel : ViewModelBase
             {
                 DifficultyText = $"{Difficulty}";
             });
+    }
 
+    public void ApplyState(SettingsState state)
+    {
+        Difficulty = state.Difficulty;
+        DrawMode = state.DrawMode;
+    }
+
+    public SettingsState GetState()
+    {
+        return new SettingsState(Difficulty, DrawMode);
     }
 }
