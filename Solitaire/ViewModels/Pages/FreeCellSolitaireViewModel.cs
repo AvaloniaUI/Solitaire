@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia.Reactive;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel.__Internals;
 using CommunityToolkit.Mvvm.Input;
@@ -31,7 +32,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
         NewGameCommand = new AsyncRelayCommand(DoDealNewGame);
 
         casinoViewModel.SettingsInstance.WhenAnyValue(x => x.DrawMode)
-            .Subscribe(x => DrawMode = x);
+            .Subscribe(new AnonymousObserver<DrawMode>(x => DrawMode = x));
     }
 
     private void InitializeFoundationsAndTableauSet()

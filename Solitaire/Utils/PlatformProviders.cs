@@ -3,10 +3,8 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Security.Cryptography;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.VisualTree;
-using Newtonsoft.Json;
 using Solitaire.Models;
 using Solitaire.ViewModels;
 
@@ -28,12 +26,6 @@ public static class PlatformProviders
         /// <inheritdoc />
         public async Task SaveObject(T obj, string key)
         {
-            var serializedObjJson = JsonConvert.SerializeObject(obj, new JsonSerializerSettings
-            {
-                PreserveReferencesHandling = PreserveReferencesHandling.None,
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            });
-
             // Get a new isolated store for this user, domain, and assembly.
             var isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User |
                                                         IsolatedStorageScope.Domain |
@@ -41,8 +33,7 @@ public static class PlatformProviders
 
             //  Create data stream.
             await using var isoStream = new IsolatedStorageFileStream(Identifier + key, FileMode.Create, isoStore);
-            await using var writer = new StreamWriter(isoStream);
-            await writer.WriteAsync(serializedObjJson);
+            await JsonSerializer.SerializeAsync(isoStream, obj, typeof(T), JsonContext.Default);
         }
 
         /// <inheritdoc />
@@ -54,10 +45,7 @@ public static class PlatformProviders
                                                             IsolatedStorageScope.Domain |
                                                             IsolatedStorageScope.Assembly, null, null);
                 await using var isoStream = new IsolatedStorageFileStream(Identifier + key, FileMode.Open, isoStore);
-                using var reader = new StreamReader(isoStream);
-                var savedString = await reader.ReadToEndAsync();
-                if (string.IsNullOrEmpty(savedString)) return default;
-                var storedObj = JsonConvert.DeserializeObject<T>(savedString);
+                var storedObj = (T?)await JsonSerializer.DeserializeAsync(isoStream, typeof(T), JsonContext.Default);
                 return storedObj ?? default;
             }
             catch (Exception e)
@@ -70,6 +58,6 @@ public static class PlatformProviders
 
     }
     
-    public static IRuntimeStorageProvider<CasinoViewModel> CasinoStorage { get; set; }
-        = new DefaultSettingsStore<CasinoViewModel>();
+    public static IRuntimeStorageProvider<PersistentState> CasinoStorage { get; set; }
+        = new DefaultSettingsStore<PersistentState>();
 }

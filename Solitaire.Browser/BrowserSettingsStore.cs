@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Solitaire.Models;
 
 namespace Solitaire.Browser;
@@ -20,11 +20,7 @@ public partial class BrowserSettingsStore<T> : IRuntimeStorageProvider<T>
     /// <inheritdoc />
     public Task SaveObject(T obj, string key)
     {
-        var serializedObjJson = JsonConvert.SerializeObject(obj, new JsonSerializerSettings
-        {
-            PreserveReferencesHandling = PreserveReferencesHandling.None,
-            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-        });
+        var serializedObjJson = JsonSerializer.Serialize(obj, typeof(T), JsonContext.Default);
 
         SetItem(Identifier + key, serializedObjJson);
 
@@ -32,14 +28,14 @@ public partial class BrowserSettingsStore<T> : IRuntimeStorageProvider<T>
     }
 
     /// <inheritdoc />
-    public async Task<T> LoadObject(string key)
+    public async Task<T?> LoadObject(string key)
     {
         try
         {
             await Task.Delay(1);
             var t = GetItem(Identifier + key);
             if (string.IsNullOrEmpty(t)) return default;
-            var x = JsonConvert.DeserializeObject<T>(t);
+            var x = (T?)JsonSerializer.Deserialize(t, typeof(T), JsonContext.Default);
             return x ?? default;
         }
         catch (Exception e)

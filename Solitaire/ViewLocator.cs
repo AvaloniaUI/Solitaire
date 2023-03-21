@@ -1,7 +1,11 @@
 using System;
+using System.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Solitaire.ViewModels;
+using Solitaire.ViewModels.Pages;
+using Solitaire.Views;
+using Solitaire.Views.Pages;
 
 namespace Solitaire;
 
@@ -9,38 +13,22 @@ public class ViewLocator : IDataTemplate
 {
     public Control? Build(object? data)
     {
-        if (data is null)
-            return null;
-
-        var name = data.GetType().FullName!.Replace("ViewModel", "View");
-        Control? returnVal = null;
-        Exception? ex = null;
-
-        try
+        return data switch
         {
-            var type = Type.GetType(name);
-
-            if (type != null)
+            TitleViewModel => new TitleView(),
+            KlondikeSolitaireViewModel => new KlondikeSolitaireView(),
+            FreeCellSolitaireViewModel => new FreeCellSolitaireView(),
+            SpiderSolitaireViewModel => new SpiderSolitaireView(),
+            GameStatisticsViewModel => new GameStatisticsView(),
+            SettingsViewModel => new SettingsView(),
+            StatisticsViewModel => new StatisticsView(),
+            CasinoViewModel => new CasinoView(),
+            null => null,
+            _ => new TextBlock
             {
-                returnVal = (Control) Activator.CreateInstance(type)!;
+                Text = $"View for {data.GetType().Name} wasn't found"
             }
-        }
-        catch (Exception _)
-        {
-            ex = _;
-        }
-        finally
-        {
-            if (ex is { })
-            {
-                returnVal = new TextBlock
-                {
-                    Text = $"An exception occurred while trying to instantiate {name}: {ex}"
-                };
-            }
-        }
-
-        return returnVal;
+        };
     }
 
     public bool Match(object? data)

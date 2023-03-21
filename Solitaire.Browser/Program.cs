@@ -1,6 +1,7 @@
 using System.Runtime.Versioning;
 using Avalonia;
-using Avalonia.Web;
+using Avalonia.Browser;
+using Solitaire.Models;
 using Solitaire.Utils;
 using Solitaire.ViewModels;
 
@@ -13,7 +14,7 @@ internal class Program
     // ReSharper disable once UnusedParameter.Local
     private static void Main(string[] args)
     {
-        PlatformProviders.CasinoStorage = new BrowserSettingsStore<CasinoViewModel>();
+        PlatformProviders.CasinoStorage = new BrowserSettingsStore<PersistentState>();
         
         BuildAvaloniaApp()
             .SetupBrowserApp("out");

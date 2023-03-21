@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Solitaire.Models;
 
 namespace Solitaire.ViewModels.Pages;
 
@@ -97,4 +98,36 @@ public partial class GameStatisticsViewModel : ViewModelBase
     [ObservableProperty] private TimeSpan _cumulativeGameTime;
     [ObservableProperty] private TimeSpan _averageGameTime;
     private readonly CardGameViewModel? _cardGameInstance;
+
+    public void ApplyState(GameStatisticsState state)
+    {
+        GamesPlayed = state.GamesPlayed;
+        GamesWon = state.GamesWon;
+        GamesLost = state.GamesLost;
+        HighestWinningStreak = state.HighestWinningStreak;
+        HighestLosingStreak = state.HighestLosingStreak;
+        CurrentStreak = state.CurrentStreak;
+        CumulativeScore = state.CumulativeScore;
+        HighestScore = state.HighestScore;
+        AverageScore = state.AverageScore;
+        CumulativeGameTime = state.CumulativeGameTime;
+        AverageGameTime = state.AverageGameTime;
+    }
+
+    public GameStatisticsState GetState()
+    {
+        return new GameStatisticsState(
+            GamesPlayed,
+            GamesWon,
+            GamesLost,
+            HighestWinningStreak,
+            HighestLosingStreak,
+            CurrentStreak,
+            CumulativeScore,
+            HighestScore,
+            AverageScore,
+            CumulativeGameTime,
+            AverageGameTime
+        );
+    }
 }

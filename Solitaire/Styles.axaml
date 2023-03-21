@@ -7,7 +7,6 @@
     <Styles.Resources>
         <converters:TimeSpanToShortStringConverter x:Key="TimeSpanToShortStringConverter" />
         <converters:PlayingCardToBrushConverter x:Key="PlayingCardToBrushConverter" />
-        <converters:EnumToListConverter x:Key="EnumToListConverter" />
         <converters:EnumToIntConverter x:Key="EnumToIntConverter" />
         <x:Double x:Key="CardWidth">160</x:Double>
         <x:Double x:Key="CardHeight">232</x:Double>
