@@ -87,8 +87,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
         if (Deck is { }) return;
 
         var playingCards = Enum
-            .GetValuesAsUnderlyingType(typeof(CardType))
-            .Cast<CardType>()
+            .GetValues<CardType>()
             .Select(cardType => new PlayingCardViewModel(this)
                 { CardType = cardType, IsFaceDown = true })
             .ToImmutableArray();

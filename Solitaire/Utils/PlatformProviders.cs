@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.IsolatedStorage;
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Solitaire.Models;
 using Solitaire.ViewModels;
@@ -11,13 +12,9 @@ using Solitaire.ViewModels;
 namespace Solitaire.Utils;
 public static class PlatformProviders
 {
-    public static double NextRandomDouble()
-    {
-        var nextULong = BitConverter.ToUInt64(RandomNumberGenerator.GetBytes(sizeof(ulong)));
+    private static Random _random = new Random();
+    public static double NextRandomDouble() => _random.NextDouble();
 
-        return (nextULong >> 11) * (1.0 / (1ul << 53));
-    }
-    
     private class DefaultSettingsStore<T> : IRuntimeStorageProvider<T>
     {
         private static string Identifier { get; } = typeof(T).FullName?.Replace(".", string.Empty) ?? "default";
@@ -56,6 +53,38 @@ public static class PlatformProviders
             return default;
         }
 
+    }
+    
+    public class StaticFileStorage<T> : IRuntimeStorageProvider<T>
+    {
+        private readonly string _path;
+
+        public StaticFileStorage(string path)
+        {
+            _path = path;
+        }
+        
+        public async Task SaveObject(T obj, string key)
+        {
+            await using var f = File.Create(_path);
+            await JsonSerializer.SerializeAsync(f, obj, typeof(T), JsonContext.Default);
+        }
+
+        public async Task<T?> LoadObject(string key)
+        {
+            try
+            {
+                if (!File.Exists(_path))
+                    return default;
+                await using var f = File.Open(_path, FileMode.Open);
+                return (T?)await JsonSerializer.DeserializeAsync(f, typeof(T), JsonContext.Default);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+                return default;
+            }
+        }
     }
     
     public static IRuntimeStorageProvider<PersistentState> CasinoStorage { get; set; }

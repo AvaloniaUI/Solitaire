@@ -38,7 +38,7 @@ public class RandomNoiseTextureControl : Control
     {
         _texture = new RenderTargetBitmap(new PixelSize(DesiredWidth, DesiredHeight));
 
-        using var dc = _texture.CreateDrawingContext(null);
+        using var dc = _texture.CreateDrawingContext();
 
         for (var i = 0; i < DesiredHeight; i++)
         for (var j = 0; j < DesiredWidth; j++)

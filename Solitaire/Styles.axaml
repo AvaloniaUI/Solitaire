@@ -3,7 +3,8 @@
         xmlns:converters="clr-namespace:Solitaire.Converters"
         xmlns:vm="clr-namespace:Solitaire.ViewModels"
         xmlns:controls="clr-namespace:Solitaire.Controls"
-        xmlns:pages="clr-namespace:Solitaire.ViewModels.Pages">
+        xmlns:pages="clr-namespace:Solitaire.ViewModels.Pages"
+        xmlns:behaviors="clr-namespace:Solitaire.Behaviors">
     <Styles.Resources>
         <converters:TimeSpanToShortStringConverter x:Key="TimeSpanToShortStringConverter" />
         <converters:PlayingCardToBrushConverter x:Key="PlayingCardToBrushConverter" />
@@ -156,8 +157,7 @@
                         Cursor="Hand"
                         BorderBrush="Gray"
                         BorderThickness="1" CornerRadius="6">
-                        <Image Margin="4"
-                               Source="{Binding CardType, Converter={StaticResource PlayingCardToBrushConverter}}" />
+                        <controls:CardFrontImage Margin="4"/>
                     </Border>
                 </Panel>
             </Panel>
@@ -368,10 +368,11 @@
 
     <Style Selector="Border.goldenTrayInnerBg">
         <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="behaviors:BitmapInterpolationModeHelper.BitmapInterpolationMode" Value="HighQuality"></Setter>
         <Setter Property="Background">
             <VisualBrush TileMode="Tile" SourceRect="0,0,300,300"
                          DestinationRect="0,0,200,200"
-                         BitmapInterpolationMode="HighQuality">
+            >
                 <VisualBrush.Visual>
                     <Border Background="Black">
                         <controls:RandomNoiseTextureControl Opacity="0.1" />

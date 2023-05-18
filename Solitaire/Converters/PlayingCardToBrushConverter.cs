@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Avalonia;
 using Avalonia.Data.Converters;
+using Avalonia.Logging;
 using Avalonia.Media;
 using Solitaire.Models;
 
@@ -48,17 +49,34 @@ public class PlayingCardToBrushConverter : IValueConverter
     /// <inheritdoc />
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is not CardType cardType) return null;
+        var logger = Logger.TryGet(LogEventLevel.Error, "SOL");
 
+        if (value is not CardType cardType)
+        {
+            logger?.Log(null, $"{value} is not CardType");
+            return null;
+        }
+
+        return Convert(cardType);
+    }
+    
+    public static DrawingImage Convert(CardType cardType)
+    {
+        var logger = Logger.TryGet(LogEventLevel.Error, "SOL");
         var cardName = cardType.ToString();
+        logger?.Log(null, $"Card name {cardName}");
 
         if (Brushes.TryGetValue( cardName, out var retDrawingImage))
         {
             return retDrawingImage;
         }
- 
+
         if (!Application.Current!.Styles.TryGetResource(cardName, null, out var test) ||
-            test is not DrawingImage faceImage) return null;
+            test is not DrawingImage faceImage)
+        {
+            logger?.Log(null, $"Unable to find resource for {cardName}");
+            return null;
+        }
 
         Brushes.Add(cardName, faceImage);
         

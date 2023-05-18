@@ -32,8 +32,7 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
     {
         
         var temp = Enum
-            .GetValuesAsUnderlyingType(typeof(CardType))
-            .Cast<CardType>()
+            .GetValues<CardType>()
             .Select(x => Enumerable.Repeat(x, 8))
             .SelectMany(x => x)
             .Select(cardType => new PlayingCardViewModel(this)
