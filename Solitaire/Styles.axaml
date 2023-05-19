@@ -134,32 +134,15 @@
             </Panel>
         </ControlTemplate>
 
-        <DataTemplate x:Key="PlayingCardDataTemplate" DataType="{x:Type vm:PlayingCardViewModel}">
+        <DataTemplate x:Key="PlayingCardDataTemplate" x:DataType="{x:Type vm:PlayingCardViewModel}">
             <Panel
                 Width="{StaticResource CardWidth}"
                 Height="{StaticResource CardHeight}">
-                <Panel Classes="playingCardBack" IsVisible="{Binding IsFaceDown}">
-                    <Border
-                        Background="White" Cursor="Hand"
-                        BorderBrush="Gray"
-                        BorderThickness="1" CornerRadius="6">
-                        <Image Margin="4" Source="{StaticResource CardBack}" />
-                        <Border.RenderTransform>
-                            <Rotate3DTransform
-                                AngleY="180" />
-                        </Border.RenderTransform>
-                    </Border>
-                </Panel>
-                <Panel Classes="playingCardFront" IsVisible="{Binding !IsFaceDown}">
-                    <Border
-                        Background="White"
-                        Classes.isFaceDown="{Binding IsFaceDown}"
-                        Cursor="Hand"
-                        BorderBrush="Gray"
-                        BorderThickness="1" CornerRadius="6">
-                        <controls:CardFrontImage Margin="4"/>
-                    </Border>
-                </Panel>
+                <controls:CardFrontImage
+                    Background="White" 
+                    Padding="4"
+                    BorderBrush="Gray"
+                    BorderThickness="1" CornerRadius="6" />
             </Panel>
         </DataTemplate>
     </Styles.Resources>

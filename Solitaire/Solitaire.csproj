@@ -3,16 +3,17 @@
         <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
+        <CompileBindings>true</CompileBindings>
     </PropertyGroup>
     <ItemGroup>
         <AvaloniaResource Include="Assets\**" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.0.0-preview8" />
+        <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
 <!--        <PackageReference Include="XamlNameReferenceGenerator" Version="1.5.1" />-->
 
-        <PackageReference Include="Avalonia.Xaml.Interactivity" Version="11.0.0-preview8" />
+        <PackageReference Include="Avalonia.Xaml.Interactivity" Version="$(AvaloniaVersion)" />
     </ItemGroup>
     <ItemGroup>
       <UpToDateCheckInput Remove="Assets\Backgrounds\Background.jpg" />

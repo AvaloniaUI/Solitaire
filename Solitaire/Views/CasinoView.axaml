@@ -30,13 +30,7 @@
             </VisualBrush>
         </Panel.Background>
         <Panel Classes="mainContent">
-            <Panel.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform />
-                    <TranslateTransform />
-                </TransformGroup>
-            </Panel.RenderTransform>
-            <ContentControl Content="{Binding CurrentView, Mode=OneWay}"   />
+            <ContentControl Margin="0 40 0 0" Content="{Binding CurrentView, Mode=OneWay}"   />
         </Panel>
     </Panel>
 

@@ -2,24 +2,39 @@ using System;
 using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media;
 using Solitaire.Converters;
 using Solitaire.Models;
 using Solitaire.ViewModels;
 
 namespace Solitaire.Controls;
 
-public class CardFrontImage : Image
+public class CardFrontImage : Border
 {
     private PlayingCardViewModel? _model;
+    private Image _image = new Image();
+    private readonly DrawingImage _back;
 
     public CardFrontImage()
     {
-        UpdateCard();
+        Application.Current!.Styles.TryGetResource("CardBack", null, out var res);
+        _back = (DrawingImage)res!;
+        _image.Source = _back;
+        Update();
+        Child = _image;
     }
 
-    void UpdateCard()
+    void Update()
     {
-        Source = PlayingCardToBrushConverter.Convert(CardType.SA);
+        if (_model == null)
+            _image.Source = _back;
+        else
+        {
+            if (_model.IsFaceDown)
+                _image.Source = _back;
+            else
+                _image.Source = PlayingCardToBrushConverter.Convert(_model?.CardType ?? CardType.SA);
+        }
     }
 
 
@@ -39,7 +54,7 @@ public class CardFrontImage : Image
 
     private void OnModelChanged(object? sender, PropertyChangedEventArgs e)
     {
-        Source = PlayingCardToBrushConverter.Convert(_model?.CardType ?? CardType.SA);
+        Update();
     }
 
     protected override void OnDataContextChanged(EventArgs e)
