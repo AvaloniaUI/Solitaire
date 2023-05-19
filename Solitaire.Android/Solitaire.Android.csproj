@@ -8,8 +8,6 @@
         <ApplicationVersion>1</ApplicationVersion>
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
         <AndroidPackageFormat>apk</AndroidPackageFormat>
-	<AndroidEnableProfiledAot>true</AndroidEnableProfiledAot>
-	<AvaloniaUseDefaultAotProfile>true</AvaloniaUseDefaultAotProfile>
     </PropertyGroup>
     <ItemGroup>
         <AndroidResource Include="Icon.png">
