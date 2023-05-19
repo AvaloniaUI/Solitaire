@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:pages="clr-namespace:Solitaire.ViewModels.Pages"
+             xmlns:utils="clr-namespace:Solitaire.Utils"
              mc:Ignorable="d"
              x:DataType="pages:TitleViewModel"
              TextElement.Foreground="White"
@@ -67,7 +68,7 @@
                                     <Border.Background>
                                         <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
                                                              GradientStops="{StaticResource GoldBrush}"
-                                                             Transform="rotate(120deg)" />
+                                                             Transform="{x:Static utils:TransformHelper.Rotate120}" />
                                     </Border.Background>
                                 </Border>
                                 

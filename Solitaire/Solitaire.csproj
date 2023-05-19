@@ -13,7 +13,7 @@
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
 <!--        <PackageReference Include="XamlNameReferenceGenerator" Version="1.5.1" />-->
 
-        <PackageReference Include="Avalonia.Xaml.Interactivity" Version="$(AvaloniaVersion)" />
+        <PackageReference Include="Avalonia.Xaml.Interactivity" Version="11.0.0-preview8" />
     </ItemGroup>
     <ItemGroup>
       <UpToDateCheckInput Remove="Assets\Backgrounds\Background.jpg" />

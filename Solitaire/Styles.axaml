@@ -4,7 +4,8 @@
         xmlns:vm="clr-namespace:Solitaire.ViewModels"
         xmlns:controls="clr-namespace:Solitaire.Controls"
         xmlns:pages="clr-namespace:Solitaire.ViewModels.Pages"
-        xmlns:behaviors="clr-namespace:Solitaire.Behaviors">
+        xmlns:behaviors="clr-namespace:Solitaire.Behaviors"
+        xmlns:utils="clr-namespace:Solitaire.Utils">
     <Styles.Resources>
         <converters:TimeSpanToShortStringConverter x:Key="TimeSpanToShortStringConverter" />
         <converters:PlayingCardToBrushConverter x:Key="PlayingCardToBrushConverter" />
@@ -314,7 +315,7 @@
                     <Setter Property="Background">
                         <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
                                              GradientStops="{StaticResource GoldBrush}"
-                                             Transform="rotate(120deg)" />
+                                             Transform="{x:Static utils:TransformHelper.Rotate120}" />
                     </Setter>
                 </KeyFrame>
                 <KeyFrame Cue="100%">

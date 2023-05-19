@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:pages="clr-namespace:Solitaire.ViewModels.Pages"
              xmlns:models="clr-namespace:Solitaire.Models"
+             xmlns:utils="clr-namespace:Solitaire.Utils"
              mc:Ignorable="d"
              x:Class="Solitaire.Views.Pages.SettingsView"
              x:DataType="pages:SettingsViewModel"
@@ -35,7 +36,7 @@
                                         <Border.Background>
                                             <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
                                                                  GradientStops="{StaticResource GoldBrush}"
-                                                                 Transform="rotate(120deg)" />
+                                                                 Transform="{x:Static utils:TransformHelper.Rotate120}" />
                                         </Border.Background>
                                     </Border>
 
@@ -46,7 +47,7 @@
 
                                             <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
                                                                  GradientStops="{StaticResource GoldBrush}"
-                                                                 Transform="rotate(120deg)" />
+                                                                 Transform="{x:Static utils:TransformHelper.Rotate120}" />
                                         </TextBlock.Foreground>
                                     </TextBlock>
 
@@ -54,7 +55,7 @@
                                         <Border.Background>
                                             <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
                                                                  GradientStops="{StaticResource GoldBrush}"
-                                                                 Transform="rotate(120deg)" />
+                                                                 Transform="{x:Static utils:TransformHelper.Rotate120}" />
                                         </Border.Background>
                                     </Border>
 
@@ -69,7 +70,7 @@
                                         <Border.Background>
                                             <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
                                                                  GradientStops="{StaticResource GoldBrush}"
-                                                                 Transform="rotate(120deg)" />
+                                                                 Transform="{x:Static utils:TransformHelper.Rotate120}" />
                                         </Border.Background>
                                     </Border>
 
@@ -79,7 +80,7 @@
 
                                             <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
                                                                  GradientStops="{StaticResource GoldBrush}"
-                                                                 Transform="rotate(120deg)" />
+                                                                 Transform="{x:Static utils:TransformHelper.Rotate120}" />
                                         </TextBlock.Foreground>
                                     </TextBlock>
 
@@ -87,7 +88,7 @@
                                         <Border.Background>
                                             <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
                                                                  GradientStops="{StaticResource GoldBrush}"
-                                                                 Transform="rotate(120deg)" />
+                                                                 Transform="{x:Static utils:TransformHelper.Rotate120}" />
                                         </Border.Background>
                                     </Border>
 
