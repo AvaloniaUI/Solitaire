@@ -23,8 +23,7 @@
     </Design.DataContext>
     <Panel>
         <Panel.Background>
-            <VisualBrush Opacity="0.05" TileMode="Tile" SourceRect="0,0,300,300" DestinationRect="0,0,200,200"
-                         BitmapInterpolationMode="HighQuality">
+            <VisualBrush Opacity="0.05" TileMode="Tile" SourceRect="0,0,300,300" DestinationRect="0,0,200,200">
                 <VisualBrush.Visual>
                     <controls:RandomNoiseTextureControl />
                 </VisualBrush.Visual>
@@ -124,8 +123,7 @@
                 <Panel>
                     <Panel.Background>
                         <VisualBrush Opacity="0.05" TileMode="Tile" SourceRect="0,0,300,300"
-                                     DestinationRect="0,0,200,200"
-                                     BitmapInterpolationMode="HighQuality">
+                                     DestinationRect="0,0,200,200">
                             <VisualBrush.Visual>
                                 <controls:RandomNoiseTextureControl />
                             </VisualBrush.Visual>

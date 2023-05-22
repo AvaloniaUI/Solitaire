@@ -370,8 +370,7 @@
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="Background">
             <VisualBrush TileMode="Tile" SourceRect="0,0,300,300"
-                         DestinationRect="0,0,200,200"
-                         BitmapInterpolationMode="HighQuality">
+                         DestinationRect="0,0,200,200">
                 <VisualBrush.Visual>
                     <Border Background="Black">
                         <controls:RandomNoiseTextureControl Opacity="0.1" />

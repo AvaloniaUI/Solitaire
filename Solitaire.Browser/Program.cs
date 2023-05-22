@@ -1,4 +1,5 @@
 using System.Runtime.Versioning;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Browser;
 using Solitaire.Models;
@@ -12,12 +13,12 @@ namespace Solitaire.Browser;
 internal class Program
 {
     // ReSharper disable once UnusedParameter.Local
-    private static void Main(string[] args)
+    private static async Task Main(string[] args)
     {
         PlatformProviders.CasinoStorage = new BrowserSettingsStore<PersistentState>();
-        
-        BuildAvaloniaApp()
-            .SetupBrowserApp("out");
+
+       await BuildAvaloniaApp()
+            .SetupBrowserAppAsync();
     }
 
     public static AppBuilder BuildAvaloniaApp()
