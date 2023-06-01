@@ -13,14 +13,15 @@ public class ConnectedTrayBehavior : Behavior<Control>
 
     protected override void OnAttachedToVisualTree()
     {
-        if (AssociatedObject is Canvas)
+        switch (AssociatedObject)
         {
-            AssociatedObject.Loaded += CanvasOnLoaded;
-        }
-        else if (AssociatedObject is Border)
-        {
-            AssociatedObject.Loaded += BorderOnLoaded;
-            AssociatedObject.Unloaded += BorderOnUnload;
+            case Canvas:
+                AssociatedObject.Loaded += CanvasOnLoaded;
+                break;
+            case Border:
+                AssociatedObject.Loaded += BorderOnLoaded;
+                AssociatedObject.Unloaded += BorderOnUnload;
+                break;
         }
 
         base.OnAttachedToVisualTree();
