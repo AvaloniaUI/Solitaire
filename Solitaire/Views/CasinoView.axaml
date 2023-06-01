@@ -61,6 +61,7 @@
                     <behaviors:ConnectedTrayBehavior />
                 </Interaction.Behaviors>
                 <Border Classes="goldenTrayBorder downDeck"
+                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                         BoxShadow="0 20 60 -20 Black">
                     <Border.RenderTransform>
                         <ScaleTransform></ScaleTransform>

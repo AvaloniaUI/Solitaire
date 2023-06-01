@@ -1,8 +1,13 @@
 using System;
+using System.Numerics;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
+using Avalonia.Rendering.Composition;
 using Avalonia.Xaml.Interactivity;
+using static Avalonia.Controls.Control;
 
 namespace Solitaire.Behaviors;
 
@@ -44,7 +49,7 @@ public class ConnectedTrayBehavior : Behavior<Control>
         if (t is not { } m) return;
         var z = m.Transform(border.Bounds.TopLeft);
         var w = m.Transform(border.Bounds.BottomRight);
-        UpdateTrayBoundsAction(new Rect(z,w));
+        UpdateTrayBoundsAction(new Rect(z, w));
     }
 
     private void BorderOnLayoutUpdated(object? sender, EventArgs e)
@@ -54,22 +59,52 @@ public class ConnectedTrayBehavior : Behavior<Control>
         if (t is not { } m) return;
         var z = m.Transform(border.Bounds.TopLeft);
         var w = m.Transform(border.Bounds.BottomRight);
-        UpdateTrayBoundsAction(new Rect(z,w));
+        UpdateTrayBoundsAction(new Rect(z, w));
     }
 
     private void CanvasOnLoaded(object? sender, RoutedEventArgs e)
     {
         UpdateTrayBoundsAction = UpdateTrayBounds;
         MasterCanvas = sender as Canvas ?? throw new InvalidOperationException();
+
+
+        if (ElementComposition.GetElementVisual(MasterCanvas.Children[0]) is { } compositionVisual)
+        {
+            var compositor = compositionVisual.Compositor;
+
+            var offsetAnimation = compositor.CreateVector3KeyFrameAnimation();
+            offsetAnimation.Target = "Offset";
+            offsetAnimation.InsertExpressionKeyFrame(1.0f, "this.FinalValue");
+            offsetAnimation.Duration = TimeSpan.FromMilliseconds(400);
+
+            var sizeAnimation = compositor.CreateVector2KeyFrameAnimation();
+            sizeAnimation.Target = "Size";
+            sizeAnimation.InsertExpressionKeyFrame(1.0f, "this.FinalValue");
+            sizeAnimation.Duration = TimeSpan.FromMilliseconds(400);
+
+            var animationGroup = compositor.CreateAnimationGroup();
+            animationGroup.Add(offsetAnimation);
+            animationGroup.Add(sizeAnimation);
+
+            var implicitAnimations = compositor.CreateImplicitAnimationCollection();
+            implicitAnimations["Offset"] = animationGroup;
+
+            compositionVisual.ImplicitAnimations = implicitAnimations;
+        }
     }
-    
+
+    private static Rect _lastCallRect;
+
     private void UpdateTrayBounds(Rect obj)
     {
-        if (AssociatedObject is not Canvas { Children.Count: 1 } canvas) return;
+        if (AssociatedObject is not Canvas { Children.Count: 1 } canvas || _lastCallRect.Equals(obj)) return;
         var target = canvas.Children[0];
-        Canvas.SetTop(target, obj.Top); 
+
+        Canvas.SetTop(target, obj.Top);
         Canvas.SetLeft(target, obj.Left);
-        target.Width = obj.Width;
-        target.Height = obj.Height;
+        target.SetValue(Layoutable.WidthProperty, obj.Width, BindingPriority.Animation);
+        target.SetValue(Layoutable.HeightProperty, obj.Height, BindingPriority.Animation);
+
+        _lastCallRect = obj;
     }
 }
