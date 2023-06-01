@@ -25,11 +25,11 @@
                     <TextBlock FontFamily="{StaticResource  CasinoFont}" FontSize="130" Text="SOLITAIRE"
                                TextAlignment="Center"
                                VerticalAlignment="Center" />
-                    <TextBlock Height="40" Margin="0 -30 0 0" FontFamily="{StaticResource Nunito}" FontSize="16"
+                    <TextBlock Height="40" Margin="0 -30 0 0" FontFamily="{StaticResource Nunito}" FontSize="18"
                                HorizontalAlignment="Right">
-                        <Run Foreground="White" Text="Built with " />
+                        <Run Foreground="White" Text="Built with" />
                         <InlineUIContainer>
-                            <Image Width="16" Height="16" Margin="-3 3  3 0" Source="{StaticResource Avalonia}" />
+                            <Image Width="24" Height="24" Margin="0" Source="{StaticResource Avalonia}" />
 
                         </InlineUIContainer>
                         <Run Foreground="White" Text="Avalonia UI" />
