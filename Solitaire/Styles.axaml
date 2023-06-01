@@ -13,7 +13,6 @@
         <Thickness x:Key="CardThickness">8,10,40,40</Thickness>
         <Thickness x:Key="CardThicknessMobile">8,10,8,8</Thickness>
         <FontFamily x:Key="CasinoFont">/Assets/*.ttf#Quentell CF</FontFamily>
-        <FontFamily x:Key="Inter">/Assets/*.ttf#Inter</FontFamily>
         <FontFamily x:Key="Nunito">/Assets/*.ttf#Nunito</FontFamily>
 
         <GradientStops x:Key="GoldBrush">
