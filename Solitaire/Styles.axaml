@@ -3,7 +3,7 @@
         xmlns:converters="clr-namespace:Solitaire.Converters"
         xmlns:vm="clr-namespace:Solitaire.ViewModels"
         xmlns:controls="clr-namespace:Solitaire.Controls"
-        xmlns:pages="clr-namespace:Solitaire.ViewModels.Pages">
+        xmlns:behaviors="clr-namespace:Solitaire.Behaviors">
     <Styles.Resources>
         <converters:TimeSpanToShortStringConverter x:Key="TimeSpanToShortStringConverter" />
         <converters:PlayingCardToBrushConverter x:Key="PlayingCardToBrushConverter" />
@@ -31,7 +31,7 @@
             <GradientStop Offset="0.94064" Color="#FFFCFC80" />
             <GradientStop Offset="1" Color="#FFD09C14" />
         </GradientStops>
- 
+
         <ControlTemplate x:Key="WinDialog">
             <Border Background="#AA000000" x:CompileBindings="True" x:DataType="vm:CardGameViewModel">
                 <Border Classes="goldenTrayBorder" Padding="0" MaxHeight="200" MaxWidth="400"
@@ -77,55 +77,54 @@
         <ControlTemplate x:Key="DeckControls">
             <Panel Height="64" x:CompileBindings="True" x:DataType="vm:CardGameViewModel">
                 <Viewbox Stretch="Uniform" VerticalAlignment="Bottom">
-                    <Border Classes="goldenTrayBorder downDeck"
+                    <Border Classes="goldenTrayDummy downDeck"
                             Classes.animateUp="{Binding !IsGameWon}" Margin="0,0,0,-15"
                             BoxShadow="0 -6 30 -9 Black">
-                        <Border Classes="goldenTrayInner">
-                            <Border Classes="goldenTrayInnerBg">
-                                <DockPanel LastChildFill="True">
-                                    <Button DockPanel.Dock="Left" VerticalAlignment="Center" Margin="10,0,0,0"
-                                            Classes="goldenDeck" Content="Deal"
-                                            Command="{Binding NewGameCommand}" />
+                        <Interaction.Behaviors>
+                            <behaviors:ConnectedTrayBehavior />
+                        </Interaction.Behaviors>
+                        <DockPanel LastChildFill="True">
+                            <Button DockPanel.Dock="Left" VerticalAlignment="Center" Margin="10,0,0,0"
+                                    Classes="goldenDeck" Content="Deal"
+                                    Command="{Binding NewGameCommand}" />
 
-                                    <Button DockPanel.Dock="Left" VerticalAlignment="Center" Margin="10,0,0,0"
-                                            Classes="goldenDeck" Content="Undo"
-                                            Command="{Binding UndoCommand}" />
+                            <Button DockPanel.Dock="Left" VerticalAlignment="Center" Margin="10,0,0,0"
+                                    Classes="goldenDeck" Content="Undo"
+                                    Command="{Binding UndoCommand}" />
 
-                                    <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,10,0"
-                                            Classes="goldenDeck" Content="Back"
-                                            Command="{Binding  NavigateToCasinoCommand}" />
+                            <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,10,0"
+                                    Classes="goldenDeck" Content="Back"
+                                    Command="{Binding  NavigateToCasinoCommand}" />
 
-                                    <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,10,0"
-                                            Classes="goldenDeck" Content="Auto"
-                                            Command="{Binding AutoMoveCommand}" />
+                            <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,10,0"
+                                    Classes="goldenDeck" Content="Auto"
+                                    Command="{Binding AutoMoveCommand}" />
 
-                                    <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center"
-                                                HorizontalAlignment="Center" Margin="20,5">
+                            <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center"
+                                        HorizontalAlignment="Center" Margin="20,5">
 
-                                        <TextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="60">
-                                            <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
-                                                 Text="SCORE" />
-                                            <LineBreak />
-                                            <Run FontSize="24" Text="{Binding Score}" />
-                                        </TextBlock>
-                                        <TextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="60">
-                                            <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
-                                                 Text="MOVES" />
-                                            <LineBreak />
-                                            <Run FontSize="24" Text="{Binding Moves}" />
-                                        </TextBlock>
-                                        <TextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="70">
-                                            <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
-                                                 Text="TIME" />
-                                            <LineBreak />
-                                            <Run FontSize="24"
-                                                 Text="{Binding ElapsedTime, Converter={StaticResource TimeSpanToShortStringConverter}, Mode=OneWay}" />
-                                        </TextBlock>
+                                <TextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="60">
+                                    <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
+                                         Text="SCORE" />
+                                    <LineBreak />
+                                    <Run FontSize="24" Text="{Binding Score}" />
+                                </TextBlock>
+                                <TextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="60">
+                                    <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
+                                         Text="MOVES" />
+                                    <LineBreak />
+                                    <Run FontSize="24" Text="{Binding Moves}" />
+                                </TextBlock>
+                                <TextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="70">
+                                    <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
+                                         Text="TIME" />
+                                    <LineBreak />
+                                    <Run FontSize="24"
+                                         Text="{Binding ElapsedTime, Converter={StaticResource TimeSpanToShortStringConverter}, Mode=OneWay}" />
+                                </TextBlock>
 
-                                    </StackPanel>
-                                </DockPanel>
-                            </Border>
-                        </Border>
+                            </StackPanel>
+                        </DockPanel>
                     </Border>
 
                 </Viewbox>
@@ -303,8 +302,13 @@
         <Setter Property="RenderTransform" Value="translateY(0px)" />
     </Style>
 
-    <Style Selector="Border.goldenTrayBorder">
+
+    <Style Selector="Border.goldenTrayDummy">
         <Setter Property="(TextElement.FontFamily)" Value="{StaticResource CasinoFont}" />
+        <Setter Property="Padding" Value="10" />
+    </Style>
+
+    <Style Selector="Border.goldenTrayBorder">
         <Setter Property="CornerRadius" Value="10" />
         <Setter Property="BorderThickness" Value="2" />
         <Setter Property="Padding" Value="6" />
