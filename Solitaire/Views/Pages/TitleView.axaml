@@ -16,7 +16,7 @@
     <Viewbox MaxWidth="1000" Margin="20">
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10">
             <!-- The container for the statistics. -->
-            <Viewbox Stretch="UniformToFill" MaxWidth="300" Margin="0 20 0 0">
+            <Viewbox Stretch="UniformToFill" MaxWidth="300" Margin="0 20 0 0" ClipToBounds="False">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Image Height="70" Source="{StaticResource SolitaireGlyph}" Width="300" VerticalAlignment="Center"
                            Margin="20 0 0 -10">
@@ -30,7 +30,6 @@
                         <Run Foreground="White" Text="Built with" />
                         <InlineUIContainer>
                             <Image Width="24" Height="24" Margin="0" Source="{StaticResource Avalonia}" />
-
                         </InlineUIContainer>
                         <Run Foreground="White" Text="Avalonia UI" />
 
