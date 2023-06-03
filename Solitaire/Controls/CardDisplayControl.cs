@@ -57,7 +57,7 @@ public class CardDisplayControl : Control
             if (!(Application.Current?.TryGetResource(cardName, out var val) ?? false)) continue;
             if (val is not (DrawingImage and IImage img)) continue;
             img.Draw(drawingContext, new Rect(img.Size),
-                new Rect(new Size(pixelCardWidth, pixelCardHeight)).CenterRect(new Rect(new Size(pixelCardWidth, pixelCardHeight)).Deflate(3)));
+                new Rect(new Size(pixelCardWidth, pixelCardHeight)).CenterRect(new Rect(new Size(pixelCardWidth, pixelCardHeight)).Deflate(3 * scaling)));
         }
     }
 
