@@ -11,7 +11,7 @@ using Solitaire.Controls;
 
 namespace Solitaire.Behaviors;
 
-public class ConnectedTrayBehavior : Behavior<Control>
+public class ConnectedBackPanelBehavior : Behavior<Control>
 {
     private static Rect? _lastCallRect;
     private static CompositionCustomVisual? _customVisual;
@@ -19,7 +19,8 @@ public class ConnectedTrayBehavior : Behavior<Control>
     private static ImplicitAnimationCollection? _implicitAnimations;
     private static Action<Rect?>? UpdateTrayBoundsAction { get; set; }
     private static Canvas? MasterCanvas { get; set; }
-    
+    private static readonly BoxShadows DefaultBoxShadow = BoxShadows.Parse("0 0 50 0 Black");
+
     private bool _isBorderLayoutFirstTime = true;
 
     protected override void OnAttachedToVisualTree()
@@ -239,9 +240,9 @@ public class ConnectedTrayBehavior : Behavior<Control>
             drawingContext.FillRectangle(Brushes.Transparent, GetRenderBounds());
             var rb0 = GetRenderBounds().Deflate(CanvasPadding);
             var rb1 = rb0.Deflate(5);
-            BorderRenderHelper.Render(drawingContext, rb0, new Thickness(6),
+            BorderRenderHelper.RenderImmediate(drawingContext, rb0, new Thickness(6),
                 8, Brushes.Transparent,
-                Brushes.Gold, BoxShadows.Parse("0 0 50 0 Black"), borderLineCap: PenLineCap.Round);
+                Brushes.Gold, DefaultBoxShadow, borderLineCap: PenLineCap.Round);
             RenderTiledNoise(drawingContext, rb1);
         }
     }

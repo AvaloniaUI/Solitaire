@@ -60,7 +60,7 @@
             </Panel.RenderTransform>
             <Canvas>
                 <Interaction.Behaviors>
-                    <behaviors:ConnectedTrayBehavior />
+                    <behaviors:ConnectedBackPanelBehavior />
                 </Interaction.Behaviors> 
             </Canvas>
             <ContentControl Content="{Binding CurrentView, Mode=OneWay}" />

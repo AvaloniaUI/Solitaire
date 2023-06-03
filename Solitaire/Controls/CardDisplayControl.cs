@@ -7,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.VisualTree;
+using Solitaire.Behaviors;
 using Solitaire.Models;
 using Solitaire.ViewModels;
 using Solitaire.Views;
@@ -15,15 +16,9 @@ namespace Solitaire.Controls;
 
 public class CardDisplayControl : Control
 {
-    public static RenderTargetBitmap? CardsTextureAtlas;
-    public static Dictionary<string, Rect>? CardsAtlasDictionary;
-
-
-    static CardDisplayControl()
-    {
-    }
-
+    private static Dictionary<string, RenderTargetBitmap>? _cardsAtlasDictionary;
     private CardType _cardType;
+    private static readonly BoxShadows DefaultBoxShadow = BoxShadows.Parse("0 5 40 -8 #88000000");
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
@@ -33,71 +28,46 @@ public class CardDisplayControl : Control
             vm.PropertyChanged += VmOnPropertyChanged;
             _cardType = vm.CardType;
         }
-        
+
         if ((!(Application.Current?.TryGetResource("CardWidth", out var cw) ?? false)) ||
             cw is not double cardWidth ||
             (!(Application.Current?.TryGetResource("CardHeight", out var ch) ?? false)) ||
             ch is not double cardHeight ||
-            this.GetVisualRoot()?.RenderScaling is not { } scaling)return;
-        
+            this.GetVisualRoot()?.RenderScaling is not { } scaling) return;
+
         Width = cardWidth;
         Height = cardHeight;
 
-            
-            if(CardsTextureAtlas is not null ||
-            CardsAtlasDictionary is not null) return;
 
-
+        if (_cardsAtlasDictionary is not null) return;
         var cardTypes = Enum.GetNames<CardType>().ToList();
         cardTypes.Add("CardBack");
+        _cardsAtlasDictionary = new();
 
-        var side = Math.Ceiling(Math.Sqrt(cardTypes.Count));
-        CardsAtlasDictionary = new Dictionary<string, Rect>();
-
-        var cardCount = 0;
-        for (var y = 0; y < side; y++)
-        for (var x = 0; x < side; x++)
+        foreach (var cardName in cardTypes)
         {
-            if (cardCount >= cardTypes.Count)
-                break;
+            _cardsAtlasDictionary.Add(cardName,
+                new RenderTargetBitmap(new PixelSize((int)cardWidth, (int)cardHeight), new Vector(96d, 96d) * scaling));
 
-            CardsAtlasDictionary.Add(cardTypes[cardCount], new Rect(
-                new Point(cardWidth * x, cardHeight * y),
-                new Size(cardWidth, cardHeight)));
-
-            cardCount++;
-        }
-
-        var maxPointX = CardsAtlasDictionary.Select(x => x.Value.BottomRight.X).Max();
-        var maxPointY = CardsAtlasDictionary.Select(x => x.Value.BottomRight.Y).Max();
-
-        CardsTextureAtlas = new RenderTargetBitmap(
-            new PixelSize((int)Math.Ceiling(maxPointX), (int)Math.Ceiling(maxPointY)),
-            new Vector(96d, 96d) * scaling);
-
-        using var drawingContext = CardsTextureAtlas.CreateDrawingContext();
-
-        foreach (var card in CardsAtlasDictionary)
-        {
-            if (!(Application.Current?.TryGetResource(card.Key, out var val) ?? false)) continue;
+            var targetBitmap = _cardsAtlasDictionary[cardName];
+            using var drawingContext = targetBitmap.CreateDrawingContext();
+            if (!(Application.Current?.TryGetResource(cardName, out var val) ?? false)) continue;
             if (val is not (DrawingImage and IImage img)) continue;
-
-            using (drawingContext.PushTransform(new TranslateTransform(card.Value.X, card.Value.Y).Value))
-            {
-                img.Draw(drawingContext, new Rect(img.Size),
-                    new Rect(new Size(cardWidth, cardHeight)));
-            }
+            img.Draw(drawingContext, new Rect(img.Size),
+                new Rect(new Size(cardWidth, cardHeight)).CenterRect(new Rect(new Size(cardWidth, cardHeight)).Deflate(3)));
         }
     }
 
     public override void Render(DrawingContext context)
     {
-        context.FillRectangle(Brushes.White, new Rect(Bounds.Size));
+        var renderBounds = new Rect(Bounds.Size);
+        if (DataContext is not PlayingCardViewModel vm || _cardsAtlasDictionary is null) return;
 
-        if ((DataContext is PlayingCardViewModel vm) && CardsTextureAtlas != null && (CardsAtlasDictionary != null))
-            context.DrawImage(CardsTextureAtlas,
-                CardsAtlasDictionary[vm.IsFaceDown ? "CardBack" : _cardType.ToString()],
-                new Rect(Bounds.Size).Deflate(6));
+        BorderRenderHelper.Render(context, renderBounds, new Thickness(1), 6, Brushes.White, Brushes.Gray,
+            vm.IsFaceDown ? new BoxShadows() : DefaultBoxShadow);
+
+        context.DrawImage(_cardsAtlasDictionary[vm.IsFaceDown ? "CardBack" : _cardType.ToString()],
+            renderBounds.Deflate(6));
 
         base.Render(context);
     }

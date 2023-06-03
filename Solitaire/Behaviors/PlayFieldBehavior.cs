@@ -15,10 +15,10 @@ using Solitaire.ViewModels;
 
 namespace Solitaire.Behaviors;
 
-public class CardFieldBehavior : Behavior<Canvas>
+public class PlayFieldBehavior : Behavior<Canvas>
 {
     public static readonly AttachedProperty<List<CardStackPlacementControl>> CardStacksProperty =
-        AvaloniaProperty.RegisterAttached<CardFieldBehavior, Control, List<CardStackPlacementControl>>(
+        AvaloniaProperty.RegisterAttached<PlayFieldBehavior, Control, List<CardStackPlacementControl>>(
             "CardStacks", inherits: true);
 
     public static void SetCardStacks(Control obj, List<CardStackPlacementControl> value) =>
@@ -31,7 +31,7 @@ public class CardFieldBehavior : Behavior<Canvas>
 
 
     private static readonly AttachedProperty<Vector?> HomePositionProperty =
-        AvaloniaProperty.RegisterAttached<CardFieldBehavior, AvaloniaObject, Vector?>(
+        AvaloniaProperty.RegisterAttached<PlayFieldBehavior, AvaloniaObject, Vector?>(
             "HomePosition");
 
     private static void SetHomePosition(AvaloniaObject obj, Vector? value) =>
@@ -171,7 +171,7 @@ public class CardFieldBehavior : Behavior<Canvas>
                 break;
             }
 
-            if (visual is not Border { DataContext: PlayingCardViewModel card } container) continue;
+            if (visual is not CardDisplayControl { DataContext: PlayingCardViewModel card } container) continue;
 
             var cardStacks = GetCardStacks(container);
 

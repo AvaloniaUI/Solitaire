@@ -20,9 +20,9 @@
             <ContentControl DockPanel.Dock="Bottom"
                             Template="{StaticResource DeckControls}" />
             <Viewbox Margin="10" ClipToBounds="False" StretchDirection="Both" Stretch="Uniform">
-                <behaviors:CardFieldBehavior.CardStacks>
+                <behaviors:PlayFieldBehavior.CardStacks>
                     <generic:List x:TypeArguments="controls:CardStackPlacementControl" />
-                </behaviors:CardFieldBehavior.CardStacks>
+                </behaviors:PlayFieldBehavior.CardStacks>
                 <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*,*" RowDefinitions="640,200"
                       ClipToBounds="False">
                     <!-- The tableaus. -->
@@ -111,7 +111,7 @@
                             Grid.Row="0"
                             Grid.RowSpan="2">
                         <Interaction.Behaviors>
-                            <behaviors:CardFieldBehavior />
+                            <behaviors:PlayFieldBehavior />
                         </Interaction.Behaviors>
                     </Canvas>
                 </Grid>

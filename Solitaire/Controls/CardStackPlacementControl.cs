@@ -14,7 +14,7 @@ public class CardStackPlacementControl : Border
     /// <inheritdoc />
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        var stacks = CardFieldBehavior.GetCardStacks(this);
+        var stacks = PlayFieldBehavior.GetCardStacks(this);
         stacks.Add(this);
         base.OnAttachedToVisualTree(e);
     }
@@ -22,7 +22,7 @@ public class CardStackPlacementControl : Border
     /// <inheritdoc />
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        var stacks = CardFieldBehavior.GetCardStacks(this);
+        var stacks = PlayFieldBehavior.GetCardStacks(this);
         stacks.Remove(this);
         base.OnDetachedFromVisualTree(e);
     }
