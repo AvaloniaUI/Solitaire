@@ -20,7 +20,7 @@
     <Panel>
         <DockPanel LastChildFill="True">
             <ContentControl DockPanel.Dock="Bottom" Template="{StaticResource DeckControls}" />
-            <Viewbox ClipToBounds="False" Stretch="Uniform">
+            <Viewbox ClipToBounds="False" Stretch="Uniform" VerticalAlignment="Top">
                 <behaviors:PlayFieldBehavior.CardStacks>
                     <generic:List x:TypeArguments="controls:CardStackPlacementControl" />
                 </behaviors:PlayFieldBehavior.CardStacks>
