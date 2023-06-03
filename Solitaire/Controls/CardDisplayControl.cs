@@ -38,7 +38,6 @@ public class CardDisplayControl : Control
         Width = cardWidth;
         Height = cardHeight;
 
-
         if (_cardsAtlasDictionary is not null) return;
         var cardTypes = Enum.GetNames<CardType>().ToList();
         cardTypes.Add("CardBack");
@@ -46,8 +45,11 @@ public class CardDisplayControl : Control
 
         foreach (var cardName in cardTypes)
         {
+            var pixelCardWidth = cardWidth * scaling;
+            var pixelCardHeight = cardWidth * scaling;
+            
             _cardsAtlasDictionary.Add(cardName,
-                new RenderTargetBitmap(new PixelSize((int)(cardWidth ), (int)(cardHeight ))
+                new RenderTargetBitmap(new PixelSize((int)(pixelCardWidth), (int)(pixelCardHeight ))
                     , new Vector(96d, 96d)));
 
             var targetBitmap = _cardsAtlasDictionary[cardName];
@@ -55,7 +57,7 @@ public class CardDisplayControl : Control
             if (!(Application.Current?.TryGetResource(cardName, out var val) ?? false)) continue;
             if (val is not (DrawingImage and IImage img)) continue;
             img.Draw(drawingContext, new Rect(img.Size),
-                new Rect(new Size(cardWidth, cardHeight)).CenterRect(new Rect(new Size(cardWidth, cardHeight)).Deflate(3)));
+                new Rect(new Size(pixelCardWidth, pixelCardHeight)).CenterRect(new Rect(new Size(pixelCardWidth, pixelCardHeight)).Deflate(3)));
         }
     }
 
