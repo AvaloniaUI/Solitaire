@@ -79,6 +79,9 @@ public class CardDisplayControl : Control
             case nameof(PlayingCardViewModel.CardType):
 
                 break;
+            case nameof(PlayingCardViewModel.IsFaceDown):
+                InvalidateVisual();
+                break;
         }
     }
 }
