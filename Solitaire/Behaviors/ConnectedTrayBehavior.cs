@@ -1,16 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.Numerics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using Avalonia.Media.Immutable;
 using Avalonia.Rendering.Composition;
 using Avalonia.Rendering.Composition.Animations;
-using Avalonia.Utilities;
 using Avalonia.Xaml.Interactivity;
-using Microsoft.VisualBasic;
 using Solitaire.Controls;
 
 namespace Solitaire.Behaviors;
@@ -94,7 +90,7 @@ public class ConnectedTrayBehavior : Behavior<Control>
         _implicitAnimations = compositor.CreateImplicitAnimationCollection();
         _implicitAnimations["Offset"] = offsetAnimation;
         _implicitAnimations["Size"] = sizeAnimation;
-        
+
         MasterCanvas.LayoutUpdated += MasterCanvasOnLayoutUpdated;
     }
 
@@ -112,9 +108,13 @@ public class ConnectedTrayBehavior : Behavior<Control>
     private static ImplicitAnimationCollection? _implicitAnimations;
     private bool _isBorderLayoutFirstTime = true;
 
-    private void UpdateTrayBounds(Rect? obj)
+    private void UpdateTrayBounds(Rect? rect)
     {
-        if (_isCanvasFirstTimeLayout && MasterCanvas is not null && obj is { } targetRect)
+        if (rect is not { } rectV) return;
+
+        var targetRect = rectV.Inflate(CanvasPadding);
+
+        if (_isCanvasFirstTimeLayout && MasterCanvas is not null)
         {
             var compositor = ElementComposition.GetElementVisual(MasterCanvas)?.Compositor;
             if (compositor == null || _customVisual?.Compositor == compositor)
@@ -123,15 +123,17 @@ public class ConnectedTrayBehavior : Behavior<Control>
             ElementComposition.SetElementChildVisual(MasterCanvas, _customVisual);
             _customVisual.Size = new Vector2((float)targetRect.Width, (float)targetRect.Size.Height);
             _customVisual.Offset = new Vector3((float)targetRect.Position.X, (float)targetRect.Position.Y, 0);
-            EnableAnimations();
             _customVisual.SendHandlerMessage(new CustomVisualHandler.MessageStruct("Start"));
+            EnableAnimations();
             _isCanvasFirstTimeLayout = false;
         }
 
-        if (AssociatedObject is not Canvas || _lastCallRect.Equals(obj)) return;
-        _lastCallRect = obj;
+        if (AssociatedObject is not Canvas || _lastCallRect.Equals(targetRect)) return;
+        _lastCallRect = targetRect;
         Update();
     }
+
+    private const int CanvasPadding = 50;
 
     private void Update()
     {
@@ -150,6 +152,7 @@ public class ConnectedTrayBehavior : Behavior<Control>
         {
             PayloadRect = targetRect
         });
+        
         DisableAnimations();
     }
 
@@ -191,10 +194,10 @@ public class ConnectedTrayBehavior : Behavior<Control>
                 case { Message: "Stop" }:
                     _running = false;
                     break;
-                case { Message: "FinalLayout", PayloadRect: { } payloadRect}:
+                case { Message: "FinalLayout", PayloadRect: { } payloadRect }:
                     _finalLayout = payloadRect;
                     break;
-                case { Message: "MasterCanvasLayout", PayloadRect: { } payloadRect}:
+                case { Message: "MasterCanvasLayout", PayloadRect: { } payloadRect }:
                     _canvasLayout = payloadRect;
                     break;
             }
@@ -221,29 +224,25 @@ public class ConnectedTrayBehavior : Behavior<Control>
 
         private void RenderTiledNoise(ImmediateDrawingContext drawingContext, Rect rect)
         {
-            drawingContext.FillRectangle(Brushes.Black, rect);
-            using (drawingContext.PushOpacity(0.08, rect))
-            using (drawingContext.PushClip(rect))
+            using (drawingContext.PushClip(new RoundedRect(rect, 8)))
             {
-                if (RandomNoiseTextureControl.NoiseTexture == null) return;
-                var bitmapSize = RandomNoiseTextureControl.NoiseTexture.Size;
-                var tileCount = rect.Size / bitmapSize;
-                for (var x = 0; x < Math.Ceiling(tileCount.X); x++)
-                for (var y = 0; y < Math.Ceiling(tileCount.Y); y++)
-                    drawingContext.DrawBitmap(RandomNoiseTextureControl.NoiseTexture, new Rect(new Point(
-                        rect.Position.X + (bitmapSize.Width * x),
-                        rect.Position.Y + (bitmapSize.Width * y)), bitmapSize));
+                drawingContext.FillRectangle(Brushes.Black, rect);
+                using (drawingContext.PushOpacity(0.08, rect))
+                {
+                    if (RandomNoiseTextureControl.NoiseTexture == null) return;
+                    var bitmapSize = RandomNoiseTextureControl.NoiseTexture.Size;
+                    var tileCount = rect.Size / bitmapSize;
+                    for (var x = 0; x < Math.Ceiling(tileCount.X); x++)
+                    for (var y = 0; y < Math.Ceiling(tileCount.Y); y++)
+                        drawingContext.DrawBitmap(RandomNoiseTextureControl.NoiseTexture, new Rect(new Point(
+                            rect.Position.X + (bitmapSize.Width * x),
+                            rect.Position.Y + (bitmapSize.Width * y)), bitmapSize));
+                }
             }
         }
 
         public override void OnRender(ImmediateDrawingContext drawingContext)
         {
-            var clearRenderBounds = GetRenderBounds().Inflate(50);
-            
-            clearRenderBounds = new Rect(Math.Round(clearRenderBounds.X), Math.Round(clearRenderBounds.Y),
-                Math.Round(clearRenderBounds.Width), Math.Round(clearRenderBounds.Height));
-            drawingContext.FillRectangle(Brushes.Transparent, clearRenderBounds);
-
             if (_running)
             {
                 if (_lastServerTime.HasValue) _animationElapsed += (CompositionNow - _lastServerTime.Value);
@@ -252,60 +251,13 @@ public class ConnectedTrayBehavior : Behavior<Control>
 
             if (_borderRenderHelper is null) return;
 
-            try
-            {
-                var rb1 = GetRenderBounds().Deflate(3);
-
-                RenderTiledNoise(drawingContext, rb1);
-                //
-                // _borderRenderHelper.Render(drawingContext, GetRenderBounds().Size, new Thickness(6),
-                //     8, Brushes.Transparent,
-                //     Brushes.Gold, BoxShadows.Parse("0 0 50 0 Black"), borderLineCap: PenLineCap.Round);
-                
-                _borderRenderHelper.Render(drawingContext, GetRenderBounds().Size, new Thickness(6),
-                    8, Brushes.Transparent,
-                    Brushes.Gold, default, borderLineCap: PenLineCap.Round);
-            }
-            catch (Exception)
-            {
-            }
+            drawingContext.FillRectangle(Brushes.Transparent, GetRenderBounds());
+            var rb0 = GetRenderBounds().Deflate(CanvasPadding);
+            var rb1 = rb0.Deflate(5);
+            BorderRenderHelper.Render(drawingContext, rb0, new Thickness(6),
+                8, Brushes.Transparent,
+                Brushes.Gold, BoxShadows.Parse("0 0 50 0 Black"), borderLineCap: PenLineCap.Round);
+            RenderTiledNoise(drawingContext, rb1);
         }
-    }
-}
-
-internal class BorderRenderHelper
-{
-    public void Render(ImmediateDrawingContext context,
-        Size finalSize, Thickness borderThickness, int cornerRadius,
-        IBrush? background, IBrush? borderBrush, BoxShadows boxShadows, double borderDashOffset = 0,
-        PenLineCap borderLineCap = PenLineCap.Flat, PenLineJoin borderLineJoin = PenLineJoin.Miter,
-        IReadOnlyCollection<double>? borderDashArray = null)
-    {
-        var bordThick = borderThickness.Top;
-        IPen? pen = null;
-
-        ImmutableDashStyle? dashStyle = null;
-
-        if (borderDashArray is { Count: > 0 })
-        {
-            dashStyle = new ImmutableDashStyle(borderDashArray, borderDashOffset);
-        }
-
-        if (borderBrush != null && bordThick > 0)
-        {
-            pen = new ImmutablePen(
-                borderBrush.ToImmutable(),
-                bordThick,
-                dashStyle,
-                borderLineCap,
-                borderLineJoin);
-        }
-
-        var rect = new Rect(finalSize);
-        if (!MathUtilities.IsZero(bordThick))
-            rect = rect.Deflate(bordThick * 0.5);
-        if (background == null || pen == null) return;
-        context.DrawRectangle(background.ToImmutable(), pen.ToImmutable(), rect, cornerRadius, cornerRadius,
-            boxShadows);
     }
 }

@@ -7,6 +7,8 @@
              xmlns:controls="clr-namespace:Solitaire.Controls"
              xmlns:behaviors="clr-namespace:Solitaire.Behaviors"
              x:DataType="viewModels:CasinoViewModel"
+             MinWidth="360"
+             MinHeight="640"
              TextElement.Foreground="White"
              x:CompileBindings="True"
              mc:Ignorable="d"
