@@ -9,7 +9,6 @@
     <Application.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
-
         <ResourceDictionary>
           <ControlTheme x:Key="{x:Type EmbeddableControlRoot}" TargetType="EmbeddableControlRoot">
             <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAltHighBrush}"/>

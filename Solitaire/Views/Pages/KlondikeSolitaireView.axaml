@@ -25,7 +25,7 @@
             </behaviors:CardFieldBehavior.CardStacks>
             <ContentControl DockPanel.Dock="Bottom"
                             Template="{StaticResource DeckControls}" />
-            <Viewbox Margin="10" ClipToBounds="False" StretchDirection="Both" Stretch="Uniform">
+            <Viewbox Margin="10" ClipToBounds="False" StretchDirection="Both" Stretch="Uniform" VerticalAlignment="Top">
                 <!-- This is the layout grid for the tableaus, foundations etc. -->
                 <Grid ColumnDefinitions="*,*,*,*,*,*,*" RowDefinitions="240,600">
 
