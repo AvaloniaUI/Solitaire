@@ -27,7 +27,7 @@ public class CardFieldBehavior : Behavior<Canvas>
     public static List<CardStackPlacementControl> GetCardStacks(Control obj) => obj.GetValue(CardStacksProperty);
 
 
-    private readonly Dictionary<PlayingCardViewModel, ContentControl> _containerCache = new();
+    private readonly Dictionary<PlayingCardViewModel, CardDisplayControl> _containerCache = new();
 
 
     private static readonly AttachedProperty<Vector?> HomePositionProperty =
@@ -58,7 +58,7 @@ public class CardFieldBehavior : Behavior<Canvas>
         ResetDrag();
     }
 
-    private List<ContentControl>? _draggingContainers;
+    private List<CardDisplayControl>? _draggingContainers;
     private List<PlayingCardViewModel>? _draggingCards;
     private bool _isDragging;
     private Point _startPoint;
@@ -185,7 +185,7 @@ public class CardFieldBehavior : Behavior<Canvas>
 
             if (card.IsPlayable && !_isDragging)
             {
-                _draggingContainers = new List<ContentControl>();
+                _draggingContainers = new List<CardDisplayControl>();
                 _draggingCards = new List<PlayingCardViewModel>();
                 _startZIndices = new();
                 _homePoints = new();
@@ -248,7 +248,6 @@ public class CardFieldBehavior : Behavior<Canvas>
     {
         if (AssociatedObject?.DataContext is not CardGameViewModel model) return;
 
-        //    EnsureImplicitAnimations();
 
         var cardsList = model.Deck;
         var cardStacks = GetCardStacks(AssociatedObject);
@@ -264,16 +263,15 @@ public class CardFieldBehavior : Behavior<Canvas>
         if (cardsList != null)
             foreach (var card in cardsList)
             {
-                var container = new ContentControl
+                var container = new CardDisplayControl()
                 {
-                    Content = card,
+                    DataContext = card,
                     ZIndex = -1,
                     ClipToBounds = false
                 };
 
                 _containerCache.Add(card, container);
                 AssociatedObject.Children.Add(container);
-
                 SetCanvasPosition(container, homePosition);
             }
 
@@ -356,10 +354,8 @@ public class CardFieldBehavior : Behavior<Canvas>
                     faceDownOffset = parent.FaceDownOffset ?? default;
                     faceUpOffset = parent.FaceUpOffset ?? default;
                 }
-
                 break;
-
-
+            
             case OffsetMode.TopNCards:
                 //  Offset only if (Total - N) <= n < Total
                 var k = (int)parent.NValue;
@@ -369,7 +365,6 @@ public class CardFieldBehavior : Behavior<Canvas>
                     faceDownOffset = parent.FaceDownOffset ?? default;
                     faceUpOffset = parent.FaceUpOffset ?? default;
                 }
-
                 break;
 
             case OffsetMode.BottomNCards:

@@ -6,7 +6,6 @@
         xmlns:behaviors="clr-namespace:Solitaire.Behaviors">
     <Styles.Resources>
         <converters:TimeSpanToShortStringConverter x:Key="TimeSpanToShortStringConverter" />
-        <converters:PlayingCardToBrushConverter x:Key="PlayingCardToBrushConverter" />
         <converters:EnumToIntConverter x:Key="EnumToIntConverter" />
         <x:Double x:Key="CardWidth">160</x:Double>
         <x:Double x:Key="CardHeight">232</x:Double>
@@ -132,43 +131,17 @@
         </ControlTemplate>
 
         <DataTemplate x:Key="PlayingCardDataTemplate" DataType="{x:Type vm:PlayingCardViewModel}">
-            <Panel
-                Width="{StaticResource CardWidth}"
-                Height="{StaticResource CardHeight}">
-                <Panel Classes="playingCardBack" IsVisible="{Binding IsFaceDown}">
-                    <Border
-                        Background="White" Cursor="Hand"
-                        BorderBrush="Gray"
-                        BorderThickness="1" CornerRadius="6">
-                        <Image Margin="4" Source="{StaticResource CardBack}" />
-                        <Border.RenderTransform>
-                            <Rotate3DTransform
-                                AngleY="180" />
-                        </Border.RenderTransform>
-                    </Border>
-                </Panel>
-                <Panel Classes="playingCardFront" IsVisible="{Binding !IsFaceDown}">
-                    <Border
-                        Background="White"
-                        Classes.isFaceDown="{Binding IsFaceDown}"
-                        Cursor="Hand"
-                        BorderBrush="Gray"
-                        BorderThickness="1" CornerRadius="6">
-                        <Image Margin="4"
-                               Source="{Binding CardType, Converter={StaticResource PlayingCardToBrushConverter}}" />
-                    </Border>
-                </Panel>
-            </Panel>
+            <controls:CardDisplayControl/>
         </DataTemplate>
     </Styles.Resources>
-
-    <Style Selector="ContentControl.playingCard.lastCard Panel.playingCardFront Border">
-        <Setter Property="BoxShadow" Value="0 5 40 -8 #EE000000" />
-    </Style>
-
-    <Style Selector="ContentControl.playingCard.lastCard Panel.playingCardBack Border">
-        <Setter Property="BoxShadow" Value="0 5 40 -8 #88000000" />
-    </Style>
+    <!-- -->
+    <!-- <Style Selector="ContentControl.playingCard.lastCard Panel.playingCardFront Border"> -->
+    <!--     <Setter Property="BoxShadow" Value="0 5 40 -8 #EE000000" /> -->
+    <!-- </Style> -->
+    <!-- -->
+    <!-- <Style Selector="ContentControl.playingCard.lastCard Panel.playingCardBack Border"> -->
+    <!--     <Setter Property="BoxShadow" Value="0 5 40 -8 #88000000" /> -->
+    <!-- </Style> -->
 
     <Style Selector="TextBlock.CasinoTextStyle">
         <Setter Property="Foreground" Value="#99FFFFFF" />
@@ -279,7 +252,7 @@
         <Setter Property="Opacity" Value="0.5" />
     </Style>
 
-    <Style Selector="ContentControl.playingCard:not(.dragging)">
+    <Style Selector="controls|CardDisplayControl:not(.dragging)">
         <Setter Property="Transitions">
             <Transitions>
                 <IntegerTransition Property="ZIndex" Easing="1,0,1,0" Duration="0:0:0.35" />

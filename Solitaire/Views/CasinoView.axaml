@@ -65,6 +65,7 @@
             </Canvas>
             <ContentControl Content="{Binding CurrentView, Mode=OneWay}" />
         </Panel>
+        <controls:CardDisplayControl x:Name="Dummy" IsVisible="False"/>
     </Panel>
 
 </UserControl>

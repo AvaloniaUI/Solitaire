@@ -13,8 +13,14 @@ namespace Solitaire.Behaviors;
 
 public class ConnectedTrayBehavior : Behavior<Control>
 {
+    private static Rect? _lastCallRect;
+    private static CompositionCustomVisual? _customVisual;
+    private static bool _isCanvasFirstTimeLayout = true;
+    private static ImplicitAnimationCollection? _implicitAnimations;
     private static Action<Rect?>? UpdateTrayBoundsAction { get; set; }
     private static Canvas? MasterCanvas { get; set; }
+    
+    private bool _isBorderLayoutFirstTime = true;
 
     protected override void OnAttachedToVisualTree()
     {
@@ -40,11 +46,9 @@ public class ConnectedTrayBehavior : Behavior<Control>
 
     private void BorderOnUnload(object? sender, RoutedEventArgs e)
     {
-        if (sender is Border border)
-        {
-            border.LayoutUpdated -= BorderOnLayoutUpdated;
-            DisableAnimations();
-        }
+        if (sender is not Border border) return;
+        border.LayoutUpdated -= BorderOnLayoutUpdated;
+        DisableAnimations();
     }
 
     private void BorderOnLoaded(object? sender, RoutedEventArgs e)
@@ -90,23 +94,8 @@ public class ConnectedTrayBehavior : Behavior<Control>
         _implicitAnimations = compositor.CreateImplicitAnimationCollection();
         _implicitAnimations["Offset"] = offsetAnimation;
         _implicitAnimations["Size"] = sizeAnimation;
-
-        MasterCanvas.LayoutUpdated += MasterCanvasOnLayoutUpdated;
     }
 
-    private void MasterCanvasOnLayoutUpdated(object? sender, EventArgs e)
-    {
-        _customVisual?.SendHandlerMessage(new CustomVisualHandler.MessageStruct("MasterCanvasLayout")
-        {
-            PayloadRect = MasterCanvas?.Bounds
-        });
-    }
-
-    private static Rect? _lastCallRect;
-    private static CompositionCustomVisual? _customVisual;
-    private static bool _isCanvasFirstTimeLayout = true;
-    private static ImplicitAnimationCollection? _implicitAnimations;
-    private bool _isBorderLayoutFirstTime = true;
 
     private void UpdateTrayBounds(Rect? rect)
     {
@@ -152,7 +141,7 @@ public class ConnectedTrayBehavior : Behavior<Control>
         {
             PayloadRect = targetRect
         });
-        
+
         DisableAnimations();
     }
 
@@ -175,7 +164,6 @@ public class ConnectedTrayBehavior : Behavior<Control>
         private bool _running;
         private BorderRenderHelper? _borderRenderHelper;
         private Rect? _finalLayout;
-        private Rect? _canvasLayout;
 
         public record struct MessageStruct(string Message, Rect? PayloadRect = null);
 
@@ -196,9 +184,6 @@ public class ConnectedTrayBehavior : Behavior<Control>
                     break;
                 case { Message: "FinalLayout", PayloadRect: { } payloadRect }:
                     _finalLayout = payloadRect;
-                    break;
-                case { Message: "MasterCanvasLayout", PayloadRect: { } payloadRect }:
-                    _canvasLayout = payloadRect;
                     break;
             }
         }
