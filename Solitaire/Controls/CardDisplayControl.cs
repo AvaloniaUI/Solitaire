@@ -46,10 +46,10 @@ public class CardDisplayControl : Control
         foreach (var cardName in cardTypes)
         {
             var pixelCardWidth = cardWidth * scaling;
-            var pixelCardHeight = cardWidth * scaling;
+            var pixelCardHeight = cardHeight * scaling;
             
             _cardsAtlasDictionary.Add(cardName,
-                new RenderTargetBitmap(new PixelSize((int)(pixelCardWidth), (int)(pixelCardHeight ))
+                new RenderTargetBitmap(new PixelSize((int)pixelCardWidth, (int)pixelCardHeight)
                     , new Vector(96d, 96d)));
 
             var targetBitmap = _cardsAtlasDictionary[cardName];
