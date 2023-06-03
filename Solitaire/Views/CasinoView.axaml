@@ -56,21 +56,10 @@
                     <TranslateTransform />
                 </TransformGroup>
             </Panel.RenderTransform>
-            <Canvas Classes="goldenTrayCanvas">
+            <Canvas>
                 <Interaction.Behaviors>
                     <behaviors:ConnectedTrayBehavior />
-                </Interaction.Behaviors>
-                <Border Classes="goldenTrayBorder downDeck"
-                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                        BoxShadow="0 20 60 -20 Black">
-                    <Border.RenderTransform>
-                        <ScaleTransform></ScaleTransform>
-                    </Border.RenderTransform>
-                    <Border Classes="goldenTrayInner">
-                        <Border Classes="goldenTrayInnerBg">
-                        </Border>
-                    </Border>
-                </Border>
+                </Interaction.Behaviors> 
             </Canvas>
             <ContentControl Content="{Binding CurrentView, Mode=OneWay}" />
         </Panel>

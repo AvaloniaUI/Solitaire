@@ -10,13 +10,13 @@ public class RandomNoiseTextureControl : Control
 {
     private const int DesiredWidth = 300;
     private const int DesiredHeight = 300;
-    private static RenderTargetBitmap? _texture;
+    internal static RenderTargetBitmap? NoiseTexture;
 
     private static readonly Random Rng = new();
 
     public RandomNoiseTextureControl()
     {
-        if (_texture is not { })
+        if (NoiseTexture is not { })
         {
             GenerateNoise();
         }
@@ -29,16 +29,16 @@ public class RandomNoiseTextureControl : Control
 
     public override void Render(DrawingContext context)
     {
-        if (_texture is not { }) return;
-        context.DrawImage(_texture, new Rect(0, 0, DesiredWidth, DesiredHeight));
+        if (NoiseTexture is null) return;
+        context.DrawImage(NoiseTexture, new Rect(0, 0, DesiredWidth, DesiredHeight));
         base.Render(context);
     }
 
     private void GenerateNoise()
     {
-        _texture = new RenderTargetBitmap(new PixelSize(DesiredWidth, DesiredHeight));
+        NoiseTexture = new RenderTargetBitmap(new PixelSize(DesiredWidth, DesiredHeight));
 
-        using var dc = _texture.CreateDrawingContext();
+        using var dc = NoiseTexture.CreateDrawingContext();
 
         for (var i = 0; i < DesiredHeight; i++)
         for (var j = 0; j < DesiredWidth; j++)
