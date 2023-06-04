@@ -80,7 +80,7 @@
                             Classes.animateUp="{Binding !IsGameWon}" Margin="0,0,0,-15"
                             BoxShadow="0 -6 30 -9 Black">
                         <Interaction.Behaviors>
-                            <behaviors:ConnectedBackPanelBehavior />
+                            <behaviors:GoldenPanelBorderBehavior />
                         </Interaction.Behaviors>
                         <DockPanel LastChildFill="True">
                             <Button DockPanel.Dock="Left" VerticalAlignment="Center" Margin="10,0,0,0"

@@ -21,7 +21,7 @@
                 <!-- The casino commands. -->
                 <Border Classes="goldenTrayDummy">
                     <Interaction.Behaviors>
-                        <behaviors:ConnectedBackPanelBehavior />
+                        <behaviors:GoldenPanelBorderBehavior />
                     </Interaction.Behaviors>
                     <DockPanel LastChildFill="True">
                         <Viewbox DockPanel.Dock="Bottom">

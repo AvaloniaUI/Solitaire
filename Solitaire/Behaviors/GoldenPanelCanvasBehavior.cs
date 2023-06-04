@@ -6,35 +6,23 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Rendering.Composition;
 using Avalonia.Rendering.Composition.Animations;
-using Avalonia.Xaml.Interactivity;
 using Solitaire.Controls;
 
 namespace Solitaire.Behaviors;
 
-public class ConnectedBackPanelBehavior : Behavior<Control>
+public class GoldenPanelCanvasBehavior : GoldenPanelBaseBehavior
 {
-    private static Rect? _lastCallRect;
-    private static CompositionCustomVisual? _customVisual;
-    private static bool _isCanvasFirstTimeLayout = true;
-    private static ImplicitAnimationCollection? _implicitAnimations;
-    private static Action<Rect?>? UpdateTrayBoundsAction { get; set; }
-    private static Canvas? MasterCanvas { get; set; }
-    private static readonly BoxShadows DefaultBoxShadow = BoxShadows.Parse("0 0 50 0 Black");
-
-    private bool _isBorderLayoutFirstTime = true;
+    private Rect? _lastCallRect;
+    private CompositionCustomVisual? _customVisual;
+    private bool _isCanvasFirstTimeLayout = true;
+    private ImplicitAnimationCollection? _implicitAnimations;
 
     protected override void OnAttachedToVisualTree()
     {
-        switch (AssociatedObject)
+        if (AssociatedObject is Canvas)
         {
-            case Canvas:
-                AssociatedObject.Loaded += CanvasOnLoaded;
-                AssociatedObject.Unloaded -= CanvasOnUnloaded;
-                break;
-            case Border:
-                AssociatedObject.Loaded += BorderOnLoaded;
-                AssociatedObject.Unloaded += BorderOnUnload;
-                break;
+            AssociatedObject.Loaded += CanvasOnLoaded;
+            AssociatedObject.Unloaded -= CanvasOnUnloaded;
         }
 
         base.OnAttachedToVisualTree();
@@ -43,36 +31,6 @@ public class ConnectedBackPanelBehavior : Behavior<Control>
     private void CanvasOnUnloaded(object? sender, RoutedEventArgs e)
     {
         _customVisual?.SendHandlerMessage(new CustomVisualHandler.MessageStruct("Stop"));
-    }
-
-    private void BorderOnUnload(object? sender, RoutedEventArgs e)
-    {
-        if (sender is not Border border) return;
-        border.LayoutUpdated -= BorderOnLayoutUpdated;
-        DisableAnimations();
-    }
-
-    private void BorderOnLoaded(object? sender, RoutedEventArgs e)
-    {
-        if (sender is not Border border) return;
-        border.LayoutUpdated += BorderOnLayoutUpdated;
-        if (UpdateTrayBoundsAction is null || MasterCanvas is null) return;
-        var t = border.TransformToVisual(MasterCanvas);
-        if (t is not { } m) return;
-        var z = m.Transform(border.Bounds.TopLeft);
-        var w = m.Transform(border.Bounds.BottomRight);
-        EnableAnimations();
-        UpdateTrayBoundsAction(new Rect(z, w));
-    }
-
-    private void BorderOnLayoutUpdated(object? sender, EventArgs e)
-    {
-        if (sender is not Border border || UpdateTrayBoundsAction is null || MasterCanvas is null) return;
-        var t = border.TransformToVisual(MasterCanvas);
-        if (t is not { } m) return;
-        var z = m.Transform(border.Bounds.TopLeft);
-        var w = m.Transform(border.Bounds.BottomRight);
-        UpdateTrayBoundsAction(new Rect(z, w));
     }
 
     private void CanvasOnLoaded(object? sender, RoutedEventArgs e)
@@ -97,8 +55,7 @@ public class ConnectedBackPanelBehavior : Behavior<Control>
         _implicitAnimations["Size"] = sizeAnimation;
     }
 
-
-    private void UpdateTrayBounds(Rect? rect)
+    private void UpdateTrayBounds(Rect? rect, bool animationsEnabled)
     {
         if (rect is not { } rectV) return;
 
@@ -120,6 +77,8 @@ public class ConnectedBackPanelBehavior : Behavior<Control>
 
         if (AssociatedObject is not Canvas || _lastCallRect.Equals(targetRect)) return;
         _lastCallRect = targetRect;
+        if (animationsEnabled) EnableAnimations();
+        else DisableAnimations();
         Update();
     }
 
@@ -133,11 +92,6 @@ public class ConnectedBackPanelBehavior : Behavior<Control>
         _customVisual.Size = new Vector2((float)targetRect.Width, (float)targetRect.Size.Height);
         _customVisual.Offset = new Vector3((float)targetRect.Position.X, (float)targetRect.Position.Y, 0);
 
-        if (_isBorderLayoutFirstTime)
-        {
-            _isBorderLayoutFirstTime = false;
-        }
-
         _customVisual.SendHandlerMessage(new CustomVisualHandler.MessageStruct("FinalLayout")
         {
             PayloadRect = targetRect
@@ -146,20 +100,24 @@ public class ConnectedBackPanelBehavior : Behavior<Control>
         DisableAnimations();
     }
 
-    private static void EnableAnimations()
+    private void EnableAnimations()
     {
-        if (_customVisual != null && _implicitAnimations != null)
+        if (_customVisual is { ImplicitAnimations: null } && _implicitAnimations is null)
             _customVisual.ImplicitAnimations = _implicitAnimations;
     }
 
-    private static void DisableAnimations()
+    private void DisableAnimations()
     {
-        if (_customVisual != null)
+        if (_customVisual is { ImplicitAnimations: not null })
             _customVisual.ImplicitAnimations = null;
     }
 
     private class CustomVisualHandler : CompositionCustomVisualHandler
     {
+        private readonly IImmutableBrush _brush0 = Brushes.Transparent.ToImmutable();
+        private readonly IImmutableBrush _brush1 = Brushes.Gold.ToImmutable();
+        private readonly BoxShadows _defaultBoxShadow = BoxShadows.Parse("0 0 50 0 Black");
+
         private TimeSpan _animationElapsed;
         private TimeSpan? _lastServerTime;
         private bool _running;
@@ -236,19 +194,15 @@ public class ConnectedBackPanelBehavior : Behavior<Control>
             }
 
             if (_borderRenderHelper is null) return;
-            
-            // drawingContext.FillRectangle(brush0, GetRenderBounds());
+
             var rb0 = GetRenderBounds().Deflate(CanvasPadding);
             var rb1 = rb0.Deflate(5);
+
             BorderRenderHelper.RenderImmediate(drawingContext, rb0, new Thickness(6),
-                8, brush0,
-                brush1, DefaultBoxShadow, borderLineCap: PenLineCap.Round);
+                8, _brush0,
+                _brush1, _defaultBoxShadow, borderLineCap: PenLineCap.Round);
+
             RenderTiledNoise(drawingContext, rb1);
         }
     }
-    
-    
-    private static IImmutableBrush brush0 = Brushes.Transparent.ToImmutable();
-    private static IImmutableBrush brush1 = Brushes.Gold.ToImmutable();
-
 }

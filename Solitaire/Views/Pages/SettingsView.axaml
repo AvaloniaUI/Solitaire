@@ -20,7 +20,7 @@
 
                 <Border Classes="goldenTrayDummy">
                     <Interaction.Behaviors>
-                        <behaviors:ConnectedBackPanelBehavior />
+                        <behaviors:GoldenPanelBorderBehavior />
                     </Interaction.Behaviors>
                     <StackPanel Spacing="10" Orientation="Vertical" Margin="10">
                         <Grid ColumnDefinitions="*,Auto,*" VerticalAlignment="Center" Margin="5">
