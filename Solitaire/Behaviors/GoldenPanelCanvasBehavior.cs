@@ -30,7 +30,7 @@ public class GoldenPanelCanvasBehavior : GoldenPanelBaseBehavior
 
     private void CanvasOnUnloaded(object? sender, RoutedEventArgs e)
     {
-        _customVisual?.SendHandlerMessage(new CustomVisualHandler.MessageStruct("Stop"));
+        _customVisual?.SendHandlerMessage(new CustomVisualHandler.MessageStruct(CustomVisualHandler.CustomVisualMessage.Stop));
     }
 
     private void CanvasOnLoaded(object? sender, RoutedEventArgs e)
@@ -70,7 +70,7 @@ public class GoldenPanelCanvasBehavior : GoldenPanelBaseBehavior
             ElementComposition.SetElementChildVisual(MasterCanvas, _customVisual);
             _customVisual.Size = new Vector2((float)targetRect.Width, (float)targetRect.Size.Height);
             _customVisual.Offset = new Vector3((float)targetRect.Position.X, (float)targetRect.Position.Y, 0);
-            _customVisual.SendHandlerMessage(new CustomVisualHandler.MessageStruct("Start"));
+            _customVisual.SendHandlerMessage(new CustomVisualHandler.MessageStruct(CustomVisualHandler.CustomVisualMessage.Start));
             _isCanvasFirstTimeLayout = false;
         }
 
@@ -95,7 +95,7 @@ public class GoldenPanelCanvasBehavior : GoldenPanelBaseBehavior
         _customVisual.Size = new Vector2((float)targetRect.Width, (float)targetRect.Size.Height);
         _customVisual.Offset = new Vector3((float)targetRect.Position.X, (float)targetRect.Position.Y, 0);
 
-        _customVisual.SendHandlerMessage(new CustomVisualHandler.MessageStruct("FinalLayout")
+        _customVisual.SendHandlerMessage(new CustomVisualHandler.MessageStruct(CustomVisualHandler.CustomVisualMessage.EndValueBounds)
         {
             PayloadRect = targetRect
         });
@@ -125,7 +125,15 @@ public class GoldenPanelCanvasBehavior : GoldenPanelBaseBehavior
         private BorderRenderHelper? _borderRenderHelper;
         private Rect? _finalLayout;
 
-        public record struct MessageStruct(string Message, Rect? PayloadRect = null);
+
+        public enum CustomVisualMessage
+        {
+            Start,
+            Stop,
+            EndValueBounds
+        }
+
+        public record struct MessageStruct(CustomVisualMessage Message, Rect? PayloadRect = null);
 
         public override void OnMessage(object message)
         {
@@ -133,16 +141,16 @@ public class GoldenPanelCanvasBehavior : GoldenPanelBaseBehavior
 
             switch (msg)
             {
-                case { Message: "Start" }:
+                case { Message: CustomVisualMessage.Start }:
                     _running = true;
                     _lastServerTime = null;
                     _borderRenderHelper = new BorderRenderHelper();
                     RegisterForNextAnimationFrameUpdate();
                     break;
-                case { Message: "Stop" }:
+                case { Message: CustomVisualMessage.Stop }:
                     _running = false;
                     break;
-                case { Message: "FinalLayout", PayloadRect: { } payloadRect }:
+                case { Message: CustomVisualMessage.EndValueBounds, PayloadRect: { } payloadRect }:
                     _finalLayout = payloadRect;
                     break;
             }
