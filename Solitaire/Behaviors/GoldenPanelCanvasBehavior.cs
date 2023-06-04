@@ -71,14 +71,17 @@ public class GoldenPanelCanvasBehavior : GoldenPanelBaseBehavior
             _customVisual.Size = new Vector2((float)targetRect.Width, (float)targetRect.Size.Height);
             _customVisual.Offset = new Vector3((float)targetRect.Position.X, (float)targetRect.Position.Y, 0);
             _customVisual.SendHandlerMessage(new CustomVisualHandler.MessageStruct("Start"));
-            EnableAnimations();
             _isCanvasFirstTimeLayout = false;
         }
 
         if (AssociatedObject is not Canvas || _lastCallRect.Equals(targetRect)) return;
         _lastCallRect = targetRect;
-        if (animationsEnabled) EnableAnimations();
-        else DisableAnimations();
+        
+        if (animationsEnabled) 
+            EnableAnimations();
+        else 
+            DisableAnimations();
+        
         Update();
     }
 
@@ -96,19 +99,17 @@ public class GoldenPanelCanvasBehavior : GoldenPanelBaseBehavior
         {
             PayloadRect = targetRect
         });
-
-        DisableAnimations();
     }
 
     private void EnableAnimations()
     {
-        if (_customVisual is { ImplicitAnimations: null } && _implicitAnimations is null)
+        if (_customVisual is not null && _implicitAnimations is not null)
             _customVisual.ImplicitAnimations = _implicitAnimations;
     }
 
     private void DisableAnimations()
     {
-        if (_customVisual is { ImplicitAnimations: not null })
+        if (_customVisual is not null)
             _customVisual.ImplicitAnimations = null;
     }
 

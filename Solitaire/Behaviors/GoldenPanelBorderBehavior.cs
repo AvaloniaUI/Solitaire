@@ -1,19 +1,13 @@
 using System;
-using System.Numerics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Media;
-using Avalonia.Rendering.Composition;
-using Avalonia.Rendering.Composition.Animations;
-using Avalonia.Xaml.Interactivity;
-using Solitaire.Controls;
 
 namespace Solitaire.Behaviors;
 
 public class GoldenPanelBorderBehavior : GoldenPanelBaseBehavior
 {
-    private bool _animationsEnabled;
+    private bool _animationsEnabled = true;
 
     protected override void OnAttachedToVisualTree()
     {
@@ -21,7 +15,6 @@ public class GoldenPanelBorderBehavior : GoldenPanelBaseBehavior
         {
             border.Loaded += BorderOnLoaded;
             border.Unloaded += BorderOnUnload;
-            _animationsEnabled = true;
         }
 
         base.OnAttachedToVisualTree();
@@ -31,7 +24,6 @@ public class GoldenPanelBorderBehavior : GoldenPanelBaseBehavior
     {
         if (sender is not Border border) return;
         border.LayoutUpdated -= BorderOnLayoutUpdated;
-        _animationsEnabled = true;
     }
 
     private void BorderOnLoaded(object? sender, RoutedEventArgs e)
@@ -43,8 +35,8 @@ public class GoldenPanelBorderBehavior : GoldenPanelBaseBehavior
         if (t is not { } m) return;
         var z = m.Transform(border.Bounds.TopLeft);
         var w = m.Transform(border.Bounds.BottomRight);
-        _animationsEnabled = true;
         UpdateTrayBoundsAction(new Rect(z, w), _animationsEnabled);
+        _animationsEnabled = false;
     }
 
     private void BorderOnLayoutUpdated(object? sender, EventArgs e)
@@ -54,12 +46,7 @@ public class GoldenPanelBorderBehavior : GoldenPanelBaseBehavior
         if (t is not { } m) return;
         var z = m.Transform(border.Bounds.TopLeft);
         var w = m.Transform(border.Bounds.BottomRight);
-
-        if (_animationsEnabled)
-        {
-            _animationsEnabled = false;
-        }
-
+        
         UpdateTrayBoundsAction(new Rect(z, w), _animationsEnabled);
     }
 }
