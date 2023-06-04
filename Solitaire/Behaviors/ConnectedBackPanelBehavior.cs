@@ -236,14 +236,19 @@ public class ConnectedBackPanelBehavior : Behavior<Control>
             }
 
             if (_borderRenderHelper is null) return;
-
-            drawingContext.FillRectangle(Brushes.Transparent, GetRenderBounds());
+            
+            // drawingContext.FillRectangle(brush0, GetRenderBounds());
             var rb0 = GetRenderBounds().Deflate(CanvasPadding);
             var rb1 = rb0.Deflate(5);
             BorderRenderHelper.RenderImmediate(drawingContext, rb0, new Thickness(6),
-                8, Brushes.Transparent,
-                Brushes.Gold, DefaultBoxShadow, borderLineCap: PenLineCap.Round);
+                8, brush0,
+                brush1, DefaultBoxShadow, borderLineCap: PenLineCap.Round);
             RenderTiledNoise(drawingContext, rb1);
         }
     }
+    
+    
+    private static IImmutableBrush brush0 = Brushes.Transparent.ToImmutable();
+    private static IImmutableBrush brush1 = Brushes.Gold.ToImmutable();
+
 }

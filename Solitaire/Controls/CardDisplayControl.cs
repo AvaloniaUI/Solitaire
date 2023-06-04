@@ -19,6 +19,8 @@ public class CardDisplayControl : Control
     private static Dictionary<string, RenderTargetBitmap>? _cardsAtlasDictionary;
     private CardType _cardType;
     private static readonly BoxShadows DefaultBoxShadow = BoxShadows.Parse("0 5 40 -8 #88000000");
+    private static readonly IBrush BgBrush = Brushes.White.ToImmutable();
+    private static readonly IBrush BorderBrush = Brushes.Gray.ToImmutable();
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
@@ -49,16 +51,17 @@ public class CardDisplayControl : Control
             var pixelCardHeight = cardHeight * scaling;
             
             _cardsAtlasDictionary.Add(cardName,
-                new RenderTargetBitmap(new PixelSize((int)pixelCardWidth, (int)pixelCardHeight)
-                    , new Vector(96d, 96d)));
+                new RenderTargetBitmap(new PixelSize((int)pixelCardWidth, (int)pixelCardHeight)));
 
             var targetBitmap = _cardsAtlasDictionary[cardName];
             using var drawingContext = targetBitmap.CreateDrawingContext();
             if (!(Application.Current?.TryGetResource(cardName, out var val) ?? false)) continue;
             if (val is not (DrawingImage and IImage img)) continue;
             img.Draw(drawingContext, new Rect(img.Size),
-                new Rect(new Size(pixelCardWidth, pixelCardHeight)).CenterRect(new Rect(new Size(pixelCardWidth, pixelCardHeight)).Deflate(3 * scaling)));
+                new Rect(new Size(pixelCardWidth, pixelCardHeight)));
         }
+        
+        RenderOptions.SetBitmapInterpolationMode(this, BitmapInterpolationMode.LowQuality);
     }
 
     public override void Render(DrawingContext context)
@@ -66,9 +69,9 @@ public class CardDisplayControl : Control
         var renderBounds = new Rect(Bounds.Size);
         if (DataContext is not PlayingCardViewModel vm || _cardsAtlasDictionary is null) return;
 
-        BorderRenderHelper.Render(context, renderBounds, new Thickness(1), 6, Brushes.White, Brushes.Gray,
+        BorderRenderHelper.Render(context, renderBounds, new Thickness(1), 6, BgBrush, BorderBrush,
             vm.IsFaceDown ? new BoxShadows() : DefaultBoxShadow);
-
+         
         context.DrawImage(_cardsAtlasDictionary[vm.IsFaceDown ? "CardBack" : _cardType.ToString()],
             renderBounds.Deflate(6));
 
@@ -80,8 +83,6 @@ public class CardDisplayControl : Control
         switch (e.PropertyName)
         {
             case nameof(PlayingCardViewModel.CardType):
-
-                break;
             case nameof(PlayingCardViewModel.IsFaceDown):
                 InvalidateVisual();
                 break;
