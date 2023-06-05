@@ -27,7 +27,7 @@ public class StaggeredFadeInBehavior : Behavior<Panel>
                 var animations = new Animation
                 {
                     Duration = TimeSpan.FromMilliseconds(250),
-                    Delay = TimeSpan.FromMilliseconds(100) + TimeSpan.FromMilliseconds(75 * AssociatedObject.Children.IndexOf(innerItem)),
+                    Delay =  TimeSpan.FromMilliseconds(75 * AssociatedObject.Children.IndexOf(innerItem)),
                     FillMode = FillMode.Both
                 };
 
@@ -49,8 +49,8 @@ public class StaggeredFadeInBehavior : Behavior<Panel>
                     Cue = Cue.Parse("0%", null),
                     Setters =
                     {
-                        new Setter { Property = ScaleTransform.ScaleXProperty, Value = 0.9d },
-                        new Setter { Property = ScaleTransform.ScaleYProperty, Value = 0.9d }
+                        new Setter { Property = ScaleTransform.ScaleXProperty, Value = 0.93d },
+                        new Setter { Property = ScaleTransform.ScaleYProperty, Value = 0.93d }
                     }
                 });
 
