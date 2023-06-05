@@ -6,7 +6,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
@@ -247,17 +246,9 @@ public class PlayFieldBehavior : Behavior<Canvas>
     private void AssociatedObjectOnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
     {
         if (AssociatedObject?.DataContext is not CardGameViewModel model) return;
-
-
         var cardsList = model.Deck;
         var cardStacks = GetCardStacks(AssociatedObject);
-
-        if (Application.Current == null ||
-            !Application.Current.Styles.TryGetResource("PlayingCardDataTemplate", null, out var x) ||
-            x is not DataTemplate y) return;
-
-        AssociatedObject.DataTemplates.Add(y);
-
+        
         var homePosition = cardStacks.FirstOrDefault(i => i.IsHomeStack)?.Bounds.Position ?? new Point();
 
         if (cardsList != null)

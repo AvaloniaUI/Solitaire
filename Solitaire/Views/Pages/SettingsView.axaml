@@ -2,9 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:pages="clr-namespace:Solitaire.ViewModels.Pages"
-             xmlns:models="clr-namespace:Solitaire.Models"
-             xmlns:behaviors="clr-namespace:Solitaire.Behaviors"
+             xmlns:pages="using:Solitaire.ViewModels.Pages"
+             xmlns:models="using:Solitaire.Models"
+             xmlns:behaviors="using:Solitaire.Behaviors"
              mc:Ignorable="d"
              x:Class="Solitaire.Views.Pages.SettingsView"
              x:DataType="pages:SettingsViewModel"
@@ -13,7 +13,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
 
-    <Viewbox MaxWidth="400" Margin="20">
+    <Viewbox MaxWidth="700" Margin="20">
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10">
             <Viewbox Margin="40,10,40,40" StretchDirection="DownOnly" ClipToBounds="False">
                 <!-- The casino commands. -->
