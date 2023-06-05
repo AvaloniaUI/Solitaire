@@ -23,6 +23,9 @@
                         <behaviors:GoldenPanelBorderBehavior />
                     </Interaction.Behaviors>
                     <StackPanel Spacing="10" Orientation="Vertical" Margin="10">
+                        <Interaction.Behaviors>
+                            <behaviors:StaggeredFadeInBehavior/>
+                        </Interaction.Behaviors>
                         <Grid ColumnDefinitions="*,Auto,*" VerticalAlignment="Center" Margin="5">
 
                             <Border Height="2" Grid.Column="0">

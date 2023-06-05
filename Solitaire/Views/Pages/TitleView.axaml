@@ -47,6 +47,9 @@
                         <behaviors:GoldenPanelBorderBehavior />
                     </Interaction.Behaviors>
                     <StackPanel Spacing="10" Orientation="Vertical" Margin="10">
+                        <Interaction.Behaviors>
+                            <behaviors:StaggeredFadeInBehavior/>
+                        </Interaction.Behaviors>
                         <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="230"
                                 Classes="goldenDeck" Content="Klondike"
                                 Command="{Binding NavigateToKlondikeCommand}" />

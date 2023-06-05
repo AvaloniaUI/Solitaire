@@ -83,6 +83,9 @@
                             <behaviors:GoldenPanelBorderBehavior />
                         </Interaction.Behaviors>
                         <DockPanel LastChildFill="True">
+                            <Interaction.Behaviors>
+                                <behaviors:StaggeredFadeInBehavior/>
+                            </Interaction.Behaviors>
                             <Button DockPanel.Dock="Left" VerticalAlignment="Center" Margin="10,0,0,0"
                                     Classes="goldenDeck" Content="Deal"
                                     Command="{Binding NewGameCommand}" />

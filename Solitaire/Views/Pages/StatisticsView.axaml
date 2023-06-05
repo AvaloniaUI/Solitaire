@@ -26,7 +26,9 @@
                     <DockPanel LastChildFill="True">
                         <Viewbox DockPanel.Dock="Bottom">
                             <StackPanel Spacing="10" Orientation="Horizontal" Margin="10">
-
+                                <Interaction.Behaviors>
+                                    <behaviors:StaggeredFadeInBehavior/>
+                                </Interaction.Behaviors>
                                 <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="200"
                                         Classes="goldenDeck" Content="Reset Klondike"
                                         Command="{Binding ResetKlondikeStatsCommand}" />
@@ -44,8 +46,6 @@
                                         Command="{Binding NavigateToTitleCommand}" />
 
                             </StackPanel>
-
-
                         </Viewbox>
                         <Grid ColumnDefinitions="*,*,*" MinWidth="600" Margin="10">
 
