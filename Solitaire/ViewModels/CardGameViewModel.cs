@@ -17,6 +17,8 @@ namespace Solitaire.ViewModels;
 /// </summary>
 public abstract partial class CardGameViewModel : ViewModelBase
 {
+    [ObservableProperty] private bool _isReady;
+
     public ImmutableArray<PlayingCardViewModel>? Deck;
 
     public ICommand? AutoMoveCommand { get; protected set; }
@@ -140,6 +142,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
     /// </summary>
     protected void StartTimer()
     {
+        IsReady = true;
         _lastTick = DateTime.Now;
         _timer.Start();
     }
@@ -149,6 +152,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
     /// </summary>
     protected void StopTimer()
     {
+        IsReady = false;
         _timer.Stop();
     }
 

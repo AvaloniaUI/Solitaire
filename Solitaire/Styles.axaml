@@ -96,6 +96,7 @@
 
                             <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,10,0"
                                     Classes="goldenDeck" Content="Back"
+                                    IsEnabled="{Binding IsReady}"
                                     Command="{Binding  NavigateToCasinoCommand}" />
 
                             <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,10,0"
