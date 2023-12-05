@@ -17,7 +17,7 @@ internal class Program
     {
         PlatformProviders.CasinoStorage = new BrowserSettingsStore<PersistentState>();
 
-       await BuildAvaloniaApp()
+        await BuildAvaloniaApp()
             .StartBrowserAppAsync("out");
     }
 
