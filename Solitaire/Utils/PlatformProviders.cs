@@ -27,12 +27,10 @@ public static class PlatformProviders
         public async Task SaveObject(T obj, string key)
         {
             // Get a new isolated store for this user, domain, and assembly.
-            var isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User |
-                                                        IsolatedStorageScope.Domain |
-                                                        IsolatedStorageScope.Assembly, null, null);
+            using var isoStore = IsolatedStorageFile.GetUserStoreForApplication();
 
             //  Create data stream.
-            await using var isoStream = new IsolatedStorageFileStream(Identifier + key, FileMode.Create, isoStore);
+            await using var isoStream = isoStore.OpenFile(Identifier + key, FileMode.CreateNew, FileAccess.Write);
             await JsonSerializer.SerializeAsync(isoStream, obj, typeof(T), JsonContext.Default);
         }
 
@@ -41,10 +39,8 @@ public static class PlatformProviders
         {
             try
             {
-                var isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User |
-                                                            IsolatedStorageScope.Domain |
-                                                            IsolatedStorageScope.Assembly, null, null);
-                await using var isoStream = new IsolatedStorageFileStream(Identifier + key, FileMode.Open, isoStore);
+                using var isoStore = IsolatedStorageFile.GetUserStoreForApplication();
+                await using var isoStream = isoStore.OpenFile(Identifier + key, FileMode.Open, FileAccess.Read);
                 var storedObj = (T?)await JsonSerializer.DeserializeAsync(isoStream, typeof(T), JsonContext.Default);
                 return storedObj ?? default;
             }
