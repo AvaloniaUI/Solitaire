@@ -1,22 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net8.0-browser</TargetFramework>
     <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
     <WasmMainJSPath>AppBundle\main.js</WasmMainJSPath>
     <OutputType>Exe</OutputType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PublishTrimmed>true</PublishTrimmed>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <WasmExtraFilesToDeploy Include="AppBundle\app.css" />
-    <WasmExtraFilesToDeploy Include="AppBundle\favicon.ico" />
-    <WasmExtraFilesToDeploy Include="AppBundle\index.html" />
-    <WasmExtraFilesToDeploy Include="AppBundle\Logo.svg" />
-    <WasmExtraFilesToDeploy Include="AppBundle\main.js" />
-    <WasmExtraFilesToDeploy Include="AppBundle\staticwebapp.config.json" />
+    <WasmExtraFilesToDeploy Include="AppBundle\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,5 +18,4 @@
   <ItemGroup>
     <ProjectReference Include="..\Solitaire\Solitaire.csproj" />
   </ItemGroup>
-
 </Project>

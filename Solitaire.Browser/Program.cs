@@ -1,23 +1,19 @@
-using System.Runtime.Versioning;
+﻿using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Browser;
+using Solitaire;
+using Solitaire.Browser;
 using Solitaire.Models;
 using Solitaire.Utils;
-using Solitaire.ViewModels;
 
-[assembly:SupportedOSPlatform("browser")]
-
-namespace Solitaire.Browser;
-
-internal class Program
+internal sealed partial class Program
 {
-    // ReSharper disable once UnusedParameter.Local
-    private static async Task Main(string[] args)
+    private static Task Main(string[] args)
     {
         PlatformProviders.CasinoStorage = new BrowserSettingsStore<PersistentState>();
 
-        await BuildAvaloniaApp()
+        return BuildAvaloniaApp()
             .StartBrowserAppAsync("out");
     }
 
