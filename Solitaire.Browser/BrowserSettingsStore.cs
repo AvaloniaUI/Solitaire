@@ -32,7 +32,6 @@ public partial class BrowserSettingsStore<T> : IRuntimeStorageProvider<T>
     {
         try
         {
-            await Task.Delay(1);
             var t = GetItem(Identifier + key);
             if (string.IsNullOrEmpty(t)) return default;
             var x = (T?)JsonSerializer.Deserialize(t, typeof(T), JsonContext.Default);
