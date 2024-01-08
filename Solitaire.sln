@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{7612299B
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
 		nuget.config = nuget.config
+		.github\workflows\azure-swa.yml = .github\workflows\azure-swa.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solitaire.Browser", "Solitaire.Browser\Solitaire.Browser.csproj", "{9CA615F0-68DC-4D8A-8C63-AB32ADD25BF5}"

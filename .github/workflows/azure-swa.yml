@@ -14,13 +14,13 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Setup .NET 7
+      - name: Setup .NET 8
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 7.0.100
+          dotnet-version: 8.0.100
 
       - name: Install wasm-tools
-        run: dotnet workload install wasm-tools wasm-experimental
+        run: dotnet workload install wasm-tools
 
       - name: Install DotNetCompress
         run: dotnet tool install --global DotNetCompress --version 1.0.0-preview.7 --no-cache
