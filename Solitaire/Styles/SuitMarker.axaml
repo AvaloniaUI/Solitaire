@@ -1,0 +1,33 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="using:Solitaire.Controls"
+                    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type controls:SuitMarker}" TargetType="controls:SuitMarker">
+        <Setter Property="Width" Value="{StaticResource CardWidth}" />
+        <Setter Property="Height" Value="{StaticResource CardHeight}" />
+        <Setter Property="Margin"
+                Value="{OnFormFactor {StaticResource CardThickness}, Mobile={StaticResource CardThicknessMobile}}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Image x:Name="PART_Image"
+                       Opacity="0.2"
+                       RenderTransform="scaleX(0.6) scaleY(0.6)"
+                       IsHitTestVisible="False"
+                       Margin="25 0" />
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^[Suit=Hearts] /template/ Image#PART_Image">
+            <Setter Property="Source" Value="{StaticResource SuitHeart}" />
+        </Style>
+        <Style Selector="^[Suit=Clubs] /template/ Image#PART_Image">
+            <Setter Property="Source" Value="{StaticResource SuitClub}" />
+        </Style>
+        <Style Selector="^[Suit=Diamonds] /template/ Image#PART_Image">
+            <Setter Property="Source" Value="{StaticResource SuitDiamond}" />
+        </Style>
+        <Style Selector="^[Suit=Spades] /template/ Image#PART_Image">
+            <Setter Property="Source" Value="{StaticResource SuitSpade}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

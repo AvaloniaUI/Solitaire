@@ -53,21 +53,10 @@
                                                         FaceUpOffset="30"
                                                         OffsetMode="TopNCards" />
 
-                    <Panel Grid.Row="0" Grid.Column="0" Classes="SuitMarker">
-                        <Image Margin="25 0" Source="{StaticResource SuitHeart}" />
-                    </Panel>
-
-                    <Panel Grid.Row="0" Grid.Column="1" Classes="SuitMarker">
-                        <Image Margin="25 0" Source="{StaticResource SuitClub}" />
-                    </Panel>
-
-                    <Panel Grid.Row="0" Grid.Column="2" Classes="SuitMarker">
-                        <Image Margin="25 0" Source="{StaticResource SuitDiamond}" />
-                    </Panel>
-
-                    <Panel Grid.Row="0" Grid.Column="3" Classes="SuitMarker">
-                        <Image Margin="25 0" Source="{StaticResource SuitSpade}" />
-                    </Panel>
+                    <controls:SuitMarker Grid.Row="0" Grid.Column="0" Suit="Hearts" />
+                    <controls:SuitMarker Grid.Row="0" Grid.Column="1" Suit="Clubs" />
+                    <controls:SuitMarker Grid.Row="0" Grid.Column="2" Suit="Diamonds" />
+                    <controls:SuitMarker Grid.Row="0" Grid.Column="3" Suit="Spades" />
 
                     <!-- The foundations. -->
                     <controls:CardStackPlacementControl Name="Foundation1"

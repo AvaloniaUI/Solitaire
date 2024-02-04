@@ -1,0 +1,62 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="using:Solitaire.Controls"
+                    xmlns:vm="using:Solitaire.ViewModels"
+                    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type controls:PlayingCard}" TargetType="controls:PlayingCard">
+        <Setter Property="Width" Value="{StaticResource CardWidth}" />
+        <Setter Property="Height" Value="{StaticResource CardHeight}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="BorderBrush" Value="Gray" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="4" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <IntegerTransition Property="ZIndex" Easing="1,0,1,0" Duration="0:0:0.35" />
+                <DoubleTransition Property="(Canvas.Left)" Easing="CubicEaseInOut" Duration="0:0:0.35" />
+                <DoubleTransition Property="(Canvas.Top)" Easing="CubicEaseInOut" Duration="0:0:0.35" />
+            </Transitions>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel x:DataType="vm:PlayingCardViewModel">
+                    <Border
+                        x:Name="PART_PlayingCardBack" IsVisible="{Binding IsFaceDown}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BoxShadow="{TemplateBinding Border.BoxShadow}">
+                        <Image Margin="{TemplateBinding Padding}" Source="{StaticResource CardBack}" />
+                        <Border.RenderTransform>
+                            <Rotate3DTransform
+                                AngleY="180" />
+                        </Border.RenderTransform>
+                    </Border>
+                    <Border
+                        x:Name="PART_PlayingCardFront" IsVisible="{Binding !IsFaceDown}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BoxShadow="{TemplateBinding Border.BoxShadow}">
+                        <Image Margin="{TemplateBinding Padding}"
+                               Source="{Binding CardType, Converter={StaticResource PlayingCardToBrushConverter}}" />
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        
+        <Style Selector="^.lastCard">
+            <Setter Property="Border.BoxShadow" Value="0 5 40 -8 #EE000000" />
+        </Style>
+
+        <Style Selector="^.dragging">
+            <Setter Property="Transitions">
+                <Transitions />
+            </Setter>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

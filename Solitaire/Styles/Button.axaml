@@ -1,0 +1,47 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:ClassModifier="internal">
+    <ControlTheme x:Key="CasinoButtonTheme"
+                  TargetType="{x:Type Button}">
+        <Setter Property="Padding" Value="4" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="CornerRadius" Value="15" />
+        <Setter Property="BorderBrush" Value="#66FFFFFF" />
+        <Setter Property="Background" Value="#11FFFFFF" />
+        <Setter Property="Foreground" Value="#99FFFFFF" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </ControlTheme>
+    
+    <ControlTheme x:Key="{x:Type Button}"
+                  TargetType="{x:Type Button}">
+        <Setter Property="Padding" Value="5, 0" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Background">
+            <ConicGradientBrush Center="50%, -20%" Angle="270">
+                <GradientStop Offset="0" Color="#FFFCFC80" />
+                <GradientStop Offset="0.5" Color="#FFD09C14" />
+                <GradientStop Offset="1" Color="#FFFCFC80" />
+            </ConicGradientBrush>
+        </Setter>
+        <Setter Property="BorderBrush">
+            <ConicGradientBrush Center="110%, -20%" Angle="180">
+                <GradientStop Offset="0" Color="#FFD09C14" />
+                <GradientStop Offset="0.3" Color="#FFFCFC80" />
+                <GradientStop Offset="0.5" Color="#FFD09C14" />
+                <GradientStop Offset="0.6" Color="#FFFCFC80" />
+                <GradientStop Offset="1" Color="#FFD09C14" />
+            </ConicGradientBrush>
+        </Setter>
+        
+        <Style Selector="^:disabled">
+            <Setter Property="Opacity" Value="0.5" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

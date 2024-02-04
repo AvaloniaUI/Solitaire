@@ -27,7 +27,7 @@ public class CardFieldBehavior : Behavior<Canvas>
     public static List<CardStackPlacementControl> GetCardStacks(Control obj) => obj.GetValue(CardStacksProperty);
 
 
-    private readonly Dictionary<PlayingCardViewModel, ContentControl> _containerCache = new();
+    private readonly Dictionary<PlayingCardViewModel, PlayingCard> _containerCache = new();
 
 
     private static readonly AttachedProperty<Vector?> HomePositionProperty =
@@ -58,7 +58,7 @@ public class CardFieldBehavior : Behavior<Canvas>
         ResetDrag();
     }
 
-    private List<ContentControl>? _draggingContainers;
+    private List<Control>? _draggingContainers;
     private List<PlayingCardViewModel>? _draggingCards;
     private bool _isDragging;
     private Point _startPoint;
@@ -185,7 +185,7 @@ public class CardFieldBehavior : Behavior<Canvas>
 
             if (card.IsPlayable && !_isDragging)
             {
-                _draggingContainers = new List<ContentControl>();
+                _draggingContainers = new List<Control>();
                 _draggingCards = new List<PlayingCardViewModel>();
                 _startZIndices = new();
                 _homePoints = new();
@@ -253,20 +253,14 @@ public class CardFieldBehavior : Behavior<Canvas>
         var cardsList = model.Deck;
         var cardStacks = GetCardStacks(AssociatedObject);
 
-        if (Application.Current == null ||
-            !Application.Current.Styles.TryGetResource("PlayingCardDataTemplate", null, out var x) ||
-            x is not DataTemplate y) return;
-
-        AssociatedObject.DataTemplates.Add(y);
-
         var homePosition = cardStacks.FirstOrDefault(i => i.IsHomeStack)?.Bounds.Position ?? new Point();
 
         if (cardsList != null)
             foreach (var card in cardsList)
             {
-                var container = new ContentControl
+                var container = new PlayingCard
                 {
-                    Content = card,
+                    DataContext = card,
                     ZIndex = -1,
                     ClipToBounds = false
                 };
@@ -319,14 +313,10 @@ public class CardFieldBehavior : Behavior<Canvas>
                                 (control.Orientation == Orientation.Horizontal ? sumOffsets : 0),
                 control.Bounds.Position.Y + (control.Orientation == Orientation.Vertical ? sumOffsets : 0));
 
-            container.Classes.Remove("lastCard");
-            if (pair.i == control.SourceItems.Count - 1 || pair.i == control.SourceItems.Count - 2)
-            {
-                container.Classes.Add("lastCard");
-            }
+            var isLastCard = pair.i == control.SourceItems.Count - 1 || pair.i == control.SourceItems.Count - 2;
+            container.Classes.Set("lastCard", isLastCard);
 
             container.ZIndex = pair.i;
-            container.Classes.Add("playingCard");
 
             SetHomePosition(container, pos);
             SetCanvasPosition(container, pos);

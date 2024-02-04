@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:pages="clr-namespace:Solitaire.ViewModels.Pages"
              xmlns:models="clr-namespace:Solitaire.Models"
+             xmlns:controls="clr-namespace:Solitaire.Controls"
              mc:Ignorable="d"
              x:Class="Solitaire.Views.Pages.SettingsView"
              x:DataType="pages:SettingsViewModel"
@@ -18,97 +19,88 @@
 
             <Viewbox Margin="40,10,40,40" StretchDirection="DownOnly" ClipToBounds="False">
                 <!-- The casino commands. -->
-                <Border Classes="goldenTrayBorder downDeck"
-
-                        BoxShadow="0 20 60 -20 Black">
-                    <Border.RenderTransform>
+                <controls:TrayContainer Classes="downDeck">
+                    <controls:TrayContainer.RenderTransform>
                         <ScaleTransform></ScaleTransform>
-                    </Border.RenderTransform>
-                    <Border Classes="goldenTrayInner">
-                        <Border Classes="goldenTrayInnerBg">
+                    </controls:TrayContainer.RenderTransform>
+                    <StackPanel Spacing="10" Orientation="Vertical" Margin="10">
 
-                            <StackPanel Spacing="10" Orientation="Vertical" Margin="10">
+                        <Grid ColumnDefinitions="*,Auto,*" VerticalAlignment="Center" Margin="5">
 
-                                <Grid ColumnDefinitions="*,Auto,*" VerticalAlignment="Center" Margin="5">
+                            <Border Height="2" Grid.Column="0">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
+                                                         GradientStops="{StaticResource GoldBrush}"
+                                                         Transform="rotate(120deg)" />
+                                </Border.Background>
+                            </Border>
 
-                                    <Border Height="2" Grid.Column="0">
-                                        <Border.Background>
-                                            <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
-                                                                 GradientStops="{StaticResource GoldBrush}"
-                                                                 Transform="rotate(120deg)" />
-                                        </Border.Background>
-                                    </Border>
+                            <TextBlock Grid.Column="1" FontSize="16" Margin="10 0"
+                                       Text="KLONDIKE - CARDS TO DRAW">
 
-                                    <TextBlock Grid.Column="1" FontSize="16" Margin="10 0"
-                                               Text="KLONDIKE - CARDS TO DRAW">
+                                <TextBlock.Foreground>
 
-                                        <TextBlock.Foreground>
+                                    <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
+                                                         GradientStops="{StaticResource GoldBrush}"
+                                                         Transform="rotate(120deg)" />
+                                </TextBlock.Foreground>
+                            </TextBlock>
 
-                                            <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
-                                                                 GradientStops="{StaticResource GoldBrush}"
-                                                                 Transform="rotate(120deg)" />
-                                        </TextBlock.Foreground>
-                                    </TextBlock>
+                            <Border Grid.Column="2" Height="2">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
+                                                         GradientStops="{StaticResource GoldBrush}"
+                                                         Transform="rotate(120deg)" />
+                                </Border.Background>
+                            </Border>
 
-                                    <Border Grid.Column="2" Height="2">
-                                        <Border.Background>
-                                            <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
-                                                                 GradientStops="{StaticResource GoldBrush}"
-                                                                 Transform="rotate(120deg)" />
-                                        </Border.Background>
-                                    </Border>
+                        </Grid>
+                        <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="230"
+                                Content="{Binding DrawModeText}"
+                                Command="{Binding  DrawModeCommand}" />
 
-                                </Grid>
-                                <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="230"
-                                        Classes="goldenDeck" Content="{Binding DrawModeText}"
-                                        Command="{Binding  DrawModeCommand}" />
+                        <Grid ColumnDefinitions="*,Auto,*" VerticalAlignment="Center" Margin="5">
 
-                                <Grid ColumnDefinitions="*,Auto,*" VerticalAlignment="Center" Margin="5">
+                            <Border Height="2" Grid.Column="0">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
+                                                         GradientStops="{StaticResource GoldBrush}"
+                                                         Transform="rotate(120deg)" />
+                                </Border.Background>
+                            </Border>
 
-                                    <Border Height="2" Grid.Column="0">
-                                        <Border.Background>
-                                            <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
-                                                                 GradientStops="{StaticResource GoldBrush}"
-                                                                 Transform="rotate(120deg)" />
-                                        </Border.Background>
-                                    </Border>
+                            <TextBlock Grid.Column="1" FontSize="16" Margin="10 0" Text="SPIDER - DIFFICULTY">
 
-                                    <TextBlock Grid.Column="1" FontSize="16" Margin="10 0" Text="SPIDER - DIFFICULTY">
+                                <TextBlock.Foreground>
 
-                                        <TextBlock.Foreground>
+                                    <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
+                                                         GradientStops="{StaticResource GoldBrush}"
+                                                         Transform="rotate(120deg)" />
+                                </TextBlock.Foreground>
+                            </TextBlock>
 
-                                            <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
-                                                                 GradientStops="{StaticResource GoldBrush}"
-                                                                 Transform="rotate(120deg)" />
-                                        </TextBlock.Foreground>
-                                    </TextBlock>
+                            <Border Grid.Column="2" Height="2">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
+                                                         GradientStops="{StaticResource GoldBrush}"
+                                                         Transform="rotate(120deg)" />
+                                </Border.Background>
+                            </Border>
 
-                                    <Border Grid.Column="2" Height="2">
-                                        <Border.Background>
-                                            <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
-                                                                 GradientStops="{StaticResource GoldBrush}"
-                                                                 Transform="rotate(120deg)" />
-                                        </Border.Background>
-                                    </Border>
-
-                                </Grid>
-                                <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="230"
-                                        Classes="goldenDeck" Content="{Binding DifficultyText}"
-                                        Command="{Binding DifficultyCommand}" />
+                        </Grid>
+                        <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="230"
+                                Content="{Binding DifficultyText}"
+                                Command="{Binding DifficultyCommand}" />
 
 
-                                <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="230"
-                                        Classes="goldenDeck" Content="Back"
-                                        Command="{Binding NavigateToTitleCommand}" />
+                        <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="230"
+                                Content="Back"
+                                Command="{Binding NavigateToTitleCommand}" />
 
 
-                                
-                            </StackPanel>
-
-                        </Border>
-                    </Border>
-                </Border>
-
+                        
+                    </StackPanel>
+                </controls:TrayContainer>
             </Viewbox>
         </StackPanel>
     </Viewbox>

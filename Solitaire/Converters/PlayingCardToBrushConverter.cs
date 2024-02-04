@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Data.Converters;
 using Avalonia.Media;
 using Solitaire.Models;
@@ -30,14 +31,14 @@ public class PlayingCardToBrushConverter : IValueConverter
     //         return retDrawingImage;
     //     }
     //     
-    //     if (isFaceDown && Application.Current!.Styles.TryGetResource("CardBack", out var test1)
+    //     if (isFaceDown && Application.Current!.TryFindResource("CardBack", out var test1)
     //                    && test1 is DrawingImage backImage)
     //     {
     //         Brushes.Add("CardBack", backImage);
     //         return backImage;
     //     }
     //
-    //     if (!Application.Current!.Styles.TryGetResource(cardName, out var test) ||
+    //     if (!Application.Current!.TryFindResource(cardName, out var test) ||
     //         test is not DrawingImage faceImage) return null;
     //     
     //     Brushes.Add(cardName, faceImage);
@@ -57,7 +58,7 @@ public class PlayingCardToBrushConverter : IValueConverter
             return retDrawingImage;
         }
  
-        if (!Application.Current!.Styles.TryGetResource(cardName, null, out var test) ||
+        if (!Application.Current!.TryFindResource(cardName, out var test) ||
             test is not DrawingImage faceImage) return null;
 
         Brushes.Add(cardName, faceImage);

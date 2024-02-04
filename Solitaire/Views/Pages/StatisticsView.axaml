@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:pages="clr-namespace:Solitaire.ViewModels.Pages"
              xmlns:models="clr-namespace:Solitaire.Models"
+             xmlns:controls="clr-namespace:Solitaire.Controls"
              mc:Ignorable="d"
              x:Class="Solitaire.Views.Pages.StatisticsView"
              x:DataType="pages:StatisticsViewModel"
@@ -18,53 +19,45 @@
 
             <Viewbox Margin="40,10,40,40" StretchDirection="DownOnly" ClipToBounds="False">
                 <!-- The casino commands. -->
-                <Border Classes="goldenTrayBorder downDeck"
-
-                        BoxShadow="0 20 60 -20 Black">
-                    <Border.RenderTransform>
+                <controls:TrayContainer Classes="downDeck">
+                    <controls:TrayContainer.RenderTransform>
                         <ScaleTransform></ScaleTransform>
-                    </Border.RenderTransform>
-                    <Border Classes="goldenTrayInner">
-                        <Border Classes="goldenTrayInnerBg">
+                    </controls:TrayContainer.RenderTransform>
+                    <DockPanel LastChildFill="True">
+                        <Viewbox DockPanel.Dock="Bottom">
+                            <StackPanel Spacing="10" Orientation="Horizontal" Margin="10">
+
+                                <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="200"
+                                        Content="Reset Klondike"
+                                        Command="{Binding ResetKlondikeStatsCommand}" />
+
+                                <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="200"
+                                        Content="Reset  FreeCell"
+                                        Command="{Binding  ResetFreeCellStatsCommand}" />
+
+                                <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="200"
+                                        Content="Reset Spider"
+                                        Command="{Binding  ResetSpiderStatsCommand}" />
+
+                                <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="200"
+                                        Content="Back"
+                                        Command="{Binding NavigateToTitleCommand}" />
+
+                            </StackPanel>
 
 
-                            <DockPanel LastChildFill="True">
-                                <Viewbox DockPanel.Dock="Bottom">
-                                    <StackPanel Spacing="10" Orientation="Horizontal" Margin="10">
-
-                                        <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="200"
-                                                Classes="goldenDeck" Content="Reset Klondike"
-                                                Command="{Binding ResetKlondikeStatsCommand}" />
-
-                                        <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="200"
-                                                Classes="goldenDeck" Content="Reset  FreeCell"
-                                                Command="{Binding  ResetFreeCellStatsCommand}" />
-
-                                        <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="200"
-                                                Classes="goldenDeck" Content="Reset Spider"
-                                                Command="{Binding  ResetSpiderStatsCommand}" />
-
-                                        <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="200"
-                                                Classes="goldenDeck" Content="Back"
-                                                Command="{Binding NavigateToTitleCommand}" />
-
-                                    </StackPanel>
+                        </Viewbox>
+                        <Grid ColumnDefinitions="*,*,*" MinWidth="600" Margin="10">
 
 
-                                </Viewbox>
-                                <Grid ColumnDefinitions="*,*,*" MinWidth="600" Margin="10">
+                            <ContentControl Grid.Column="0" Content="{Binding KlondikeStatsInstance}" />
+                            <ContentControl Grid.Column="1" Margin="30 0"
+                                            Content="{Binding  FreeCellStatsInstance}" />
+                            <ContentControl Grid.Column="2" Content="{Binding  SpiderStatsInstance}" />
 
-
-                                    <ContentControl Grid.Column="0" Content="{Binding KlondikeStatsInstance}" />
-                                    <ContentControl Grid.Column="1" Margin="30 0"
-                                                    Content="{Binding  FreeCellStatsInstance}" />
-                                    <ContentControl Grid.Column="2" Content="{Binding  SpiderStatsInstance}" />
-
-                                </Grid>
-                            </DockPanel>
-                        </Border>
-                    </Border>
-                </Border>
+                        </Grid>
+                    </DockPanel>
+                </controls:TrayContainer>
 
             </Viewbox>
         </StackPanel>

@@ -1,0 +1,69 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="using:Solitaire.Controls"
+                    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type controls:TrayContainer}" TargetType="controls:TrayContainer">
+        <Setter Property="FontFamily" Value="{StaticResource CasinoFont}" />
+        <Setter Property="Background">
+            <VisualBrush TileMode="Tile" SourceRect="0,0,300,300"
+                         DestinationRect="0,0,200,200">
+                <VisualBrush.Visual>
+                    <Border Background="Black">
+                        <controls:RandomNoiseTextureControl Opacity="0.1" />
+                    </Border>
+                </VisualBrush.Visual>
+            </VisualBrush>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border x:Name="PART_OuterBorder"
+                        CornerRadius="10"
+                        Padding="8"
+                        BorderThickness="2"
+                        BorderBrush="#30FFFFFF"
+                        Background="{TemplateBinding BorderBrush}"
+                        BoxShadow="{TemplateBinding Border.BoxShadow}">
+                    <ContentPresenter x:Name="PART_ContentPresenter"
+                                      CornerRadius="8"
+                                      BorderThickness="2"
+                                      BorderBrush="#30FFFFFF"
+                                      Margin="{TemplateBinding Padding}"
+                                      Content="{TemplateBinding Content}"
+                                      Background="{TemplateBinding Background}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^.downDeck">
+            <Setter Property="RenderTransform" Value="translateY(70px)" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.3" />
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <Style Selector="^.downDeck.animateUp">
+            <Setter Property="RenderTransform" Value="translateY(0px)" />
+        </Style>
+
+        <ControlTheme.Animations>
+            <Animation Duration="0:1:0" IterationCount="Infinite" PlaybackDirection="Alternate">
+                <KeyFrame Cue="0%">
+                    <Setter Property="BorderBrush">
+                        <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
+                                             GradientStops="{StaticResource GoldBrush}"
+                                             Transform="rotate(120deg)" />
+                    </Setter>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="BorderBrush">
+                        <LinearGradientBrush StartPoint="-2000,1000" EndPoint="0,-1000"
+                                             GradientStops="{StaticResource GoldBrush}" />
+                    </Setter>
+                </KeyFrame>
+            </Animation>
+        </ControlTheme.Animations>
+    </ControlTheme>
+</ResourceDictionary>

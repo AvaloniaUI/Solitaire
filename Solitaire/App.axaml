@@ -5,75 +5,19 @@
     <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
-    
     <Application.Resources>
-      <ControlTheme x:Key="{x:Type AdornerLayer}" TargetType="AdornerLayer">
-        <Setter Property="DefaultFocusAdorner">
-          <FocusAdornerTemplate>
-            <Border BorderThickness="2"
-                    AdornerLayer.IsClipEnabled="False"
-                    CornerRadius="4"
-                    BorderBrush="Gold"
-                    Margin="-2"
-                    BoxShadow="0 0 18 4 Gold">
-              <Border BorderThickness="1"
-                      CornerRadius="4"
-                      BorderBrush="Black" />
-            </Border>
-          </FocusAdornerTemplate>
-        </Setter>
-      </ControlTheme>
-
-      <ControlTheme x:Key="{x:Type EmbeddableControlRoot}" TargetType="EmbeddableControlRoot">
-        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAltHighBrush}"/>
-        <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}"/>
-        <Setter Property="Template">
-          <ControlTemplate>
-            <Panel>
-              <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
-              <Border Background="{TemplateBinding Background}">
-                <VisualLayerManager>
-                  <ContentPresenter Name="PART_ContentPresenter"
-                                    ContentTemplate="{TemplateBinding ContentTemplate}"
-                                    Content="{TemplateBinding Content}"
-                                    Margin="{TemplateBinding Padding}"/>
-                </VisualLayerManager>
-              </Border>
-            </Panel>
-          </ControlTemplate>
-        </Setter>
-      </ControlTheme>
-
-      <ControlTheme x:Key="{x:Type Window}" TargetType="Window">
-        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAltHighBrush}"/>
-        <Setter Property="TransparencyBackgroundFallback" Value="{DynamicResource SystemControlBackgroundAltHighBrush}" />
-        <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
-        <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}"/>
-        <!-- <Setter Property="FontFamily" Value="{DynamicResource ContentControlThemeFontFamily}" /> -->
-        <Setter Property="Template">
-          <ControlTemplate>
-            <Panel>
-              <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
-              <Border Background="{TemplateBinding Background}" IsHitTestVisible="False" />
-              <Panel Background="Transparent" Margin="{TemplateBinding WindowDecorationMargin}" />
-              <VisualLayerManager>
-                <ContentPresenter Name="PART_ContentPresenter"
-                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                  Content="{TemplateBinding Content}"
-                                  Margin="{TemplateBinding Padding}"
-                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
-              </VisualLayerManager>
-            </Panel>
-          </ControlTemplate>
-        </Setter>
-      </ControlTheme>
-  </Application.Resources>
-  
-  <Application.Styles>
-    
-    <StyleInclude Source="/Styles.axaml" />
-    <StyleInclude Source="/CardsStyle.axaml" />
-
-  </Application.Styles>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <MergeResourceInclude Source="Styles/Common.axaml" />
+                <MergeResourceInclude Source="Styles/Window.axaml" />
+                <MergeResourceInclude Source="Styles/Button.axaml" />
+                <MergeResourceInclude Source="Styles/PlayingCard.axaml" />
+                <MergeResourceInclude Source="Styles/CardsStyle.axaml" />
+                <MergeResourceInclude Source="Styles/SuitMarker.axaml" />
+                <MergeResourceInclude Source="Styles/TrayContainer.axaml" />
+                <MergeResourceInclude Source="Styles/CardStackPlacementControl.axaml" />
+                <MergeResourceInclude Source="Styles/Templates.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>

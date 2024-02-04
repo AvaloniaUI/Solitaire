@@ -27,7 +27,7 @@
                 <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
                       RowDefinitions="240,600">
                     <Grid.Styles>
-                        <Style Selector="Border.RunMarker, Border.StackMarker, controls|CardStackPlacementControl">
+                        <Style Selector="controls|CardStackPlacementControl">
                             <Setter Property="Grid.ColumnSpan" Value="2" />
                         </Style>
                     </Grid.Styles>
@@ -63,22 +63,11 @@
                                                         SourceItems="{Binding Cell4}"
                                                         Orientation="Horizontal" OffsetMode="UseCardValues" />
 
-                    <Panel Grid.Row="0" Grid.Column="9" Classes="SuitMarker">
-                        <Image Margin="25 0" Source="{StaticResource SuitHeart}" />
-                    </Panel>
-
-                    <Panel Grid.Row="0" Grid.Column="11" Classes="SuitMarker">
-                        <Image Margin="25 0" Source="{StaticResource SuitClub}" />
-                    </Panel>
-
-                    <Panel Grid.Row="0" Grid.Column="13" Classes="SuitMarker">
-                        <Image Margin="25 0" Source="{StaticResource SuitDiamond}" />
-                    </Panel>
-
-                    <Panel Grid.Row="0" Grid.Column="15" Classes="SuitMarker">
-                        <Image Margin="25 0" Source="{StaticResource SuitSpade}" />
-                    </Panel>
-
+                    <controls:SuitMarker Grid.Row="0" Grid.Column="9" Suit="Hearts" />
+                    <controls:SuitMarker Grid.Row="0" Grid.Column="11" Suit="Clubs" />
+                    <controls:SuitMarker Grid.Row="0" Grid.Column="13" Suit="Diamonds" />
+                    <controls:SuitMarker Grid.Row="0" Grid.Column="15" Suit="Spades" />
+    
                     <!-- The foundations. -->
                     <controls:CardStackPlacementControl Name="Foundation1" Classes="StackMarker"
                                                         TargetCanvas="{Binding #PlayingField}"

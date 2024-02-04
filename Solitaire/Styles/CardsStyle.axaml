@@ -1,10 +1,6 @@
-<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!-- ReSharper disable InconsistentNaming -->
-    <!-- ReSharper disable MarkupAttributeTypo -->
-
-    <Style>
-        <Style.Resources>
-
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:ClassModifier="internal">
             <DrawingImage x:Key="Avalonia">
                 <DrawingGroup>
                     <GeometryDrawing Brush="#FFF9F9FB" Geometry="M74.8535 85.8231C75.0263 85.8231 75.1954 85.8231 75.3679 85.8231C80.7347 85.8231 85.1439 81.8027 85.7614 76.6019L85.8357 41.7604C85.2255 18.5931 66.2537 0 42.9393 0C19.2399 0 0.02771 19.2122 0.02771 42.9116C0.02771 66.3573 18.8309 85.418 42.18 85.8231H74.8535Z"/>
@@ -835,6 +831,4 @@ q-120 -13 -156 -120q-11 -32 -11 -253v-532q0 -219 13 -253q31 -73 109 -100q27 -10 
                 </DrawingGroup>
 
             </DrawingImage>
-        </Style.Resources>
-    </Style>
-</Styles>
+</ResourceDictionary>

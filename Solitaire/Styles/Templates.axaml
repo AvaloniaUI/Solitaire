@@ -1,0 +1,94 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="using:Solitaire.ViewModels"
+                    xmlns:controls="clr-namespace:Solitaire.Controls"
+                    x:ClassModifier="internal">
+        <ControlTemplate x:Key="WinDialog">
+            <Border Background="#AA000000" x:CompileBindings="True" x:DataType="vm:CardGameViewModel">
+                <controls:TrayContainer Padding="0" MaxHeight="200" MaxWidth="400">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Vertical">
+                        <TextBlock Name="header" TextAlignment="Center" Text="YOU WIN!" FontSize="64">
+                            <TextBlock.Foreground>
+                                <ConicGradientBrush Center="110%, -20%" Angle="180">
+                                    <GradientStop Offset="0" Color="#FFD09C14" />
+                                    <GradientStop Offset="0.3" Color="#FFFCFC80" />
+                                    <GradientStop Offset="0.5" Color="#FFD09C14" />
+                                    <GradientStop Offset="0.6" Color="#FFFCFC80" />
+                                    <GradientStop Offset="1" Color="#FFD09C14" />
+                                </ConicGradientBrush>
+                            </TextBlock.Foreground>
+                        </TextBlock>
+                        <TextBlock FontSize="18" Margin="0,-10,0,10"
+                                   HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center">
+                            <Run Text="You scored" />
+                            <Run Text="{Binding Score}" FontWeight="Bold" />
+                            <Run Text="in" />
+                            <Run Text="{Binding Moves}" FontWeight="Bold" />
+                            <Run Text="moves!" />
+                        </TextBlock>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button
+                                Theme="{StaticResource CasinoButtonTheme}" Width="120"
+                                Margin="4" Content="Play Again" Command="{Binding NewGameCommand}" />
+                            <Button
+                                Theme="{StaticResource CasinoButtonTheme}" Width="120"
+                                Margin="4" Content="Back to Casino" Command="{Binding NavigateToCasinoCommand}" />
+                        </StackPanel>
+                    </StackPanel>
+                </controls:TrayContainer>
+            </Border>
+
+        </ControlTemplate>
+
+        <ControlTemplate x:Key="DeckControls">
+            <Panel Height="64" x:CompileBindings="True" x:DataType="vm:CardGameViewModel">
+                <Viewbox Stretch="Uniform" VerticalAlignment="Bottom">
+                    <controls:TrayContainer Classes="downDeck"
+                                            Classes.animateUp="{Binding !IsGameWon}" Margin="0,0,0,-15">
+                        <DockPanel LastChildFill="True">
+                            <Button DockPanel.Dock="Left" VerticalAlignment="Center" Margin="10,0,0,0"
+                                    Content="Deal"
+                                    Command="{Binding NewGameCommand}" />
+
+                            <Button DockPanel.Dock="Left" VerticalAlignment="Center" Margin="10,0,0,0"
+                                    Content="Undo"
+                                    Command="{Binding UndoCommand}" />
+
+                            <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,10,0"
+                                    Content="Back"
+                                    Command="{Binding  NavigateToCasinoCommand}" />
+
+                            <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,10,0"
+                                    Content="Auto"
+                                    Command="{Binding AutoMoveCommand}" />
+
+                            <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center"
+                                        HorizontalAlignment="Center" Margin="20,5">
+
+                                <TextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="60">
+                                    <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
+                                         Text="SCORE" />
+                                    <LineBreak />
+                                    <Run FontSize="24" Text="{Binding Score}" />
+                                </TextBlock>
+                                <TextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="60">
+                                    <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
+                                         Text="MOVES" />
+                                    <LineBreak />
+                                    <Run FontSize="24" Text="{Binding Moves}" />
+                                </TextBlock>
+                                <TextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="70">
+                                    <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
+                                         Text="TIME" />
+                                    <LineBreak />
+                                    <Run FontSize="24"
+                                         Text="{Binding ElapsedTime, Converter={StaticResource TimeSpanToShortStringConverter}, Mode=OneWay}" />
+                                </TextBlock>
+
+                            </StackPanel>
+                        </DockPanel>
+                    </controls:TrayContainer>
+                </Viewbox>
+            </Panel>
+        </ControlTemplate>
+</ResourceDictionary>
