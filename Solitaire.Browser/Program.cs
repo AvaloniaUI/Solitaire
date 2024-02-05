@@ -1,4 +1,4 @@
-﻿using System.Runtime.Versioning;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Browser;
@@ -11,6 +11,7 @@ internal sealed partial class Program
 {
     private static Task Main(string[] args)
     {
+        Trace.Listeners.Add(new ConsoleTraceListener());
         PlatformProviders.CasinoStorage = new BrowserSettingsStore<PersistentState>();
 
         return BuildAvaloniaApp()
