@@ -26,12 +26,19 @@ public static class PlatformProviders
         /// <inheritdoc />
         public async Task SaveObject(T obj, string key)
         {
-            // Get a new isolated store for this user, domain, and assembly.
-            using var isoStore = IsolatedStorageFile.GetUserStoreForApplication();
+            try
+            {
+                // Get a new isolated store for this user, domain, and assembly.
+                using var isoStore = IsolatedStorageFile.GetUserStoreForApplication();
 
-            //  Create data stream.
-            await using var isoStream = isoStore.OpenFile(Identifier + key, FileMode.CreateNew, FileAccess.Write);
-            await JsonSerializer.SerializeAsync(isoStream, obj, typeof(T), JsonContext.Default);
+                //  Create data stream.
+                await using var isoStream = isoStore.OpenFile(Identifier + key, FileMode.CreateNew, FileAccess.Write);
+                await JsonSerializer.SerializeAsync(isoStream, obj, typeof(T), JsonContext.Default);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
         }
 
         /// <inheritdoc />

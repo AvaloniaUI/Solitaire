@@ -3,6 +3,8 @@
                     xmlns:controls="using:Solitaire.Controls"
                     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type controls:CardStackPlacementControl}" TargetType="controls:CardStackPlacementControl">
+        <Setter Property="Focusable" Value="{Binding $self.CommandOnCardClick, Converter={x:Static ObjectConverters.IsNotNull}}" />
+        <Setter Property="IsTabStop" Value="True" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="6" />
         <Setter Property="Width" Value="{StaticResource CardWidth}" />

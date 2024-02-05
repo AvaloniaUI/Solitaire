@@ -46,6 +46,7 @@ public class CardFieldBehavior : Behavior<Canvas>
         AssociatedObject.Background = Brushes.Transparent;
         AssociatedObject.AttachedToVisualTree += AssociatedObjectOnAttachedToVisualTree;
         AssociatedObject.DetachedFromVisualTree += AssociatedObjectOnDetachedFromVisualTree;
+        AssociatedObject.KeyDown += AssociatedObjectOnKeyDown;
         AssociatedObject.PointerPressed += AssociatedObjectOnPointerPressed;
         AssociatedObject.PointerMoved += AssociatedObjectOnPointerMoved;
         AssociatedObject.PointerReleased += AssociatedObjectOnPointerReleased;
@@ -55,12 +56,12 @@ public class CardFieldBehavior : Behavior<Canvas>
 
     private void AssociatedObjectOnPointerCaptureLost(object? sender, PointerCaptureLostEventArgs e)
     {
-        ResetDrag();
+        ResetDragAndKeyMove();
     }
 
-    private List<Control>? _draggingContainers;
-    private List<PlayingCardViewModel>? _draggingCards;
-    private bool _isDragging;
+    private List<Control>? _draggingContainers, _keyMoveContainers;
+    private List<PlayingCardViewModel>? _draggingCards, _keyboardMoveCards;
+    private bool _isDragging, _keyboardMove;
     private Point _startPoint;
     private List<int>? _startZIndices;
     private List<Vector>? _homePoints;
@@ -92,34 +93,52 @@ public class CardFieldBehavior : Behavior<Canvas>
                 var targetCard = _draggingCards[0];
                 var validMove = game.CheckAndMoveCard(fromStack.SourceItems, toStack.SourceItems, targetCard);
 
-                ResetDrag(!validMove);
+                ResetDragAndKeyMove(!validMove);
             }
 
             break;
         }
 
-        ResetDrag();
+        ResetDragAndKeyMove();
     }
 
-    private void ResetDrag(bool returnHome = true)
+    private bool ResetDragAndKeyMove(bool returnHome = true)
     {
-        if (!_isDragging || _draggingContainers is null || _draggingCards is null) return;
+        if (!_isDragging && !_keyboardMove) return false;
 
-        foreach (var pair in _draggingContainers.Select((container, i) => (container, i)))
+        if (_draggingContainers is not null)
         {
-            pair.container.Classes.Remove("dragging");
+            foreach (var pair in _draggingContainers.Select((container, i) => (container, i)))
+            {
+                pair.container.Classes.Remove("dragging");
 
-            if (!returnHome || _homePoints is null || _startZIndices is null) continue;
+                if (!returnHome || _homePoints is null || _startZIndices is null) continue;
 
-            SetCanvasPosition(pair.container, _homePoints[pair.i]);
-            pair.container.ZIndex = _startZIndices[pair.i];
+                SetCanvasPosition(pair.container, _homePoints[pair.i]);
+                pair.container.ZIndex = _startZIndices[pair.i];
+            }
         }
+        
+        foreach (var cardStack in GetCardStacks(AssociatedObject!))
+        {
+            cardStack.ClearValue(InputElement.FocusableProperty);
+        }
+        
+        AssociatedObject!.IsEnabled = true;
+
+        _keyMoveContainers?.LastOrDefault()?.Focus(NavigationMethod.Directional);
 
         _isDragging = false;
         _draggingCards = null;
         _draggingContainers = null;
         _startZIndices = null;
         _startPoint = new Point();
+
+        _keyboardMove = false;
+        _keyboardMoveCards = null;
+        _keyMoveContainers = null;
+        
+        return true;
     }
 
     private void AssociatedObjectOnPointerMoved(object? sender, PointerEventArgs e)
@@ -147,8 +166,116 @@ public class CardFieldBehavior : Behavior<Canvas>
         Canvas.SetTop(control, newVector.Y);
     }
 
+    private void AssociatedObjectOnKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (_isDragging) return;
+
+        var focusedCardView = ((Control?)e.Source)?.FindAncestorOfType<PlayingCard>(true);
+        var focusedPlacement = ((Control?)e.Source)?.FindAncestorOfType<CardStackPlacementControl>(true)
+            ?? TopLevel.GetTopLevel(AssociatedObject)?.FocusManager!.GetFocusedElement() as CardStackPlacementControl;
+
+        if (e.Key == Key.Space && focusedCardView is not null)
+        {
+            if (GetStackAndIndex(focusedCardView) is { } tuple)
+            {
+                _keyboardMoveCards = new List<PlayingCardViewModel>();
+                _keyMoveContainers = new List<Control>();
+
+                foreach (var c in tuple.stack.SourceItems!.Select((card2, i) => (card2, i))
+                             .Where(a => a.i >= tuple.currentIndex))
+                {
+                    if (!_containerCache.TryGetValue(c.card2, out var cachedContainer)) continue;
+                    _keyMoveContainers.Add(cachedContainer);
+                    _keyboardMoveCards.Add(c.card2);
+                    // _startZIndices.Add(cachedContainer.ZIndex);
+                    // _homePoints.Add(GetHomePosition(cachedContainer) ?? throw new InvalidOperationException());
+                    // cachedContainer.Classes.Add("dragging");
+                    cachedContainer.ZIndex = int.MaxValue / 2 + c.i;
+                }
+
+                if (_keyMoveContainers.Any())
+                {
+                    e.Handled = _keyboardMove = true;
+                    
+                    foreach (var cardStack in GetCardStacks(AssociatedObject!))
+                    {
+                        cardStack.SetCurrentValue(InputElement.FocusableProperty, true);
+                    }
+                    AssociatedObject!.IsEnabled = false;
+
+                    tuple.stack.Focus(NavigationMethod.Directional);
+                }
+            }
+        }
+        else if (e.Key == Key.Space && focusedPlacement is not null)
+        {
+            if (_keyboardMove && _keyboardMoveCards is not null)
+            {
+                var game = (CardGameViewModel)focusedPlacement.DataContext!;
+
+                var cardStacks = GetCardStacks(_keyMoveContainers![0]);
+                var fromStack = cardStacks.FirstOrDefault(x =>
+                    x.SourceItems != null && x.SourceItems.Contains(_keyboardMoveCards[0]));
+
+                if (fromStack?.SourceItems != null && focusedPlacement.SourceItems != null &&
+                    !fromStack.SourceItems.SequenceEqual(focusedPlacement.SourceItems))
+                {
+                    // Save reference to current card before resetting. 
+                    var targetCard = _keyboardMoveCards[0];
+                    var validMove =
+                        game.CheckAndMoveCard(fromStack.SourceItems, focusedPlacement.SourceItems, targetCard);
+
+                    e.Handled = ResetDragAndKeyMove(!validMove);
+                }
+                else
+                {
+                    e.Handled = ResetDragAndKeyMove();
+                }
+            }
+            else if (focusedPlacement.CommandOnCardClick?.CanExecute(null) ?? false)
+            {
+                focusedPlacement.CommandOnCardClick.Execute(null);
+                e.Handled = true;
+            }
+        }
+        else if (e.Key == Key.Escape && _keyboardMove)
+        {
+            e.Handled = ResetDragAndKeyMove();
+        }
+        else if (e.Key is Key.Up or Key.Down && focusedCardView is not null)
+        {
+            if (GetStackAndIndex(focusedCardView) is { } tuple)
+            {
+                var newIndex = tuple.currentIndex + (e.Key is Key.Up ? -1 : 1);
+                if (tuple.stack.SourceItems!.Skip(newIndex).FirstOrDefault() is {} newCard
+                    && _containerCache.TryGetValue(newCard, out var cachedContainer))
+                {
+                    e.Handled = cachedContainer.Focus(NavigationMethod.Directional);
+                }
+            }
+        }
+        
+        static (CardStackPlacementControl stack, int currentIndex)? GetStackAndIndex(PlayingCard sourceCardView)
+        {
+            var card = (PlayingCardViewModel)sourceCardView.DataContext!;
+            var cardStacks = GetCardStacks(sourceCardView);
+            var stack = cardStacks.FirstOrDefault(x => x.SourceItems != null && x.SourceItems.Contains(card));
+            var currentIndex = stack?.SourceItems!.IndexOf(card);
+            if (currentIndex.HasValue)
+            {
+                return (stack!, currentIndex.Value);
+            }
+            return null;
+        }
+    }
+
     private void AssociatedObjectOnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
+        if (_keyboardMove)
+        {
+            ResetDragAndKeyMove();
+        }
+
         var absCur = e.GetCurrentPoint(TopLevel.GetTopLevel(AssociatedObject));
         var absCurPos = absCur.Position;
 

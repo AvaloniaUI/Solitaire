@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Layout;
 using Solitaire.Behaviors;
 using Solitaire.Models;
@@ -108,5 +109,16 @@ public class CardStackPlacementControl : Border
     {
         get => GetValue(IsHomeStackProperty);
         set => SetValue(IsHomeStackProperty, value);
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+
+        if (e.Key is Key.Space or Key.Escape)
+        {
+            // Redirect KeyDown event to the canvas.
+            TargetCanvas.RaiseEvent(e);
+        }
     }
 }

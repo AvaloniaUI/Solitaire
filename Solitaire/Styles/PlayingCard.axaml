@@ -3,7 +3,8 @@
                     xmlns:controls="using:Solitaire.Controls"
                     xmlns:vm="using:Solitaire.ViewModels"
                     x:ClassModifier="internal">
-    <ControlTheme x:Key="{x:Type controls:PlayingCard}" TargetType="controls:PlayingCard">
+    <ControlTheme x:Key="{x:Type controls:PlayingCard}" TargetType="controls:PlayingCard"
+                  x:DataType="vm:PlayingCardViewModel">
         <Setter Property="Width" Value="{StaticResource CardWidth}" />
         <Setter Property="Height" Value="{StaticResource CardHeight}" />
         <Setter Property="Cursor" Value="Hand" />
@@ -12,6 +13,8 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="6" />
         <Setter Property="Padding" Value="4" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Focusable" Value="{Binding IsPlayable}" />
         <Setter Property="Transitions">
             <Transitions>
                 <IntegerTransition Property="ZIndex" Easing="1,0,1,0" Duration="0:0:0.35" />
@@ -21,7 +24,7 @@
         </Setter>
         <Setter Property="Template">
             <ControlTemplate>
-                <Panel x:DataType="vm:PlayingCardViewModel">
+                <Panel>
                     <Border
                         x:Name="PART_PlayingCardBack" IsVisible="{Binding IsFaceDown}"
                         Background="{TemplateBinding Background}"
