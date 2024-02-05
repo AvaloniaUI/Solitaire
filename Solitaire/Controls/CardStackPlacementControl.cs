@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Solitaire.Behaviors;
@@ -10,7 +11,7 @@ using Solitaire.ViewModels;
 
 namespace Solitaire.Controls;
 
-public class CardStackPlacementControl : Border
+public class CardStackPlacementControl : TemplatedControl
 {
     /// <inheritdoc />
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -111,6 +112,8 @@ public class CardStackPlacementControl : Border
         set => SetValue(IsHomeStackProperty, value);
     }
 
+    public Point GetCardHomePosition() => Bounds.Position + new Point(Padding.Left, Padding.Top);
+    
     protected override void OnKeyDown(KeyEventArgs e)
     {
         base.OnKeyDown(e);

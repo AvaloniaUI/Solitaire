@@ -45,6 +45,7 @@
                                                         TargetCanvas="{Binding #PlayingField}"
                                                         Classes="StackMarker"
                                                         NValue="{Binding DrawMode}"
+                                                        HorizontalAlignment="Center"
                                                         Grid.Row="0"
                                                         Grid.Column="4"
                                                         Grid.ColumnSpan="2"

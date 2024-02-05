@@ -23,7 +23,7 @@
                 <behaviors:CardFieldBehavior.CardStacks>
                     <generic:List x:TypeArguments="controls:CardStackPlacementControl" />
                 </behaviors:CardFieldBehavior.CardStacks>
-                <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*,*" RowDefinitions="640,200"
+                <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*,*" RowDefinitions="640,Auto"
                       ClipToBounds="False">
                     <!-- The tableaus. -->
                     <controls:CardStackPlacementControl Name="Tableau1"
@@ -98,7 +98,7 @@
                     <!-- The stock. -->
                     <controls:CardStackPlacementControl Name="Stock"
                                                         Grid.Row="1" Grid.Column="8" Grid.ColumnSpan="2"
-                                                        Classes="StackMarker"
+                                                        Classes="StackMarker RunMarker"
                                                         TargetCanvas="{Binding #PlayingField}"
                                                         SourceItems="{Binding Stock}"
                                                         CommandOnCardClick="{Binding DealCardsCommand}"

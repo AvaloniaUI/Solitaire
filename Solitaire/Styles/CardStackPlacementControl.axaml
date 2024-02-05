@@ -3,26 +3,60 @@
                     xmlns:controls="using:Solitaire.Controls"
                     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type controls:CardStackPlacementControl}" TargetType="controls:CardStackPlacementControl">
+        <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="Focusable" Value="{Binding $self.CommandOnCardClick, Converter={x:Static ObjectConverters.IsNotNull}}" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="IsTabStop" Value="True" />
         <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="#33FFFFFF" />
         <Setter Property="BorderThickness" Value="6" />
-        <Setter Property="Width" Value="{StaticResource CardWidth}" />
         <Setter Property="CornerRadius" Value="15" />
-        <Setter Property="Margin"
-                Value="{OnFormFactor {StaticResource CardThickness}, Mobile={StaticResource CardThicknessMobile}}" />
+        <Setter Property="Padding" Value="{OnFormFactor {StaticResource CardThickness}, Mobile={StaticResource CardThicknessMobile}}"/>
 
-        <Style Selector="^.StackMarker">
-            <Setter Property="BorderBrush" Value="#33FFFFFF" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel x:Name="PART_OuterBorder"
+                        Background="Transparent">
+                    <Border x:Name="PART_InnerBorder"
+                            RenderTransformOrigin="50%, 50%"
+                            Margin="{TemplateBinding Padding}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            Background="{TemplateBinding Background}"
+                            BoxShadow="{TemplateBinding Border.BoxShadow}"
+                            Width="{StaticResource CardWidth}"/>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^.StackMarker /template/ Border#PART_InnerBorder">
             <Setter Property="Height" Value="{StaticResource CardHeight}" />
         </Style>
-        <Style Selector="^.RunMarker">
-            <Setter Property="BorderBrush">
+        <Style Selector="^.RunMarker[Orientation=Vertical] /template/ Panel#PART_OuterBorder">
+            <Setter Property="OpacityMask">
                 <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                    <GradientStop Color="#33FFFFFF" Offset="0" />
+                    <GradientStop Color="#FFFFFFFF" Offset="0" />
                     <GradientStop Color="#00FFFFFF" Offset="0.8" />
                 </LinearGradientBrush>
             </Setter>
+        </Style>
+        <Style Selector="^.RunMarker[Orientation=Horizontal] /template/ Panel#PART_OuterBorder">
+            <Setter Property="OpacityMask">
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                    <GradientStop Color="#FFFFFFFF" Offset="0" />
+                    <GradientStop Color="#00FFFFFF" Offset="0.8" />
+                </LinearGradientBrush>
+            </Setter>
+        </Style>
+
+        <Style Selector="^:focus-visible">
+            <Setter Property="BorderBrush" Value="Gold" />
+            <Setter Property="Border.BoxShadow" Value="0 0 20 6 Gold" />
+            <Setter Property="RenderTransform" Value="scaleX(1.06) scaleY(1.06)"/>
+            <Style Selector="^.RunMarker[Orientation=Vertical]">
+                <Setter Property="RenderTransform" Value="scaleX(1.06) scaleY(1.02)"/>
+            </Style>
         </Style>
     </ControlTheme>
 </ResourceDictionary>

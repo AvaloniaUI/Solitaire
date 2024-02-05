@@ -79,7 +79,8 @@ public class CardFieldBehavior : Behavior<Canvas>
         foreach (var visual in TopLevel.GetTopLevel(AssociatedObject)!.GetVisualsAt(absCurPos)
                      .OrderByDescending(x => x.ZIndex))
         {
-            if (visual is not CardStackPlacementControl { DataContext: CardGameViewModel game } toStack) continue;
+            if (visual is not Border { DataContext: CardGameViewModel game } border
+                || border.FindAncestorOfType<CardStackPlacementControl>() is not { } toStack) continue;
 
             var cardStacks = GetCardStacks(_draggingContainers![0]);
             var fromStack =
@@ -254,19 +255,38 @@ public class CardFieldBehavior : Behavior<Canvas>
                 }
             }
         }
-        
-        static (CardStackPlacementControl stack, int currentIndex)? GetStackAndIndex(PlayingCard sourceCardView)
+        else if (e.Key is Key.Left or Key.Right && focusedCardView is not null)
         {
-            var card = (PlayingCardViewModel)sourceCardView.DataContext!;
-            var cardStacks = GetCardStacks(sourceCardView);
-            var stack = cardStacks.FirstOrDefault(x => x.SourceItems != null && x.SourceItems.Contains(card));
-            var currentIndex = stack?.SourceItems!.IndexOf(card);
-            if (currentIndex.HasValue)
+            if (GetStackAndIndex(focusedCardView) is { } tuple)
             {
-                return (stack!, currentIndex.Value);
+                var allStacks = GetCardStacks(AssociatedObject!);
+                var currIndex = allStacks.IndexOf(tuple.stack);
+                
+                var newIndex = currIndex + (e.Key is Key.Left ? -1 : 1);
+                if (allStacks.Skip(newIndex).FirstOrDefault() is {} newStack
+                    && newStack.SourceItems?.LastOrDefault() is {} lastItem
+                    && _containerCache.TryGetValue(lastItem, out var cachedContainer))
+                {
+                    e.Handled = cachedContainer.Focus(NavigationMethod.Directional);
+                }
             }
-            return null;
         }
+    }
+
+    private static (CardStackPlacementControl stack, int currentIndex)? GetStackAndIndex(PlayingCard? sourceCardView)
+    {
+        if (sourceCardView is null)
+            return null;
+
+        var card = (PlayingCardViewModel)sourceCardView.DataContext!;
+        var cardStacks = GetCardStacks(sourceCardView);
+        var stack = cardStacks.FirstOrDefault(x => x.SourceItems != null && x.SourceItems.Contains(card));
+        var currentIndex = stack?.SourceItems!.IndexOf(card);
+        if (currentIndex.HasValue)
+        {
+            return (stack!, currentIndex.Value);
+        }
+        return null;
     }
 
     private void AssociatedObjectOnPointerPressed(object? sender, PointerPressedEventArgs e)
@@ -292,7 +312,8 @@ public class CardFieldBehavior : Behavior<Canvas>
         foreach (var visual in TopLevel.GetTopLevel(AssociatedObject)!.GetVisualsAt(absCurPos)
                      .OrderByDescending(x => x.ZIndex))
         {
-            if (visual is CardStackPlacementControl { DataContext: CardGameViewModel } stack1)
+            if (visual is Border { DataContext: CardGameViewModel game } border
+                && border.FindAncestorOfType<CardStackPlacementControl>() is { } stack1)
             {
                 ActivateCommand(stack1);
                 break;
@@ -380,7 +401,7 @@ public class CardFieldBehavior : Behavior<Canvas>
         var cardsList = model.Deck;
         var cardStacks = GetCardStacks(AssociatedObject);
 
-        var homePosition = cardStacks.FirstOrDefault(i => i.IsHomeStack)?.Bounds.Position ?? new Point();
+        var homePosition = cardStacks.FirstOrDefault(i => i.IsHomeStack)?.GetCardHomePosition() ?? new Point();
 
         if (cardsList != null)
             foreach (var card in cardsList)
@@ -435,10 +456,11 @@ public class CardFieldBehavior : Behavior<Canvas>
                 })
                 .Sum();
 
+            var stackPosition = control.GetCardHomePosition();
 
-            var pos = new Point(control.Bounds.Position.X +
+            var pos = new Point(stackPosition.X +
                                 (control.Orientation == Orientation.Horizontal ? sumOffsets : 0),
-                control.Bounds.Position.Y + (control.Orientation == Orientation.Vertical ? sumOffsets : 0));
+                stackPosition.Y + (control.Orientation == Orientation.Vertical ? sumOffsets : 0));
 
             var isLastCard = pair.i == control.SourceItems.Count - 1 || pair.i == control.SourceItems.Count - 2;
             container.Classes.Set("lastCard", isLastCard);
