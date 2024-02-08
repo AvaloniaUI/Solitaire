@@ -11,6 +11,8 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia.iOS" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="SkiaSharp" Version="3.0.0-preview.0.30" />
+    <PackageReference Include="SkiaSharp.NativeAssets.tvOS" Version="3.0.0-preview.0.30" />
   </ItemGroup>
 
   <ItemGroup>
