@@ -23,8 +23,7 @@
             <behaviors:CardFieldBehavior.CardStacks>
                 <generic:List x:TypeArguments="controls:CardStackPlacementControl" />
             </behaviors:CardFieldBehavior.CardStacks>
-            <ContentControl DockPanel.Dock="Bottom"
-                            Template="{StaticResource DeckControls}" />
+            <controls:DeckControls DockPanel.Dock="Bottom" />
             <Viewbox Margin="10" ClipToBounds="False" StretchDirection="Both" Stretch="Uniform">
                 <!-- This is the layout grid for the tableaus, foundations etc. -->
                 <Grid ColumnDefinitions="*,*,*,*,*,*,*" RowDefinitions="240,600">
@@ -144,7 +143,6 @@
                 </Grid>
             </Viewbox>
         </DockPanel>
-        <ContentControl IsVisible="{Binding IsGameWon}"
-                        Template="{StaticResource WinDialog}" />
+        <controls:WinDialog IsVisible="{Binding IsGameWon}" />
     </Panel>
 </UserControl>

@@ -1,0 +1,58 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:Solitaire.ViewModels"
+             xmlns:controls="clr-namespace:Solitaire.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Solitaire.Controls.DeckControls"
+             x:DataType="viewModels:CardGameViewModel"
+             Height="64">
+    <Viewbox Stretch="Uniform" VerticalAlignment="Bottom">
+        <controls:TrayContainer Classes="downDeck"
+                                Classes.animateUp="{Binding !IsGameWon}" Margin="0,0,0,-15">
+            <DockPanel LastChildFill="True">
+                <Button DockPanel.Dock="Left" VerticalAlignment="Center" Margin="10,0,0,0"
+                        Content="Deal"
+                        Command="{Binding NewGameCommand}" />
+
+                <Button DockPanel.Dock="Left" VerticalAlignment="Center" Margin="10,0,0,0"
+                        Content="Undo"
+                        Command="{Binding UndoCommand}" />
+
+                <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,10,0"
+                        Content="Back"
+                        Command="{Binding  NavigateToCasinoCommand}" />
+
+                <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,10,0"
+                        Content="Auto"
+                        Command="{Binding AutoMoveCommand}" />
+
+                <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center"
+                            HorizontalAlignment="Center" Margin="20,5">
+
+                    <TextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="60">
+                        <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
+                             Text="SCORE" />
+                        <LineBreak />
+                        <Run FontSize="24" Text="{Binding Score}" />
+                    </TextBlock>
+                    <TextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="60">
+                        <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
+                             Text="MOVES" />
+                        <LineBreak />
+                        <Run FontSize="24" Text="{Binding Moves}" />
+                    </TextBlock>
+                    <TextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="70">
+                        <Run FontSize="14" TextDecorations="Underline" FontWeight="SemiBold"
+                             Text="TIME" />
+                        <LineBreak />
+                        <Run FontSize="24"
+                             Text="{Binding ElapsedTime, Converter={StaticResource TimeSpanToShortStringConverter}, Mode=OneWay}" />
+                    </TextBlock>
+
+                </StackPanel>
+            </DockPanel>
+        </controls:TrayContainer>
+    </Viewbox>
+</UserControl>

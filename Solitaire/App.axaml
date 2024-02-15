@@ -16,7 +16,6 @@
                 <MergeResourceInclude Source="Styles/SuitMarker.axaml" />
                 <MergeResourceInclude Source="Styles/TrayContainer.axaml" />
                 <MergeResourceInclude Source="Styles/CardStackPlacementControl.axaml" />
-                <MergeResourceInclude Source="Styles/Templates.axaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

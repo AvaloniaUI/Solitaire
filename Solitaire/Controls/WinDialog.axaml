@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:Solitaire.Controls"
+             xmlns:viewModels="clr-namespace:Solitaire.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Solitaire.Controls.WinDialog"
+             x:DataType="viewModels:CardGameViewModel"
+             Background="#AA000000">
+    <controls:TrayContainer Padding="0" MaxHeight="200" MaxWidth="400">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Vertical">
+            <TextBlock Name="header" TextAlignment="Center" Text="YOU WIN!" FontSize="64">
+                <TextBlock.Foreground>
+                    <ConicGradientBrush Center="110%, -20%" Angle="180">
+                        <GradientStop Offset="0" Color="#FFD09C14" />
+                        <GradientStop Offset="0.3" Color="#FFFCFC80" />
+                        <GradientStop Offset="0.5" Color="#FFD09C14" />
+                        <GradientStop Offset="0.6" Color="#FFFCFC80" />
+                        <GradientStop Offset="1" Color="#FFD09C14" />
+                    </ConicGradientBrush>
+                </TextBlock.Foreground>
+            </TextBlock>
+            <TextBlock FontSize="18" Margin="0,-10,0,10"
+                       HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center">
+                <Run Text="You scored" />
+                <Run Text="{Binding Score}" FontWeight="Bold" />
+                <Run Text="in" />
+                <Run Text="{Binding Moves}" FontWeight="Bold" />
+                <Run Text="moves!" />
+            </TextBlock>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button
+                    Theme="{StaticResource CasinoButtonTheme}" Width="120"
+                    Margin="4" Content="Play Again" Command="{Binding NewGameCommand}" />
+                <Button
+                    Theme="{StaticResource CasinoButtonTheme}" Width="120"
+                    Margin="4" Content="Back to Casino" Command="{Binding NavigateToCasinoCommand}" />
+            </StackPanel>
+        </StackPanel>
+    </controls:TrayContainer>
+</UserControl>

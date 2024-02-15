@@ -17,8 +17,7 @@
     </Design.DataContext>
     <Panel>
         <DockPanel LastChildFill="True">
-            <ContentControl DockPanel.Dock="Bottom"
-                            Template="{StaticResource DeckControls}" />
+            <controls:DeckControls DockPanel.Dock="Bottom" />
             <Viewbox Margin="10" ClipToBounds="False" StretchDirection="Both" Stretch="Uniform">
                 <behaviors:CardFieldBehavior.CardStacks>
                     <generic:List x:TypeArguments="controls:CardStackPlacementControl" />
@@ -117,7 +116,6 @@
                 </Grid>
             </Viewbox>
         </DockPanel>
-        <ContentControl IsVisible="{Binding IsGameWon}"
-                        Template="{StaticResource WinDialog}" />
+        <controls:WinDialog IsVisible="{Binding IsGameWon}" />
     </Panel>
 </UserControl>
