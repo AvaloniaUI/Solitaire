@@ -2,8 +2,11 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Platform;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using Solitaire.Controls;
+using Solitaire.ViewModels;
 
 #pragma warning disable CS0618 // Type or member is obsolete
 
@@ -26,14 +29,21 @@ public partial class CasinoView : UserControl
     {
         base.OnAttachedToVisualTree(e);
 
-        if (TopLevel.GetTopLevel(this) is { InsetsManager: { } insetsManager })
+        if (TopLevel.GetTopLevel(this) is { } topLevel)
         {
-            insetsManager.SafeAreaChanged += InsetsManagerOnSafeAreaChanged;
-            InsetsManagerOnSafeAreaChanged(insetsManager, new SafeAreaChangedArgs(insetsManager.SafeAreaPadding));
-        }
-        else
-        {
-            InsetsManagerOnSafeAreaChanged(this, new SafeAreaChangedArgs(default));
+            topLevel.PlatformSettings?.HotkeyConfiguration.Back.Add(new KeyGesture(Key.Escape));
+
+            topLevel.BackRequested += TopLevelOnBackRequested;
+            
+            if (topLevel is { InsetsManager: { } insetsManager })
+            {
+                insetsManager.SafeAreaChanged += InsetsManagerOnSafeAreaChanged;
+                InsetsManagerOnSafeAreaChanged(insetsManager, new SafeAreaChangedArgs(insetsManager.SafeAreaPadding));
+            }
+            else
+            {
+                InsetsManagerOnSafeAreaChanged(this, new SafeAreaChangedArgs(default));
+            }
         }
     }
 
@@ -41,9 +51,14 @@ public partial class CasinoView : UserControl
     {
         base.OnDetachedFromVisualTree(e);
 
-        if (e.Root is TopLevel { InsetsManager: { } insetsManager })
+        if (TopLevel.GetTopLevel(this) is { } topLevel)
         {
-            insetsManager.SafeAreaChanged -= InsetsManagerOnSafeAreaChanged;
+            topLevel.BackRequested -= TopLevelOnBackRequested;
+
+            if (topLevel is { InsetsManager: { } insetsManager })
+            {
+                insetsManager.SafeAreaChanged -= InsetsManagerOnSafeAreaChanged;
+            }
         }
     }
 
@@ -55,5 +70,10 @@ public partial class CasinoView : UserControl
             Math.Max(10, e.SafeAreaPadding.Top),
             Math.Max(10, e.SafeAreaPadding.Right),
             e.SafeAreaPadding.Bottom);
+    }
+
+    private void TopLevelOnBackRequested(object? sender, RoutedEventArgs e)
+    {
+        (DataContext as CasinoViewModel)?.NavigateToTitleCommand.Execute(null);
     }
 }

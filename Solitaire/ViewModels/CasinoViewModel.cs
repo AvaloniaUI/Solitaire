@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Solitaire.Models;
 using Solitaire.Utils;
 using Solitaire.ViewModels.Pages;
@@ -27,7 +29,12 @@ public partial class CasinoViewModel : ViewModelBase
         TitleInstance = new TitleViewModel(this);
         StatisticsInstance = new StatisticsViewModel(this);
         CurrentView = TitleInstance;
-        
+
+        NavigateToTitleCommand = new RelayCommand(() =>
+        {
+            CurrentView = TitleInstance;
+            Save();
+        });
     }
     public StatisticsViewModel StatisticsInstance { get; }
 
@@ -36,6 +43,8 @@ public partial class CasinoViewModel : ViewModelBase
     public SpiderSolitaireViewModel SpiderInstance { get; }
     public FreeCellSolitaireViewModel FreeCellInstance { get; }
     public KlondikeSolitaireViewModel KlondikeInstance { get; }
+
+    public ICommand NavigateToTitleCommand { get; }
 
     /// <summary>
     /// Saves this instance.
