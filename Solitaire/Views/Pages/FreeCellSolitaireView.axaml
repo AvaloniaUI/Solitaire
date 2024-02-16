@@ -18,141 +18,139 @@
         <pages:FreeCellSolitaireViewModel />
     </Design.DataContext>
     <Panel>
-        <DockPanel LastChildFill="True">
-            <controls:DeckControls DockPanel.Dock="Bottom" />
-            <Viewbox ClipToBounds="False" Stretch="Uniform">
-                <behaviors:CardFieldBehavior.CardStacks>
-                    <generic:List x:TypeArguments="controls:CardStackPlacementControl" />
-                </behaviors:CardFieldBehavior.CardStacks>
-                <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
-                      RowDefinitions="240,600">
-                    <Grid.Styles>
-                        <Style Selector="controls|CardStackPlacementControl">
-                            <Setter Property="Grid.ColumnSpan" Value="2" />
-                        </Style>
-                    </Grid.Styles>
+        <Viewbox Margin="0,0,0,30" ClipToBounds="False" Stretch="Uniform">
+            <behaviors:CardFieldBehavior.CardStacks>
+                <generic:List x:TypeArguments="controls:CardStackPlacementControl" />
+            </behaviors:CardFieldBehavior.CardStacks>
+            <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
+                  RowDefinitions="240,600">
+                <Grid.Styles>
+                    <Style Selector="controls|CardStackPlacementControl">
+                        <Setter Property="Grid.ColumnSpan" Value="2" />
+                    </Style>
+                </Grid.Styles>
 
-                    <!-- The stock. -->
-                    <controls:CardStackPlacementControl
-                        Name="Cell1" IsHomeStack="True" TargetCanvas="{Binding #PlayingField}"
-                        Classes="StackMarker"
-                        Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
-                        SourceItems="{Binding Cell1}" Cursor="Hand"
-                        Orientation="Horizontal" />
+                <!-- The stock. -->
+                <controls:CardStackPlacementControl
+                    Name="Cell1" IsHomeStack="True" TargetCanvas="{Binding #PlayingField}"
+                    Classes="StackMarker"
+                    Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
+                    SourceItems="{Binding Cell1}" Cursor="Hand"
+                    Orientation="Horizontal" />
 
 
-                    <!-- The waste. -->
+                <!-- The waste. -->
 
-                    <controls:CardStackPlacementControl Name="Cell2" Classes="StackMarker"
-                                                        TargetCanvas="{Binding #PlayingField}"
-                                                        Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2"
-                                                        SourceItems="{Binding Cell2}"
-                                                        Orientation="Horizontal" OffsetMode="UseCardValues" />
-
-
-                    <controls:CardStackPlacementControl Name="Cell3" Classes="StackMarker"
-                                                        TargetCanvas="{Binding #PlayingField}"
-                                                        Grid.Row="0" Grid.Column="5" Grid.ColumnSpan="2"
-                                                        SourceItems="{Binding Cell3}"
-                                                        Orientation="Horizontal" OffsetMode="UseCardValues" />
+                <controls:CardStackPlacementControl Name="Cell2" Classes="StackMarker"
+                                                    TargetCanvas="{Binding #PlayingField}"
+                                                    Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2"
+                                                    SourceItems="{Binding Cell2}"
+                                                    Orientation="Horizontal" OffsetMode="UseCardValues" />
 
 
-                    <controls:CardStackPlacementControl Name="Cell4" Classes="StackMarker"
-                                                        TargetCanvas="{Binding #PlayingField}"
-                                                        Grid.Row="0" Grid.Column="7" Grid.ColumnSpan="2"
-                                                        SourceItems="{Binding Cell4}"
-                                                        Orientation="Horizontal" OffsetMode="UseCardValues" />
+                <controls:CardStackPlacementControl Name="Cell3" Classes="StackMarker"
+                                                    TargetCanvas="{Binding #PlayingField}"
+                                                    Grid.Row="0" Grid.Column="5" Grid.ColumnSpan="2"
+                                                    SourceItems="{Binding Cell3}"
+                                                    Orientation="Horizontal" OffsetMode="UseCardValues" />
 
-                    <controls:SuitMarker Grid.Row="0" Grid.Column="9" Suit="Hearts" />
-                    <controls:SuitMarker Grid.Row="0" Grid.Column="11" Suit="Clubs" />
-                    <controls:SuitMarker Grid.Row="0" Grid.Column="13" Suit="Diamonds" />
-                    <controls:SuitMarker Grid.Row="0" Grid.Column="15" Suit="Spades" />
-    
-                    <!-- The foundations. -->
-                    <controls:CardStackPlacementControl Name="Foundation1" Classes="StackMarker"
-                                                        TargetCanvas="{Binding #PlayingField}"
-                                                        Grid.Row="0" Grid.Column="9" Grid.ColumnSpan="2"
-                                                        SourceItems="{Binding Foundation1}"
-                                                        Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" />
 
-                    <controls:CardStackPlacementControl Name="Foundation2" Classes="StackMarker"
-                                                        TargetCanvas="{Binding #PlayingField}"
-                                                        Grid.Row="0" Grid.Column="11" Grid.ColumnSpan="2"
-                                                        SourceItems="{Binding Foundation2}"
-                                                        Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" />
+                <controls:CardStackPlacementControl Name="Cell4" Classes="StackMarker"
+                                                    TargetCanvas="{Binding #PlayingField}"
+                                                    Grid.Row="0" Grid.Column="7" Grid.ColumnSpan="2"
+                                                    SourceItems="{Binding Cell4}"
+                                                    Orientation="Horizontal" OffsetMode="UseCardValues" />
 
-                    <controls:CardStackPlacementControl Name="Foundation3" Classes="StackMarker"
-                                                        TargetCanvas="{Binding #PlayingField}"
-                                                        Grid.Row="0" Grid.Column="13" Grid.ColumnSpan="2"
-                                                        SourceItems="{Binding Foundation3}"
-                                                        Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" />
+                <controls:SuitMarker Grid.Row="0" Grid.Column="9" Suit="Hearts" />
+                <controls:SuitMarker Grid.Row="0" Grid.Column="11" Suit="Clubs" />
+                <controls:SuitMarker Grid.Row="0" Grid.Column="13" Suit="Diamonds" />
+                <controls:SuitMarker Grid.Row="0" Grid.Column="15" Suit="Spades" />
 
-                    <controls:CardStackPlacementControl Name="Foundation4" Classes="StackMarker"
-                                                        TargetCanvas="{Binding #PlayingField}"
-                                                        Grid.Row="0" Grid.Column="15" Grid.ColumnSpan="2"
-                                                        SourceItems="{Binding Foundation4}"
-                                                        Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" />
+                <!-- The foundations. -->
+                <controls:CardStackPlacementControl Name="Foundation1" Classes="StackMarker"
+                                                    TargetCanvas="{Binding #PlayingField}"
+                                                    Grid.Row="0" Grid.Column="9" Grid.ColumnSpan="2"
+                                                    SourceItems="{Binding Foundation1}"
+                                                    Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" />
 
-                    <!-- The tableaus. -->
-                    <controls:CardStackPlacementControl Name="Tableau1" Classes="RunMarker"
-                                                        TargetCanvas="{Binding #PlayingField}"
-                                                        Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
-                                                        SourceItems="{Binding Tableau1}"
-                                                        Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
+                <controls:CardStackPlacementControl Name="Foundation2" Classes="StackMarker"
+                                                    TargetCanvas="{Binding #PlayingField}"
+                                                    Grid.Row="0" Grid.Column="11" Grid.ColumnSpan="2"
+                                                    SourceItems="{Binding Foundation2}"
+                                                    Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" />
 
-                    <controls:CardStackPlacementControl Name="Tableau2" Classes="RunMarker"
-                                                        TargetCanvas="{Binding #PlayingField}"
-                                                        Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2"
-                                                        SourceItems="{Binding Tableau2}"
-                                                        Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
+                <controls:CardStackPlacementControl Name="Foundation3" Classes="StackMarker"
+                                                    TargetCanvas="{Binding #PlayingField}"
+                                                    Grid.Row="0" Grid.Column="13" Grid.ColumnSpan="2"
+                                                    SourceItems="{Binding Foundation3}"
+                                                    Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" />
 
-                    <controls:CardStackPlacementControl Name="Tableau3" Classes="RunMarker"
-                                                        TargetCanvas="{Binding #PlayingField}"
-                                                        Grid.Row="1" Grid.Column="5" Grid.ColumnSpan="2"
-                                                        SourceItems="{Binding Tableau3}"
-                                                        Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
+                <controls:CardStackPlacementControl Name="Foundation4" Classes="StackMarker"
+                                                    TargetCanvas="{Binding #PlayingField}"
+                                                    Grid.Row="0" Grid.Column="15" Grid.ColumnSpan="2"
+                                                    SourceItems="{Binding Foundation4}"
+                                                    Orientation="Horizontal" FaceDownOffset="0" FaceUpOffset="0" />
 
-                    <controls:CardStackPlacementControl Name="Tableau4" Classes="RunMarker"
-                                                        TargetCanvas="{Binding #PlayingField}"
-                                                        Grid.Row="1" Grid.Column="7" Grid.ColumnSpan="2"
-                                                        SourceItems="{Binding Tableau4}"
-                                                        Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
+                <!-- The tableaus. -->
+                <controls:CardStackPlacementControl Name="Tableau1" Classes="RunMarker"
+                                                    TargetCanvas="{Binding #PlayingField}"
+                                                    Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                                                    SourceItems="{Binding Tableau1}"
+                                                    Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
 
-                    <controls:CardStackPlacementControl Name="Tableau5" Classes="RunMarker"
-                                                        TargetCanvas="{Binding #PlayingField}"
-                                                        Grid.Row="1" Grid.Column="9" Grid.ColumnSpan="2"
-                                                        SourceItems="{Binding Tableau5}"
-                                                        Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
+                <controls:CardStackPlacementControl Name="Tableau2" Classes="RunMarker"
+                                                    TargetCanvas="{Binding #PlayingField}"
+                                                    Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2"
+                                                    SourceItems="{Binding Tableau2}"
+                                                    Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
 
-                    <controls:CardStackPlacementControl Name="Tableau6" Classes="RunMarker"
-                                                        TargetCanvas="{Binding #PlayingField}"
-                                                        Grid.Row="1" Grid.Column="11" Grid.ColumnSpan="2"
-                                                        SourceItems="{Binding Tableau6}"
-                                                        Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
+                <controls:CardStackPlacementControl Name="Tableau3" Classes="RunMarker"
+                                                    TargetCanvas="{Binding #PlayingField}"
+                                                    Grid.Row="1" Grid.Column="5" Grid.ColumnSpan="2"
+                                                    SourceItems="{Binding Tableau3}"
+                                                    Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
 
-                    <controls:CardStackPlacementControl Name="Tableau7" Classes="RunMarker"
-                                                        TargetCanvas="{Binding #PlayingField}"
-                                                        Grid.Row="1" Grid.Column="13" Grid.ColumnSpan="2"
-                                                        SourceItems="{Binding Tableau7}"
-                                                        Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
+                <controls:CardStackPlacementControl Name="Tableau4" Classes="RunMarker"
+                                                    TargetCanvas="{Binding #PlayingField}"
+                                                    Grid.Row="1" Grid.Column="7" Grid.ColumnSpan="2"
+                                                    SourceItems="{Binding Tableau4}"
+                                                    Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
 
-                    <controls:CardStackPlacementControl Name="Tableau8" Classes="RunMarker"
-                                                        TargetCanvas="{Binding #PlayingField}"
-                                                        Grid.Row="1" Grid.Column="15" Grid.ColumnSpan="2"
-                                                        SourceItems="{Binding Tableau8}"
-                                                        Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
-                    <Canvas x:Name="PlayingField"
-                            Grid.ColumnSpan="18"
-                            Grid.Column="0"
-                            Grid.Row="0"
-                            Grid.RowSpan="2">
-                        <Interaction.Behaviors>
-                            <behaviors:CardFieldBehavior />
-                        </Interaction.Behaviors>
-                    </Canvas>
-                </Grid>
-            </Viewbox>
-        </DockPanel>
+                <controls:CardStackPlacementControl Name="Tableau5" Classes="RunMarker"
+                                                    TargetCanvas="{Binding #PlayingField}"
+                                                    Grid.Row="1" Grid.Column="9" Grid.ColumnSpan="2"
+                                                    SourceItems="{Binding Tableau5}"
+                                                    Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
+
+                <controls:CardStackPlacementControl Name="Tableau6" Classes="RunMarker"
+                                                    TargetCanvas="{Binding #PlayingField}"
+                                                    Grid.Row="1" Grid.Column="11" Grid.ColumnSpan="2"
+                                                    SourceItems="{Binding Tableau6}"
+                                                    Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
+
+                <controls:CardStackPlacementControl Name="Tableau7" Classes="RunMarker"
+                                                    TargetCanvas="{Binding #PlayingField}"
+                                                    Grid.Row="1" Grid.Column="13" Grid.ColumnSpan="2"
+                                                    SourceItems="{Binding Tableau7}"
+                                                    Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
+
+                <controls:CardStackPlacementControl Name="Tableau8" Classes="RunMarker"
+                                                    TargetCanvas="{Binding #PlayingField}"
+                                                    Grid.Row="1" Grid.Column="15" Grid.ColumnSpan="2"
+                                                    SourceItems="{Binding Tableau8}"
+                                                    Orientation="Vertical" FaceDownOffset="15" FaceUpOffset="30" />
+                <Canvas x:Name="PlayingField"
+                        Grid.ColumnSpan="18"
+                        Grid.Column="0"
+                        Grid.Row="0"
+                        Grid.RowSpan="2">
+                    <Interaction.Behaviors>
+                        <behaviors:CardFieldBehavior />
+                    </Interaction.Behaviors>
+                </Canvas>
+            </Grid>
+        </Viewbox>
+        <controls:DeckControls VerticalAlignment="Bottom" />
         <controls:WinDialog IsVisible="{Binding IsGameWon}" />
     </Panel>
 

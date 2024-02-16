@@ -7,28 +7,29 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Solitaire.Controls.DeckControls"
              x:DataType="viewModels:CardGameViewModel"
-             Height="64">
-    <Viewbox Stretch="Uniform" VerticalAlignment="Bottom">
-        <controls:TrayContainer Classes="downDeck"
-                                Classes.animateUp="{Binding !IsGameWon}" Margin="0,0,0,-15">
-            <DockPanel LastChildFill="True">
-                <Button DockPanel.Dock="Left" VerticalAlignment="Center" Margin="10,0,0,0"
-                        Content="Deal"
-                        Command="{Binding NewGameCommand}" />
-
-                <Button DockPanel.Dock="Left" VerticalAlignment="Center" Margin="10,0,0,0"
+             Height="64"
+             ClipToBounds="False">
+    <Viewbox Stretch="Uniform">
+        <controls:TrayContainer x:Name="TrayContainer"
+                                Classes.animateUp="{Binding !IsGameWon}">
+            <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto">
+                <Button Grid.Column="0" VerticalAlignment="Center" Margin="10,0,0,0"
                         Content="Undo"
                         Command="{Binding UndoCommand}" />
 
-                <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,10,0"
-                        Content="Back"
-                        Command="{Binding  NavigateToCasinoCommand}" />
+                <Button Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0"
+                        Content="Deal"
+                        Command="{Binding NewGameCommand}" />
 
-                <Button DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,10,0"
+                <Button Grid.Column="3" VerticalAlignment="Center" Margin="0,0,10,0"
                         Content="Auto"
                         Command="{Binding AutoMoveCommand}" />
 
-                <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center"
+                <Button Grid.Column="4" VerticalAlignment="Center" Margin="0,0,10,0"
+                        Content="Back"
+                        Command="{Binding  NavigateToCasinoCommand}" />
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center"
                             HorizontalAlignment="Center" Margin="20,5">
 
                     <TextBlock TextAlignment="Center" VerticalAlignment="Center" MinWidth="60">
@@ -52,7 +53,7 @@
                     </TextBlock>
 
                 </StackPanel>
-            </DockPanel>
+            </Grid>
         </controls:TrayContainer>
     </Viewbox>
 </UserControl>
