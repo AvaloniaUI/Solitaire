@@ -1,18 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net8.0-ios;net8.0-tvos</TargetFrameworks>
+    <TargetFramework>net8.0-tvos</TargetFramework>
     <SupportedOSPlatformVersion>13.0</SupportedOSPlatformVersion>
     <Nullable>enable</Nullable>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <CodesignKey>Apple Development: maxkatz6@outlook.com (DN2P3PH6J5)</CodesignKey>
+    <RuntimeIdentifier>tvos-arm64</RuntimeIdentifier>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia.iOS" Version="$(AvaloniaVersion)" />
-    <PackageReference Include="SkiaSharp" Version="3.0.0-preview.0.30" />
-    <PackageReference Include="SkiaSharp.NativeAssets.tvOS" Version="3.0.0-preview.0.30" />
+    <PackageReference Include="SkiaSharp" Version="3.0.0-preview.1.8" />
+    <PackageReference Include="SkiaSharp.NativeAssets.tvOS" Version="3.0.0-preview.1.8" />
   </ItemGroup>
 
   <ItemGroup>
