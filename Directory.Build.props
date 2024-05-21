@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <AvaloniaVersion>11.1.999-cibuild0044410-beta</AvaloniaVersion>
+    <AvaloniaVersion>11.1.0-beta2</AvaloniaVersion>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
 </Project>
