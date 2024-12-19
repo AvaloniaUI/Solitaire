@@ -17,7 +17,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 9.0.100
+          dotnet-version: 9.0.101
 
       - name: Install wasm-tools
         run: dotnet workload install wasm-tools
