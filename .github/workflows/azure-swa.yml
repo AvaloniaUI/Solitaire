@@ -8,6 +8,13 @@ on:
 jobs:
   build_and_deploy_job:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - enableThreads: false
+            outputPath: ""
+          - enableThreads: true
+            outputPath: "/mt"
     name: Build and Deploy Job
     steps:
       - uses: actions/checkout@v2
@@ -23,7 +30,7 @@ jobs:
         run: dotnet workload install wasm-tools
 
       - name: Publish .NET Project
-        run: dotnet publish Solitaire.Browser/Solitaire.Browser.csproj -c Release
+        run: dotnet publish Solitaire.Browser/Solitaire.Browser.csproj -c Release -p:WasmEnableThreads=${{matrix.enableThreads}}
 
       - name: Build And Deploy
         id: builddeploy
@@ -36,6 +43,6 @@ jobs:
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           app_location: "Solitaire.Browser/bin/Release/net9.0-browser/publish/wwwroot/" # App source code path
           api_location: "" # Api source code path - optional
-          output_location: "" # Modify this to where your SSG places the built HTML - could be `dist`, `build`... check your config          
+          output_location: ${{matrix.outputPath}} # Modify this to where your SSG places the built HTML - could be `dist`, `build`... check your config          
           skip_app_build: true
           ###### End of Repository/Build Configurations ######
