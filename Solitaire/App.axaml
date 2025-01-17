@@ -9,14 +9,14 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <MergeResourceInclude Source="Styles/Common.axaml" />
-                <MergeResourceInclude Source="Styles/Window.axaml" />
-                <MergeResourceInclude Source="Styles/Button.axaml" />
-                <MergeResourceInclude Source="Styles/PlayingCard.axaml" />
-                <MergeResourceInclude Source="Styles/CardsStyle.axaml" />
-                <MergeResourceInclude Source="Styles/SuitMarker.axaml" />
-                <MergeResourceInclude Source="Styles/TrayContainer.axaml" />
-                <MergeResourceInclude Source="Styles/CardStackPlacementControl.axaml" />
+                <ResourceInclude Source="Styles/Common.axaml" />
+                <ResourceInclude Source="Styles/Window.axaml" />
+                <ResourceInclude Source="Styles/Button.axaml" />
+                <ResourceInclude Source="Styles/PlayingCard.axaml" />
+                <ResourceInclude Source="Styles/CardsStyle.axaml" />
+                <ResourceInclude Source="Styles/SuitMarker.axaml" />
+                <ResourceInclude Source="Styles/TrayContainer.axaml" />
+                <ResourceInclude Source="Styles/CardStackPlacementControl.axaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
