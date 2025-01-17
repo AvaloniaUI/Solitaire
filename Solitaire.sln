@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{7612299B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solitaire.Browser", "Solitaire.Browser\Solitaire.Browser.csproj", "{9CA615F0-68DC-4D8A-8C63-AB32ADD25BF5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solitaire.XamarinMac", "Solitaire.XamarinMac\Solitaire.XamarinMac.csproj", "{5E689490-1519-4C1D-AF0F-8283B2C901FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,5 +45,9 @@ Global
 		{9CA615F0-68DC-4D8A-8C63-AB32ADD25BF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9CA615F0-68DC-4D8A-8C63-AB32ADD25BF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9CA615F0-68DC-4D8A-8C63-AB32ADD25BF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E689490-1519-4C1D-AF0F-8283B2C901FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E689490-1519-4C1D-AF0F-8283B2C901FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E689490-1519-4C1D-AF0F-8283B2C901FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E689490-1519-4C1D-AF0F-8283B2C901FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
