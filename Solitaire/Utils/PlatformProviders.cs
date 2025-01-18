@@ -51,6 +51,10 @@ public static class PlatformProviders
                 var storedObj = (T?)await JsonSerializer.DeserializeAsync(isoStream, typeof(T), JsonContext.Default);
                 return storedObj ?? default;
             }
+            catch (Exception e) when (e.InnerException is FileNotFoundException)
+            {
+                // Ignore
+            }
             catch (Exception e)
             {
                 Debug.WriteLine(e);
