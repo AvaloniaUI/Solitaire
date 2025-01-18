@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0-macos</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ApplicationName>Solitaire</ApplicationName>
+    <SupportedOSPlatformVersion>14.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <EnableCodeSigning>true</EnableCodeSigning>
+    <CodesignKey>Developer ID Application: AVALONIAUI OU (9D486DVKN8)</CodesignKey>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Native" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.Skia" Version="$(AvaloniaVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Solitaire\Solitaire.csproj" />
+  </ItemGroup>
+
+</Project>
