@@ -12,8 +12,6 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
-    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-<!--    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Nlnet.Avalonia.DevTools" Version="1.0.1-beta.13" />-->
   </ItemGroup>
 
   <ItemGroup>
