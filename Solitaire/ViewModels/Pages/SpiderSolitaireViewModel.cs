@@ -201,10 +201,11 @@ public partial class SpiderSolitaireViewModel : CardGameViewModel
         PlayingCardViewModel card, bool checkOnly = false)
     {
         //  The trivial case is where from and to are the same.
-        if (from.SequenceEqual(to))
+        if (ReferenceEquals(from, to))
             return false;
-        
-        if (to.SequenceEqual(Stock))
+
+        // Don't allow player to move cards to the Stock
+        if (ReferenceEquals(to, Stock))
             return false;
         
         //  This is the complicated operation.
