@@ -1,0 +1,50 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Solitaire.Controls"
+                    x:Class="Solitaire.Styles.Animations">
+    <Animation x:Key="CardFlightAnimation" x:SetterTargetType="controls:CardMotionFlight" Duration="0:0:0.3"
+               Easing="LinearEasing" FillMode="Both">
+        <KeyFrame Cue="0%"><Setter Property="Progress" Value="0" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="Progress" Value="1" /></KeyFrame>
+    </Animation>
+    <Animation x:Key="MenuMotionAnimation" x:SetterTargetType="controls:MenuChoreography" Duration="0:0:0.32"
+               Easing="LinearEasing" FillMode="Both">
+        <KeyFrame Cue="0%"><Setter Property="Progress" Value="0" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="Progress" Value="1" /></KeyFrame>
+    </Animation>
+    <Animation x:Key="StatisticsRowsAnimation" x:SetterTargetType="controls:StatisticsRowMotion" Duration="0:0:0.52" FillMode="Both">
+        <KeyFrame Cue="0%"><Setter Property="Progress" Value="0" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="Progress" Value="1" /></KeyFrame>
+    </Animation>
+    <Animation x:Key="PageEnterAnimation" x:SetterTargetType="Control" Duration="0:0:0.32" FillMode="Both">
+        <KeyFrame Cue="0%"><Setter Property="Opacity" Value="0" /></KeyFrame>
+        <KeyFrame Cue="25%"><Setter Property="Opacity" Value="0" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="Opacity" Value="1" /></KeyFrame>
+    </Animation>
+    <Animation x:Key="PageExitAnimation" x:SetterTargetType="Control" Duration="0:0:0.32" FillMode="Both">
+        <KeyFrame Cue="0%"><Setter Property="Opacity" Value="1" /></KeyFrame>
+        <KeyFrame Cue="80%"><Setter Property="Opacity" Value="0" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="Opacity" Value="0" /></KeyFrame>
+    </Animation>
+    <Animation x:Key="GoldFocusAnimation" x:SetterTargetType="controls:GoldButtonChrome" Duration="0:0:3"
+               FillMode="None" PlaybackBehavior="OnlyIfVisible">
+        <KeyFrame Cue="0%"><Setter Property="GlintProgress" Value="0" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="GlintProgress" Value="1" /></KeyFrame>
+    </Animation>
+    <Animation x:Key="GoldPressAnimation" x:SetterTargetType="controls:GoldButtonChrome" Duration="0:0:0.7"
+               FillMode="None" PlaybackBehavior="OnlyIfVisible">
+        <KeyFrame KeyTime="0:0:0"><Setter Property="PressSweep" Value="0" /></KeyFrame>
+        <KeyFrame KeyTime="0:0:0.1"><Setter Property="PressSweep" Value="0.2" /></KeyFrame>
+        <KeyFrame KeyTime="0:0:0.18"><Setter Property="PressSweep" Value="0.35" /></KeyFrame>
+        <KeyFrame KeyTime="0:0:0.35"><Setter Property="PressSweep" Value="0.55" /></KeyFrame>
+        <KeyFrame KeyTime="0:0:0.6"><Setter Property="PressSweep" Value="1" /></KeyFrame>
+        <KeyFrame KeyTime="0:0:0.7"><Setter Property="PressSweep" Value="1" /></KeyFrame>
+    </Animation>
+    <SplineEasing x:Key="FrameEasing" X1="0.3333333333333333" Y1="0" X2="0.6666666666666666" Y2="1" />
+    <Transitions x:Key="ConnectedFrameTransitions" x:SetterTargetType="controls:AnimatedTrayFrame">
+        <PointTransition Property="controls:AnimatedTrayFrame.FramePosition" Duration="0:0:0.32" Easing="{StaticResource FrameEasing}" />
+        <SizeTransition Property="controls:AnimatedTrayFrame.FrameSize" Duration="0:0:0.32" Easing="{StaticResource FrameEasing}" />
+        <DoubleTransition Property="controls:AnimatedTrayFrame.FrameScale" Duration="0:0:0.32" Easing="{StaticResource FrameEasing}" />
+        <BoxShadowsTransition Property="controls:ConnectedTray.FrameShadow" Duration="0:0:0.32" Easing="{StaticResource FrameEasing}" />
+    </Transitions>
+</ResourceDictionary>

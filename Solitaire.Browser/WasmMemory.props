@@ -1,0 +1,19 @@
+<Project>
+  <PropertyGroup>
+    <!-- A fixed 128 MiB heap avoids the Safari 26.2 memory growth error (WebKit 303387). -->
+    <WasmInitialHeapSize>134217728</WasmInitialHeapSize>
+    <EmccMaximumHeapSize>134217728</EmccMaximumHeapSize>
+    <EmccExtraLDFlags>$(EmccExtraLDFlags) -sALLOW_MEMORY_GROWTH=0 -sABORTING_MALLOC=0</EmccExtraLDFlags>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Limit managed memory to leave space for Skia, assets, and thread stacks. -->
+    <WasmEnvironmentVariable Include="MONO_GC_PARAMS" Value="max-heap-size=32m,soft-heap-limit=20m,nursery-size=1m" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(WasmEnableThreads)' == 'true'">
+    <!-- Keep two workers alive to reuse their 1 MiB stacks.
+         The UI and renderer have separate threads. -->
+    <RuntimeHostConfigurationOption Include="System.Threading.ThreadPool.MinThreads" Value="2" />
+    <RuntimeHostConfigurationOption Include="System.Threading.ThreadPool.MaxThreads" Value="2" />
+    <RuntimeHostConfigurationOption Include="System.Threading.ThreadPool.ThreadTimeoutMs" Value="-1" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,92 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Solitaire.Controls"
+                    xmlns:converters="clr-namespace:Solitaire.Converters">
+    <converters:LightDialConverter x:Key="LightDialConverter" />
+    <ControlTheme x:Key="{x:Type controls:LightDirectionDial}" TargetType="controls:LightDirectionDial">
+        <Setter Property="SmallChange" Value="5" />
+        <Setter Property="LargeChange" Value="45" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid Background="Transparent" x:DataType="converters:LightDialMetrics">
+                    <Grid.DataContext>
+                        <MultiBinding Converter="{StaticResource LightDialConverter}">
+                            <Binding Path="Bounds" RelativeSource="{RelativeSource TemplatedParent}" />
+                            <Binding Path="Value" RelativeSource="{RelativeSource TemplatedParent}" />
+                            <Binding Path="Elevation" RelativeSource="{RelativeSource TemplatedParent}" />
+                        </MultiBinding>
+                    </Grid.DataContext>
+                    <Grid IsVisible="{Binding IsVisible}" IsHitTestVisible="False">
+                        <Ellipse Width="{Binding OuterDiameter}" Height="{Binding OuterDiameter}"
+                                 Fill="{StaticResource CasinoGoldEdge}" Stroke="{StaticResource CasinoGoldFace}" StrokeThickness="1" />
+                        <Ellipse Width="{Binding InnerDiameter}" Height="{Binding InnerDiameter}"
+                                 Fill="Black" Stroke="{StaticResource CasinoGoldFace}" StrokeThickness="1" />
+                        <ItemsControl ItemsSource="{Binding Ticks}">
+                            <ItemsControl.Template>
+                                <ControlTemplate><ItemsPresenter Name="PART_ItemsPresenter" ItemsPanel="{TemplateBinding ItemsPanel}" /></ControlTemplate>
+                            </ItemsControl.Template>
+                            <ItemsControl.ItemsPanel><ItemsPanelTemplate><Canvas /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="converters:LightDialTick">
+                                    <Line StartPoint="{Binding Start}" EndPoint="{Binding End}"
+                                          Stroke="{StaticResource CasinoGoldFace}" Classes.major="{Binding Major}">
+                                        <Line.Styles>
+                                            <Style Selector="Line"><Setter Property="StrokeThickness" Value="0.7" /></Style>
+                                            <Style Selector="Line.major"><Setter Property="StrokeThickness" Value="1.5" /></Style>
+                                        </Line.Styles>
+                                    </Line>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Ellipse Width="{Binding TableDiameter}" Height="{Binding TableDiameter}"
+                                 Stroke="{StaticResource CasinoGoldEdge}" StrokeThickness="1">
+                            <Ellipse.Fill>
+                                <RadialGradientBrush>
+                                    <GradientStop Color="#16A757" Offset="0" />
+                                    <GradientStop Color="#116336" Offset="1" />
+                                </RadialGradientBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <Ellipse Width="{Binding TableDiameter}" Height="{Binding TableDiameter}">
+                            <Ellipse.Fill>
+                                <VisualBrush Opacity="0.05" TileMode="Tile" SourceRect="0,0,300,300" DestinationRect="0,0,200,200">
+                                    <VisualBrush.Visual><controls:RandomNoiseTextureControl /></VisualBrush.Visual>
+                                </VisualBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <Border Name="PART_PreviewShadow" Width="46" Height="66.7" CornerRadius="2" Background="Black" Opacity="0.49">
+                            <Border.RenderTransform>
+                                <TranslateTransform X="{Binding ShadowOffset.X}" Y="{Binding ShadowOffset.Y}" />
+                            </Border.RenderTransform>
+                            <Border.Effect><BlurEffect Radius="5" /></Border.Effect>
+                        </Border>
+                        <Border Width="46" Height="66.7" CornerRadius="2" Background="White" BorderBrush="Gray" BorderThickness="0.5" Padding="1">
+                            <Image Source="{StaticResource SA}" Stretch="Fill" />
+                        </Border>
+                        <Canvas>
+                            <Grid Canvas.Left="{Binding LightX}" Canvas.Top="{Binding LightY}" Width="22" Height="22">
+                                <Ellipse Width="23" Height="23" Fill="Black" RenderTransform="translate(0px,1.5px)" />
+                                <controls:GoldButtonChrome Name="PART_LightMarker" CornerRadius="11" BorderThickness="2"
+                                                           Background="{StaticResource CasinoGoldFace}" BorderBrush="{StaticResource CasinoGoldEdge}">
+                                    <Grid>
+                                        <Ellipse Width="12" Height="12" Stroke="#98710B" StrokeThickness="1" />
+                                        <Ellipse Width="7" Height="7" Fill="#FFFBB3" />
+                                    </Grid>
+                                </controls:GoldButtonChrome>
+                            </Grid>
+                        </Canvas>
+                        <Ellipse Width="{Binding FocusDiameter}" Height="{Binding FocusDiameter}" Stroke="{StaticResource CasinoGoldFace}"
+                                 StrokeThickness="1" IsVisible="{TemplateBinding IsFocused}" />
+                    </Grid>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:focus /template/ controls|GoldButtonChrome#PART_LightMarker">
+            <Setter Property="FocusAmount" Value="1" />
+        </Style>
+        <Style Selector="^:pointerover /template/ controls|GoldButtonChrome#PART_LightMarker">
+            <Setter Property="FocusAmount" Value="1" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

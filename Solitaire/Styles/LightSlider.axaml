@@ -1,0 +1,71 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Solitaire.Controls"
+                    xmlns:conv="using:Avalonia.Data.Converters">
+    <ControlTheme x:Key="LightSliderTrack" TargetType="RepeatButton">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid Background="Transparent">
+                    <Border Height="4" VerticalAlignment="Center" CornerRadius="2"
+                            Background="{TemplateBinding Background}" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+    <ControlTheme x:Key="LightSlider" TargetType="Slider">
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid Background="Transparent">
+                    <Border Height="8" Margin="2,0" VerticalAlignment="Center" CornerRadius="4"
+                            Background="#090A08" BorderThickness="1"
+                            BorderBrush="{StaticResource CasinoGoldEdge}" />
+                    <Track Name="PART_Track" Orientation="Horizontal" Margin="2,0"
+                           Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}"
+                           Value="{TemplateBinding Value, Mode=TwoWay}">
+                        <Track.DecreaseButton>
+                            <RepeatButton Name="PART_DecreaseButton" Theme="{StaticResource LightSliderTrack}"
+                                          Background="{StaticResource CasinoGoldFace}" />
+                        </Track.DecreaseButton>
+                        <Track.IncreaseButton>
+                            <RepeatButton Name="PART_IncreaseButton" Theme="{StaticResource LightSliderTrack}"
+                                          Background="Transparent" />
+                        </Track.IncreaseButton>
+                        <Track.Thumb>
+                            <Thumb Name="PART_Thumb" Width="26" Height="28">
+                                <Thumb.Styles>
+                                    <Style Selector="Thumb:pressed /template/ controls|GoldButtonChrome">
+                                        <Setter Property="Pressed" Value="True" />
+                                    </Style>
+                                </Thumb.Styles>
+                                <Thumb.Template>
+                                    <ControlTemplate>
+                                        <controls:GoldButtonChrome Margin="1,2" CornerRadius="5" BorderThickness="2"
+                                                Background="{StaticResource CasinoGoldFace}"
+                                                BorderBrush="{StaticResource CasinoGoldEdge}"
+                                                BoxShadow="0 2 3 #90000000">
+                                            <controls:GoldButtonChrome.Active>
+                                                <MultiBinding Converter="{x:Static conv:BoolConverters.Or}">
+                                                    <Binding Path="$parent[Thumb].IsPointerOver" />
+                                                    <Binding Path="$parent[Slider].IsFocused" />
+                                                </MultiBinding>
+                                            </controls:GoldButtonChrome.Active>
+                                            <StackPanel Orientation="Horizontal" Spacing="3"
+                                                        HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <Border Width="1" Height="10" Background="#916C0C" />
+                                                <Border Width="1" Height="10" Background="#916C0C" />
+                                                <Border Width="1" Height="10" Background="#916C0C" />
+                                            </StackPanel>
+                                        </controls:GoldButtonChrome>
+                                    </ControlTemplate>
+                                </Thumb.Template>
+                            </Thumb>
+                        </Track.Thumb>
+                    </Track>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

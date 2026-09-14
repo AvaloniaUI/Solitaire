@@ -1,7 +1,7 @@
 namespace Solitaire.Controls;
 
 /// <summary>
-/// The offset mode - how we offset individual cards in a stack.
+/// The cards that receive an offset within a stack.
 /// </summary>
 public enum OffsetMode
 {

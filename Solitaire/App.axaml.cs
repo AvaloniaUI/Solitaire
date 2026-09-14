@@ -12,6 +12,9 @@ public class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+#if DEBUG
+        this.AttachDeveloperTools();
+#endif
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -25,10 +28,22 @@ public class App : Application
                 desktop.MainWindow.DataContext = await CasinoViewModel.CreateOrLoadFromDisk();
             });
         }
+        else if (ApplicationLifetime is IActivityApplicationLifetime activityPlatform)
+        {
+            activityPlatform.MainViewFactory = () =>
+            {
+                var view = new CasinoView();
+                Dispatcher.UIThread.InvokeAsync(async () =>
+                {
+                    view.DataContext = await CasinoViewModel.CreateOrLoadFromDisk();
+                });
+                return view;
+            };
+        }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
             singleViewPlatform.MainView = new CasinoView();
-            
+
             Dispatcher.UIThread.InvokeAsync(async () =>
             {
                 singleViewPlatform.MainView.DataContext = await CasinoViewModel.CreateOrLoadFromDisk();

@@ -1,6 +1,14 @@
 <Project>
   <PropertyGroup>
-    <AvaloniaVersion>11.3.2</AvaloniaVersion>
-    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <Nullable>enable</Nullable>
+    <AvaloniaVersion>12.2.999-cibuild0069849-alpha</AvaloniaVersion>
+    <SkiaSharpVersion>3.119.4</SkiaSharpVersion>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NuGetAudit>true</NuGetAudit>
+    <NuGetAuditMode>all</NuGetAuditMode>
+    <NuGetAuditLevel>low</NuGetAuditLevel>
   </PropertyGroup>
 </Project>

@@ -23,7 +23,7 @@ public class TimeSpanToShortStringConverter : IValueConverter
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         var timeSpan = (TimeSpan)(value ?? throw new ArgumentNullException(nameof(value)));
-        return timeSpan.Hours > 0 ? $"{timeSpan.Hours:D2}:{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}" 
+        return timeSpan.Hours > 0 ? $"{timeSpan.Hours:D2}:{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}"
             : $"{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
     }
 

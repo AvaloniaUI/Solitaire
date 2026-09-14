@@ -1,0 +1,131 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Solitaire.Controls"
+                    xmlns:utils="clr-namespace:Solitaire.Utils">
+    <x:Double x:Key="MenuButtonWidth">320</x:Double>
+    <x:Double x:Key="MenuButtonHeight">48</x:Double>
+    <ControlTheme x:Key="MenuButton" TargetType="Button">
+        <Setter Property="MaxWidth" Value="{StaticResource MenuButtonWidth}" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Height" Value="{StaticResource MenuButtonHeight}" />
+        <Setter Property="FontFamily" Value="{StaticResource CasinoFont}" />
+        <Setter Property="FontSize" Value="28" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="Background" Value="{StaticResource CasinoGoldFace}" />
+        <Setter Property="BorderBrush" Value="{StaticResource CasinoGoldEdge}" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="12,4" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <controls:GoldButtonChrome Name="PART_GoldChrome"
+                                           Background="{TemplateBinding Background}"
+                                           BorderBrush="{TemplateBinding BorderBrush}"
+                                           BorderThickness="{TemplateBinding BorderThickness}"
+                                           CornerRadius="{TemplateBinding CornerRadius}"
+                                           BoxShadow="0 3 6 -2 #B0000000"
+                                           Padding="{TemplateBinding Padding}"
+                                           Pressed="{TemplateBinding IsPressed}">
+                    <controls:GoldButtonChrome.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="FocusAmount" Duration="0:0:0.18">
+                                <DoubleTransition.Easing><utils:CasinoSCurve /></DoubleTransition.Easing>
+                            </DoubleTransition>
+                            <DoubleTransition Property="PressDepth" Duration="0:0:0.067" />
+                        </Transitions>
+                    </controls:GoldButtonChrome.Transitions>
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      TextElement.FontFamily="{TemplateBinding FontFamily}"
+                                      TextElement.FontSize="{TemplateBinding FontSize}"
+                                      TextElement.FontWeight="{TemplateBinding FontWeight}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
+                        <TextElement.Foreground>
+                            <LinearGradientBrush
+                                StartPoint="{Binding #PART_GoldChrome.PressSweep, Converter={StaticResource LetteringSweepConverter}, ConverterParameter=Start}"
+                                EndPoint="{Binding #PART_GoldChrome.PressSweep, Converter={StaticResource LetteringSweepConverter}, ConverterParameter=End}">
+                                <GradientStop Color="Black" Offset="0" />
+                                <GradientStop Color="Black" Offset="0.3" />
+                                <GradientStop Color="#FFF6C5" Offset="0.5" />
+                                <GradientStop Color="Black" Offset="0.7" />
+                                <GradientStop Color="Black" Offset="1" />
+                            </LinearGradientBrush>
+                        </TextElement.Foreground>
+                    </ContentPresenter>
+                </controls:GoldButtonChrome>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover">
+            <Setter Property="BorderBrush" Value="#FFFBB3" />
+        </Style>
+        <Style Selector="^:focus-visible">
+            <Setter Property="BorderBrush" Value="White" />
+        </Style>
+        <Style Selector="^:pointerover /template/ controls|GoldButtonChrome#PART_GoldChrome">
+            <Setter Property="Active" Value="True" />
+        </Style>
+        <Style Selector="^:focus-visible /template/ controls|GoldButtonChrome#PART_GoldChrome">
+            <Setter Property="Active" Value="True" />
+        </Style>
+        <Style Selector="^:disabled">
+            <Setter Property="Opacity" Value="0.5" />
+        </Style>
+        <Style Selector="^:disabled /template/ controls|GoldButtonChrome#PART_GoldChrome">
+            <Setter Property="Active" Value="False" />
+        </Style>
+    </ControlTheme>
+    <ControlTheme x:Key="CompactMenuButton" TargetType="Button" BasedOn="{StaticResource MenuButton}">
+        <Setter Property="Width" Value="128" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="FontSize" Value="18" />
+    </ControlTheme>
+    <ControlTheme x:Key="MenuScrollBar" TargetType="ScrollBar">
+        <Setter Property="Width" Value="12" />
+        <Setter Property="AllowAutoHide" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="#40000000" CornerRadius="6" Margin="2,8">
+                    <Track Name="PART_Track" Orientation="Vertical" IsDirectionReversed="True"
+                           Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}"
+                           Value="{TemplateBinding Value, Mode=TwoWay}"
+                           ViewportSize="{TemplateBinding ViewportSize}">
+                        <Track.Thumb>
+                            <Thumb MinHeight="24">
+                                <Thumb.Template>
+                                    <ControlTemplate>
+                                        <Border Background="{StaticResource CasinoGoldFace}" CornerRadius="4"
+                                                BorderBrush="{StaticResource CasinoGoldEdge}" BorderThickness="1" />
+                                    </ControlTemplate>
+                                </Thumb.Template>
+                            </Thumb>
+                        </Track.Thumb>
+                    </Track>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+    <ControlTheme x:Key="MenuScrollViewer" TargetType="ScrollViewer">
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid ColumnDefinitions="*,Auto">
+                    <ScrollContentPresenter Name="PART_ContentPresenter"
+                                            Content="{TemplateBinding Content}"
+                                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                                            CanHorizontallyScroll="False" CanVerticallyScroll="True"
+                                            Offset="{TemplateBinding Offset, Mode=TwoWay}" />
+                    <ScrollBar Name="PART_VerticalScrollBar" Grid.Column="1" Orientation="Vertical"
+                               Theme="{StaticResource MenuScrollBar}"
+                               Visibility="{TemplateBinding VerticalScrollBarVisibility}" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

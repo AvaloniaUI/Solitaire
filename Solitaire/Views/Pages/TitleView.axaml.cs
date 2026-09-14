@@ -7,5 +7,5 @@ public partial class TitleView : UserControl
     public TitleView()
     {
         InitializeComponent();
-    } 
+    }
 }

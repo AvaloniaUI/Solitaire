@@ -1,0 +1,10 @@
+{
+    "routes": [
+        {
+            "route": "/*",
+            "headers": {
+                "Cache-Control": "no-cache"
+            }
+        }
+    ]
+}

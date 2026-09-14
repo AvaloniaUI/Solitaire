@@ -1,0 +1,17 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Build/">
+    <File Path="Directory.Build.props" />
+    <File Path="nuget.config" />
+  </Folder>
+  <Project Path="Solitaire.Android/Solitaire.Android.csproj" />
+  <Project Path="Solitaire.Browser/Solitaire.Browser.csproj" />
+  <Project Path="Solitaire.Desktop/Solitaire.Desktop.csproj" />
+  <Project Path="Solitaire.iOS/Solitaire.iOS.csproj" />
+  <Project Path="Solitaire.Platform.Browser/Solitaire.Platform.Browser.csproj" />
+  <Project Path="Solitaire/Solitaire.csproj" />
+</Solution>

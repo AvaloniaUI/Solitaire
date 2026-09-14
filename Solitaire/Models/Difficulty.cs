@@ -1,8 +1,5 @@
 namespace Solitaire.Models;
 
-/// <summary>
-/// The different difficulties offered.
-/// </summary>
 public enum Difficulty
 {
     /// <summary>

@@ -1,9 +1,8 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:pages="clr-namespace:Solitaire.ViewModels.Pages"
-             xmlns:models="clr-namespace:Solitaire.Models"
              xmlns:controls="clr-namespace:Solitaire.Controls"
              mc:Ignorable="d"
              x:Class="Solitaire.Views.Pages.SettingsView"
@@ -13,17 +12,14 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
 
-    <Viewbox MaxWidth="400" Margin="20">
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10">
+    <controls:MenuScrollViewer Theme="{StaticResource MenuScrollViewer}">
+        <StackPanel VerticalAlignment="Center" MaxWidth="360" Margin="12,24">
 
 
-            <Viewbox Margin="40,10,40,40" StretchDirection="DownOnly" ClipToBounds="False">
+            <Panel>
                 <!-- The casino commands. -->
-                <controls:TrayContainer Classes="downDeck">
-                    <controls:TrayContainer.RenderTransform>
-                        <ScaleTransform></ScaleTransform>
-                    </controls:TrayContainer.RenderTransform>
-                    <StackPanel Spacing="10" Orientation="Vertical" Margin="10">
+                <controls:ConnectedTray>
+                    <StackPanel Spacing="12" Orientation="Vertical" Margin="10">
 
                         <Grid ColumnDefinitions="*,Auto,*" VerticalAlignment="Center" Margin="5">
 
@@ -55,8 +51,8 @@
                             </Border>
 
                         </Grid>
-                        <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="230"
-                                Content="{Binding DrawModeText}"
+                        <controls:CasinoButton DockPanel.Dock="Top" VerticalAlignment="Center"
+                                Theme="{StaticResource MenuButton}" Content="{Binding DrawModeText}"
                                 Command="{Binding  DrawModeCommand}" />
 
                         <Grid ColumnDefinitions="*,Auto,*" VerticalAlignment="Center" Margin="5">
@@ -88,21 +84,73 @@
                             </Border>
 
                         </Grid>
-                        <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="230"
-                                Content="{Binding DifficultyText}"
+                        <controls:CasinoButton DockPanel.Dock="Top" VerticalAlignment="Center"
+                                Theme="{StaticResource MenuButton}" Content="{Binding DifficultyText}"
                                 Command="{Binding DifficultyCommand}" />
 
 
-                        <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="230"
-                                Content="Back"
+                        <Grid ColumnDefinitions="*,Auto,*" VerticalAlignment="Center" Margin="5">
+
+                            <Border Height="2" Grid.Column="0">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
+                                                         GradientStops="{StaticResource GoldBrush}"
+                                                         Transform="rotate(120deg)" />
+                                </Border.Background>
+                            </Border>
+
+                            <TextBlock Grid.Column="1" FontSize="16" Margin="10 0" Text="TABLE LIGHT">
+
+                                <TextBlock.Foreground>
+
+                                    <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
+                                                         GradientStops="{StaticResource GoldBrush}"
+                                                         Transform="rotate(120deg)" />
+                                </TextBlock.Foreground>
+                            </TextBlock>
+
+                            <Border Grid.Column="2" Height="2">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="-1000,1000" EndPoint="1000,0"
+                                                         GradientStops="{StaticResource GoldBrush}"
+                                                         Transform="rotate(120deg)" />
+                                </Border.Background>
+                            </Border>
+
+                        </Grid>
+                        <StackPanel MaxWidth="{StaticResource MenuButtonWidth}" Spacing="4">
+                            <controls:LightDirectionDial x:Name="DirectionDial" Width="184" Height="184"
+                                                         HorizontalAlignment="Center"
+                                                         Value="{Binding LightDirection, Mode=TwoWay}"
+                                                         Elevation="{Binding LightElevation}"
+                                                         ToolTip.Tip="Drag the gold light around the card" />
+                            <TextBlock Text="{Binding LightDirectionText}" FontSize="16"
+                                       HorizontalAlignment="Center" Foreground="{StaticResource CasinoGoldFace}" />
+                            <Grid ColumnDefinitions="*,Auto" Margin="0,10,0,0">
+                                <TextBlock Text="LIGHT HEIGHT" FontSize="14"
+                                           Foreground="{StaticResource CasinoGoldFace}" />
+                                <TextBlock Grid.Column="1" Text="{Binding LightElevationText}" FontSize="14"
+                                           Foreground="{StaticResource CasinoGoldFace}" />
+                            </Grid>
+                            <Slider x:Name="HeightSlider" Theme="{StaticResource LightSlider}" Minimum="20" Maximum="80"
+                                    SmallChange="5" LargeChange="15"
+                                    Value="{Binding LightElevation, Mode=TwoWay}" />
+                            <controls:CasinoButton Theme="{StaticResource CompactMenuButton}" Content="Reset light" Margin="0,4,0,6"
+                                    Command="{Binding ResetLightCommand}" />
+                        </StackPanel>
+
+
+                        <controls:CasinoButton DockPanel.Dock="Top" VerticalAlignment="Center"
+                                Theme="{StaticResource MenuButton}" Content="Back"
                                 Command="{Binding NavigateToTitleCommand}" />
 
 
-                        
+
                     </StackPanel>
-                </controls:TrayContainer>
-            </Viewbox>
+                </controls:ConnectedTray>
+
+            </Panel>
         </StackPanel>
-    </Viewbox>
+    </controls:MenuScrollViewer>
 
 </UserControl>

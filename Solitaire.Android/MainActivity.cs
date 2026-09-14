@@ -1,20 +1,10 @@
 ﻿using Android.App;
 using Android.Content.PM;
-using Avalonia;
 using Avalonia.Android;
 
 namespace Solitaire.Android;
 
-[Activity(
-    Label = "Solitaire.Android",
-    Theme = "@style/MyTheme.NoActionBar",
-    Icon = "@drawable/icon",
-    MainLauncher = true,
-    ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode)]
-public class MainActivity : AvaloniaMainActivity<App>
+[Activity(Label = "Solitaire.Android", Theme = "@style/MyTheme.NoActionBar", Icon = "@drawable/icon", LaunchMode = LaunchMode.SingleInstance, ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
+internal sealed class MainActivity : AvaloniaMainActivity
 {
-    protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
-    {
-        return base.CustomizeAppBuilder(builder);
-    }
 }

@@ -1,0 +1,97 @@
+html, body, #out {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    color: white;
+    background: #116336;
+    font-family: system-ui, sans-serif;
+}
+
+#out {
+    position: absolute;
+    inset: 0;
+}
+
+#solitaire-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    background: radial-gradient(ellipse 50% 50% at center, #16a757, #116336);
+    opacity: 1;
+}
+
+#solitaire-loader::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: .05;
+    background: url("./felt.svg") repeat;
+    background-size: 200px 200px;
+    pointer-events: none;
+}
+
+.loader-artwork {
+    position: absolute;
+    width: min(420px, calc(100% - 24px));
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.loader-artwork img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.loader-status {
+    position: absolute;
+    bottom: max(28px, env(safe-area-inset-bottom));
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(240px, calc(100% - 48px));
+    text-align: center;
+}
+
+#loading-status {
+    margin: 0 0 12px;
+    font-size: 12px;
+    letter-spacing: .035em;
+    color: #ffffffe0;
+}
+
+#loading-progress {
+    height: 3px;
+    overflow: hidden;
+    border-radius: 3px;
+    background: #ffffff24;
+}
+
+#loading-fill {
+    height: 100%;
+    background: white;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 180ms ease-out;
+}
+
+#loading-retry {
+    margin-top: 16px;
+    padding: 8px 20px;
+    border: 1px solid #e5c449;
+    border-radius: 6px;
+    color: #fff8ad;
+    background: #116336;
+    font: inherit;
+    cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #loading-fill {
+        transition: none;
+    }
+}

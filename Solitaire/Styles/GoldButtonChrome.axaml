@@ -1,0 +1,73 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Solitaire.Controls"
+                    xmlns:converters="clr-namespace:Solitaire.Converters">
+    <converters:GoldFinishConverter x:Key="GoldFinishConverter" />
+    <converters:LetteringSweepConverter x:Key="LetteringSweepConverter" />
+    <ControlTheme x:Key="{x:Type controls:GoldButtonChrome}" TargetType="controls:GoldButtonChrome">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid x:DataType="converters:GoldFinishMetrics">
+                    <Grid.DataContext>
+                        <MultiBinding Converter="{StaticResource GoldFinishConverter}">
+                            <Binding Path="Bounds" RelativeSource="{RelativeSource TemplatedParent}" />
+                            <Binding Path="CornerRadius" RelativeSource="{RelativeSource TemplatedParent}" />
+                            <Binding Path="FocusAmount" RelativeSource="{RelativeSource TemplatedParent}" />
+                            <Binding Path="GlintProgress" RelativeSource="{RelativeSource TemplatedParent}" />
+                            <Binding Path="PressDepth" RelativeSource="{RelativeSource TemplatedParent}" />
+                            <Binding Path="PressSweep" RelativeSource="{RelativeSource TemplatedParent}" />
+                        </MultiBinding>
+                    </Grid.DataContext>
+                    <Grid.RenderTransform>
+                        <TranslateTransform Y="{Binding PressOffset}" />
+                    </Grid.RenderTransform>
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}"
+                            BoxShadow="{TemplateBinding BoxShadow}" />
+                    <Canvas Margin="1" IsHitTestVisible="False">
+                        <Canvas.Clip>
+                            <RectangleGeometry Rect="{Binding Face}" RadiusX="{Binding Radius}" RadiusY="{Binding Radius}" />
+                        </Canvas.Clip>
+                        <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="{StaticResource GoldFaceReflection}" />
+                        <Border Canvas.Left="2" Canvas.Top="2" Width="{Binding InnerWidth}" Height="{Binding InnerHeight}"
+                                CornerRadius="{Binding InnerRadius}" BorderBrush="#70693C00" BorderThickness="1" />
+                        <Rectangle Canvas.Left="{Binding Radius}" Canvas.Top="0.5" Width="{Binding RimWidth}" Height="1" Fill="#B0FFF9D8" />
+                        <Canvas Opacity="{Binding Focus}">
+                            <Border Canvas.Left="0.5" Canvas.Top="0.5" Width="{Binding Width}" Height="{Binding Height}"
+                                    CornerRadius="{TemplateBinding CornerRadius}" BorderBrush="PaleGoldenrod" BorderThickness="1" />
+                            <Canvas Opacity="{Binding GlowOpacity}">
+                                <Ellipse Canvas.Left="{Binding FirstGlowX}" Canvas.Top="{Binding FirstGlowY}"
+                                         Width="{Binding FirstGlowWidth}" Height="{Binding FirstGlowHeight}" Fill="{StaticResource GoldFocusGlow}" />
+                                <Ellipse Canvas.Left="{Binding SecondGlowX}" Canvas.Top="{Binding SecondGlowY}"
+                                         Width="{Binding SecondGlowWidth}" Height="{Binding SecondGlowHeight}" Fill="{StaticResource GoldFocusGlow}" />
+                            </Canvas>
+                            <Canvas Opacity="{Binding EdgeOpacity}">
+                                <Canvas RenderTransform="skew(-14.323944878deg,0deg)" RenderTransformOrigin="0,0" Opacity="0.16">
+                                    <Rectangle Canvas.Left="{Binding GlintX}" Width="{Binding EdgeWidth}" Height="{Binding Height}" Fill="{StaticResource GoldGlint}" />
+                                </Canvas>
+                                <Rectangle Canvas.Left="{Binding TopEdgeX}" Width="{Binding EdgeWidth}" Height="2" Fill="{StaticResource GoldGlint}" />
+                                <Rectangle Canvas.Left="{Binding BottomEdgeX}" Canvas.Top="{Binding BottomEdgeY}" Width="{Binding EdgeWidth}" Height="2" Fill="{StaticResource GoldGlint}" />
+                            </Canvas>
+                        </Canvas>
+                        <Rectangle Width="{Binding Width}" Height="{Binding Height}" Fill="Black" Opacity="{Binding PressOpacity}" />
+                        <Rectangle Canvas.Left="{Binding SweepX}" Width="{Binding SweepWidth}" Height="{Binding Height}"
+                                   Fill="{StaticResource GoldGlint}" Opacity="{Binding SweepOpacity}" />
+                    </Canvas>
+                    <Border BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          DataContext="{Binding DataContext, RelativeSource={RelativeSource TemplatedParent}}"
+                                          HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
+                    </Border>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^[Active=True]">
+            <Setter Property="FocusAmount" Value="1" />
+        </Style>
+        <Style Selector="^[Pressed=True]">
+            <Setter Property="PressDepth" Value="1" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

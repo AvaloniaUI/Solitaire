@@ -1,6 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
@@ -8,9 +8,14 @@
         <AvaloniaResource Include="Assets\**" />
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="System.Reactive" Version="6.1.0" />
+        <PackageReference Include="Avalonia.Skia" Version="$(AvaloniaVersion)" />
+        <PackageReference Include="SkiaSharp" Version="$(SkiaSharpVersion)" />
         <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
+        <!-- Keep developer tools out of Release builds. -->
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
-        <PackageReference Include="Avalonia.Xaml.Interactivity" Version="11.0.0" />
+        <PackageReference Include="Xaml.Behaviors.Interactivity" Version="12.0.7" />
     </ItemGroup>
     <ItemGroup>
       <UpToDateCheckInput Remove="Assets\Backgrounds\Background.jpg" />

@@ -1,7 +1,7 @@
 namespace Solitaire.Models;
 
 /// <summary>
-/// The DrawMode, i.e. how many cards to draw.
+/// The number of cards per stock draw.
 /// </summary>
 public enum DrawMode
 {
