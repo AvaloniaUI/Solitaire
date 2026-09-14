@@ -1,0 +1,23 @@
+name: Quality
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - name: Install WebAssembly workload
+        run: dotnet workload install wasm-tools
+      - name: Desktop build
+        run: dotnet build Solitaire.Desktop/Solitaire.Desktop.csproj -c Release --warnaserror
+      - name: Browser build
+        run: dotnet build Solitaire.Browser/Solitaire.Browser.csproj -c Release --warnaserror

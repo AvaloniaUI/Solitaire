@@ -1,79 +1,87 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Platform;
-using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.VisualTree;
+using Avalonia.Logging;
+using Avalonia.Rendering.Composition;
 using Solitaire.Controls;
 using Solitaire.ViewModels;
 
-#pragma warning disable CS0618 // Type or member is obsolete
-
 namespace Solitaire.Views;
 
-/// <summary>
-/// Interaction logic for CasinoView.xaml
-/// </summary>
 public partial class CasinoView : UserControl
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CasinoView"/> class.
-    /// </summary>
+    private RenderPreparation? _preparation;
+    private bool _preparationStarted;
+    private readonly TaskCompletionSource _renderingReady = new(TaskCreationOptions.RunContinuationsAsynchronously);
+    private readonly TaskCompletionSource _menuReady = new(TaskCreationOptions.RunContinuationsAsynchronously);
+    internal Task? RenderPreparationTask { get; private set; }
+    public Task RenderingReady => _renderingReady.Task;
+    public Task MenuReady => _menuReady.Task;
+
     public CasinoView()
     {
         InitializeComponent();
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnLoaded(RoutedEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
+        base.OnLoaded(e);
+        _ = PrepareRendering();
+    }
 
-        if (TopLevel.GetTopLevel(this) is { } topLevel)
+    protected override void OnDataContextChanged(EventArgs e)
+    {
+        base.OnDataContextChanged(e);
+        _ = PrepareRendering();
+    }
+
+    private async Task PrepareRendering()
+    {
+        if (!IsLoaded || _preparationStarted || Design.IsDesignMode || DataContext is not CasinoViewModel casino ||
+            casino.CurrentView != casino.TitleInstance ||
+            ElementComposition.GetElementVisual(this)?.Compositor is not { } compositor)
+            return;
+        _preparationStarted = true;
+        using var preparation = new RenderPreparation(SceneRoot, Background);
+        _preparation = preparation;
+        void Navigating(object? sender, PropertyChangedEventArgs change)
         {
-            topLevel.PlatformSettings?.HotkeyConfiguration.Back.Add(new KeyGesture(Key.Escape));
-
-            topLevel.BackRequested += TopLevelOnBackRequested;
-            
-            if (topLevel is { InsetsManager: { } insetsManager })
-            {
-                insetsManager.SafeAreaChanged += InsetsManagerOnSafeAreaChanged;
-                InsetsManagerOnSafeAreaChanged(insetsManager, new SafeAreaChangedArgs(insetsManager.SafeAreaPadding));
-            }
-            else
-            {
-                InsetsManagerOnSafeAreaChanged(this, new SafeAreaChangedArgs(default));
-            }
+            if (change.PropertyName == nameof(CasinoViewModel.CurrentView))
+                preparation.Dispose();
+        }
+        casino.PropertyChanged += Navigating;
+        try
+        {
+            RenderPreparationTask = preparation.Run(compositor, casino);
+            await compositor.RequestCompositionBatchCommitAsync().Rendered;
+            _menuReady.TrySetResult();
+            await RenderPreparationTask;
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (Exception error)
+        {
+            Logger.TryGet(LogEventLevel.Warning, "Rendering")?.Log(this, "Render preparation failed: {Error}", error);
+        }
+        finally
+        {
+            casino.PropertyChanged -= Navigating;
+            preparation.Dispose();
+            _preparation = null;
+            // The HTML loader stays in place until the prepared menu reaches the window.
+            await compositor.RequestCompositionBatchCommitAsync().Rendered;
+            _menuReady.TrySetResult();
+            _renderingReady.TrySetResult();
         }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        _preparation?.Dispose();
         base.OnDetachedFromVisualTree(e);
-
-        if (TopLevel.GetTopLevel(this) is { } topLevel)
-        {
-            topLevel.BackRequested -= TopLevelOnBackRequested;
-
-            if (topLevel is { InsetsManager: { } insetsManager })
-            {
-                insetsManager.SafeAreaChanged -= InsetsManagerOnSafeAreaChanged;
-            }
-        }
-    }
-
-    private void InsetsManagerOnSafeAreaChanged(object? sender, SafeAreaChangedArgs e)
-    {
-        // Apply "10,10,10,0" as a minimum padding.
-        RootContentControl.Padding = new Thickness(
-            Math.Max(10, e.SafeAreaPadding.Left),
-            Math.Max(10, e.SafeAreaPadding.Top),
-            Math.Max(10, e.SafeAreaPadding.Right),
-            e.SafeAreaPadding.Bottom);
-    }
-
-    private void TopLevelOnBackRequested(object? sender, RoutedEventArgs e)
-    {
-        (DataContext as CasinoViewModel)?.NavigateToTitleCommand.Execute(null);
     }
 }

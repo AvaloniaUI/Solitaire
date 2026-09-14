@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Solitaire.Views.Pages.GameStatisticsView"
+<UserControl x:Class="Solitaire.Views.Pages.GameStatisticsView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -18,11 +18,6 @@
         ColumnDefinitions="3*,*"
         TextElement.Foreground="White" TextElement.FontSize="16">
 
-        <!-- The Game Title. -->
-        <TextBlock
-            Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center"
-            Text="{Binding GameName}" FontSize="24" />
-
         <!-- The game stats. -->
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Games Played" />
         <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding GamesPlayed}" />
@@ -30,12 +25,12 @@
         <TextBlock Grid.Row="2" Grid.Column="1"  HorizontalAlignment="Right" Text="{Binding GamesWon}" />
         <TextBlock Grid.Row="3" Grid.Column="0" Text="Games Lost" />
         <TextBlock Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right"  Text="{Binding GamesLost}" />
-        <TextBlock Grid.Row="4" Grid.Column="0" Text="Current Streak" />
-        <TextBlock Grid.Row="4" Grid.Column="1" HorizontalAlignment="Right"  Text="{Binding CurrentStreak}" />
-        <TextBlock Grid.Row="5" Grid.Column="0" Text="Highest Winning Streak" />
-        <TextBlock Grid.Row="5" Grid.Column="1" HorizontalAlignment="Right"  Text="{Binding HighestWinningStreak}" />
-        <TextBlock Grid.Row="6" Grid.Column="0" Text="Highest Losing Streak" />
-        <TextBlock Grid.Row="6" Grid.Column="1" HorizontalAlignment="Right"  Text="{Binding HighestLosingStreak}" />
+        <TextBlock IsVisible="{Binding ShowStreaks}" Grid.Row="4" Grid.Column="0" Text="Current Streak" />
+        <TextBlock IsVisible="{Binding ShowStreaks}" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Right"  Text="{Binding CurrentStreak}" />
+        <TextBlock IsVisible="{Binding ShowStreaks}" Grid.Row="5" Grid.Column="0" Text="Highest Winning Streak" />
+        <TextBlock IsVisible="{Binding ShowStreaks}" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Right"  Text="{Binding HighestWinningStreak}" />
+        <TextBlock IsVisible="{Binding ShowStreaks}" Grid.Row="6" Grid.Column="0" Text="Highest Losing Streak" />
+        <TextBlock IsVisible="{Binding ShowStreaks}" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Right"  Text="{Binding HighestLosingStreak}" />
         <TextBlock Grid.Row="7" Grid.Column="0" Text="Highest Score" />
         <TextBlock Grid.Row="7" Grid.Column="1" HorizontalAlignment="Right"  Text="{Binding HighestScore}" />
         <TextBlock Grid.Row="8" Grid.Column="0" Text="Cumulative Score" />

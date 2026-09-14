@@ -4,8 +4,7 @@ using Solitaire.Models;
 namespace Solitaire.ViewModels;
 
 /// <summary>
-/// The Playing Card represents a Card played in a game - so as
-/// well as the card type it also has the face down property etc.
+/// A card and its current game state.
 /// </summary>
 public partial class PlayingCardViewModel : ViewModelBase
 {
@@ -15,16 +14,11 @@ public partial class PlayingCardViewModel : ViewModelBase
     {
         CardGameInstance = cardGameInstance;
     }
-        
-    /// <summary>
-    /// Gets the card suit.
-    /// </summary> 
-    /// <value>The card suit.</value>
+
     public CardSuit Suit
     {
         get
         {
-            //  The suit can be worked out from the numeric value of the CardType enum.
             var enumVal = (int)CardType;
             return enumVal switch
             {
@@ -36,28 +30,20 @@ public partial class PlayingCardViewModel : ViewModelBase
         }
     }
 
-    /// <summary>
-    /// Gets the card value.
-    /// </summary>
-    /// <value>The card value.</value>
     public int Value =>
-        //  The CardType enum has 13 cards in each suit.
+        // CardType stores 13 cards per suit.
         (int)CardType % 13;
 
-    /// <summary>
-    /// Gets the card colour.
-    /// </summary>
-    /// <value>The card colour.</value>
     public CardColour Colour =>
-        //  The first two suits in the CardType enum are red, the last two are black.
+        // CardType lists the red suits before the black suits.
         (int)CardType < 26 ? CardColour.Red : CardColour.Black;
 
-    [ObservableProperty]  private CardType _cardType  = CardType.SA;
+    [ObservableProperty] private CardType _cardType = CardType.SA;
     [ObservableProperty] private bool _isFaceDown;
     [ObservableProperty] private bool _isPlayable;
     [ObservableProperty] private double _faceDownOffset;
     [ObservableProperty] private double _faceUpOffset;
- 
+
     public void Reset()
     {
         IsPlayable = false;
@@ -65,5 +51,5 @@ public partial class PlayingCardViewModel : ViewModelBase
         FaceDownOffset = 0;
         FaceUpOffset = 0;
     }
- 
+
 }

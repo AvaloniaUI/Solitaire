@@ -1,10 +1,10 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:pages="clr-namespace:Solitaire.ViewModels.Pages"
-             xmlns:models="clr-namespace:Solitaire.Models"
              xmlns:controls="clr-namespace:Solitaire.Controls"
+             xmlns:models="clr-namespace:Solitaire.Models"
              mc:Ignorable="d"
              x:Class="Solitaire.Views.Pages.StatisticsView"
              x:DataType="pages:StatisticsViewModel"
@@ -13,54 +13,20 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
 
-    <Viewbox MaxWidth="1000" Margin="20">
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10">
-
-
-            <Viewbox Margin="40,10,40,40" StretchDirection="DownOnly" ClipToBounds="False">
-                <!-- The casino commands. -->
-                <controls:TrayContainer Classes="downDeck">
-                    <controls:TrayContainer.RenderTransform>
-                        <ScaleTransform></ScaleTransform>
-                    </controls:TrayContainer.RenderTransform>
-                    <DockPanel LastChildFill="True">
-                        <Viewbox DockPanel.Dock="Bottom">
-                            <StackPanel Spacing="10" Orientation="Horizontal" Margin="10">
-
-                                <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="200"
-                                        Content="Reset Klondike"
-                                        Command="{Binding ResetKlondikeStatsCommand}" />
-
-                                <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="200"
-                                        Content="Reset  FreeCell"
-                                        Command="{Binding  ResetFreeCellStatsCommand}" />
-
-                                <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="200"
-                                        Content="Reset Spider"
-                                        Command="{Binding  ResetSpiderStatsCommand}" />
-
-                                <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="200"
-                                        Content="Back"
-                                        Command="{Binding NavigateToTitleCommand}" />
-
-                            </StackPanel>
-
-
-                        </Viewbox>
-                        <Grid ColumnDefinitions="*,*,*" MinWidth="600" Margin="10">
-
-
-                            <ContentControl Grid.Column="0" Content="{Binding KlondikeStatsInstance}" />
-                            <ContentControl Grid.Column="1" Margin="30 0"
-                                            Content="{Binding  FreeCellStatsInstance}" />
-                            <ContentControl Grid.Column="2" Content="{Binding  SpiderStatsInstance}" />
-
-                        </Grid>
-                    </DockPanel>
-                </controls:TrayContainer>
-
-            </Viewbox>
-        </StackPanel>
-    </Viewbox>
-
+    <controls:MenuScrollViewer Theme="{StaticResource MenuScrollViewer}">
+        <controls:ConnectedTray MaxWidth="360" VerticalAlignment="Center"
+                Margin="12,24">
+            <StackPanel Spacing="12" Margin="10">
+                <controls:CasinoButton Theme="{StaticResource MenuButton}"
+                        Content="{Binding SelectionName}" Command="{Binding CycleStatisticsCommand}"
+                        AutomationProperties.Name="Choose statistics: Klondike, FreeCell, Spider, Overall" />
+                <ContentControl MaxWidth="{StaticResource MenuButtonWidth}" Margin="0,8"
+                                Content="{Binding SelectedStatistics}" />
+                <controls:CasinoButton Theme="{StaticResource MenuButton}" Content="Reset"
+                        Command="{Binding ResetSelectedStatsCommand}" />
+                <controls:CasinoButton Theme="{StaticResource MenuButton}" Content="Back"
+                        Command="{Binding NavigateToTitleCommand}" />
+            </StackPanel>
+        </controls:ConnectedTray>
+    </controls:MenuScrollViewer>
 </UserControl>

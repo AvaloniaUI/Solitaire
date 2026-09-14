@@ -3,12 +3,15 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Security.Cryptography;
-using System.Text.Json;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization.Metadata;
+using Avalonia;
+using Avalonia.VisualTree;
 using Solitaire.Models;
 using Solitaire.ViewModels;
 
 namespace Solitaire.Utils;
+
 public static class PlatformProviders
 {
     public static double NextRandomDouble()
@@ -17,23 +20,30 @@ public static class PlatformProviders
 
         return (nextULong >> 11) * (1.0 / (1ul << 53));
     }
-    
-    private class DefaultSettingsStore<T> : IRuntimeStorageProvider<T>
+
+    internal sealed class DefaultSettingsStore<T> : IRuntimeStorageProvider<T>
     {
         private static string Identifier { get; } = typeof(T).FullName?.Replace(".", string.Empty) ?? "default";
+        private readonly JsonTypeInfo<T>? _metadata;
 
-        
+        public DefaultSettingsStore(JsonTypeInfo<T>? metadata = null) => _metadata = metadata;
+
+
         /// <inheritdoc />
         public async Task SaveObject(T obj, string key)
         {
             try
             {
-                // Get a new isolated store for this user, domain, and assembly.
-                using var isoStore = IsolatedStorageFile.GetUserStoreForApplication();
+                var serializedObjJson = StorageJson.Serialize(obj, _metadata);
 
-                //  Create data stream.
-                await using var isoStream = isoStore.OpenFile(Identifier + key, FileMode.CreateNew, FileAccess.Write);
-                await JsonSerializer.SerializeAsync(isoStream, obj, typeof(T), JsonContext.Default);
+                // Retain the original store identity and file names for existing saves.
+                using var isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User |
+                                                                 IsolatedStorageScope.Domain |
+                                                                 IsolatedStorageScope.Assembly, null, null);
+
+                await using var isoStream = new IsolatedStorageFileStream(Identifier + key, FileMode.Create, isoStore);
+                await using var writer = new StreamWriter(isoStream);
+                await writer.WriteAsync(serializedObjJson);
             }
             catch (Exception e)
             {
@@ -46,14 +56,20 @@ public static class PlatformProviders
         {
             try
             {
-                using var isoStore = IsolatedStorageFile.GetUserStoreForApplication();
-                await using var isoStream = isoStore.OpenFile(Identifier + key, FileMode.Open, FileAccess.Read);
-                var storedObj = (T?)await JsonSerializer.DeserializeAsync(isoStream, typeof(T), JsonContext.Default);
+                using var isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User |
+                                                                 IsolatedStorageScope.Domain |
+                                                                 IsolatedStorageScope.Assembly, null, null);
+                await using var isoStream = new IsolatedStorageFileStream(Identifier + key, FileMode.Open, isoStore);
+                using var reader = new StreamReader(isoStream);
+                var savedString = await reader.ReadToEndAsync();
+                if (string.IsNullOrEmpty(savedString))
+                    return default;
+                var storedObj = StorageJson.Deserialize(savedString, _metadata);
                 return storedObj ?? default;
             }
-            catch (Exception e) when (e.InnerException is FileNotFoundException)
+            catch (Exception e) when (e is FileNotFoundException || e.InnerException is FileNotFoundException)
             {
-                // Ignore
+                // A first run has no settings file.
             }
             catch (Exception e)
             {
@@ -64,7 +80,7 @@ public static class PlatformProviders
         }
 
     }
-    
-    public static IRuntimeStorageProvider<PersistentState> CasinoStorage { get; set; }
-        = new DefaultSettingsStore<PersistentState>();
+
+    public static IRuntimeStorageProvider<CasinoViewModel> CasinoStorage { get; set; }
+        = new DefaultSettingsStore<CasinoViewModel>();
 }

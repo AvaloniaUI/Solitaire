@@ -1,0 +1,38 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="avares://Solitaire/Styles/LightSlider.axaml" />
+        <ResourceInclude Source="avares://Solitaire/Styles/GoldButtonChrome.axaml" />
+        <ResourceInclude Source="avares://Solitaire/Styles/LightDirectionDial.axaml" />
+    </ResourceDictionary.MergedDictionaries>
+    <ConicGradientBrush x:Key="CasinoGoldFace" Center="50%, -20%" Angle="270">
+        <GradientStop Offset="0" Color="#FFFCFC80" />
+        <GradientStop Offset="0.5" Color="#FFD09C14" />
+        <GradientStop Offset="1" Color="#FFFCFC80" />
+    </ConicGradientBrush>
+    <LinearGradientBrush x:Key="GoldFaceReflection" StartPoint="0%,0%" EndPoint="100%,100%">
+        <GradientStop Color="#90FFF9D8" Offset="0" />
+        <GradientStop Color="#20FFF8CF" Offset="0.46" />
+        <GradientStop Color="#00794505" Offset="0.49" />
+        <GradientStop Color="#38794505" Offset="1" />
+    </LinearGradientBrush>
+    <RadialGradientBrush x:Key="GoldFocusGlow">
+        <GradientStop Color="#FFFFF6C5" Offset="0" />
+        <GradientStop Color="#90FFDC66" Offset="0.22" />
+        <GradientStop Color="Transparent" Offset="1" />
+    </RadialGradientBrush>
+    <LinearGradientBrush x:Key="GoldGlint">
+        <GradientStop Color="Transparent" Offset="0" />
+        <GradientStop Color="#C0FFEB9A" Offset="0.3" />
+        <GradientStop Color="White" Offset="0.5" />
+        <GradientStop Color="#C0FFEB9A" Offset="0.7" />
+        <GradientStop Color="Transparent" Offset="1" />
+    </LinearGradientBrush>
+    <ConicGradientBrush x:Key="CasinoGoldEdge" Center="110%, -20%" Angle="180">
+        <GradientStop Offset="0" Color="#FFD09C14" />
+        <GradientStop Offset="0.3" Color="#FFFCFC80" />
+        <GradientStop Offset="0.5" Color="#FFD09C14" />
+        <GradientStop Offset="0.6" Color="#FFFCFC80" />
+        <GradientStop Offset="1" Color="#FFD09C14" />
+    </ConicGradientBrush>
+</ResourceDictionary>

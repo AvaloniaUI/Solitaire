@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Solitaire.ViewModels;
@@ -13,22 +12,31 @@ public class ViewLocator : IDataTemplate
 {
     public Control? Build(object? data)
     {
-        return data switch
+        if (data is null)
+            return null;
+
+        try
         {
-            TitleViewModel => new TitleView(),
-            KlondikeSolitaireViewModel => new KlondikeSolitaireView(),
-            FreeCellSolitaireViewModel => new FreeCellSolitaireView(),
-            SpiderSolitaireViewModel => new SpiderSolitaireView(),
-            GameStatisticsViewModel => new GameStatisticsView(),
-            SettingsViewModel => new SettingsView(),
-            StatisticsViewModel => new StatisticsView(),
-            CasinoViewModel => new CasinoView(),
-            null => null,
-            _ => new TextBlock
+            return data switch
             {
-                Text = $"View for {data.GetType().Name} wasn't found"
-            }
-        };
+                TitleViewModel => new TitleView(),
+                KlondikeSolitaireViewModel => new KlondikeSolitaireView(),
+                FreeCellSolitaireViewModel => new FreeCellSolitaireView(),
+                SpiderSolitaireViewModel => new SpiderSolitaireView(),
+                GameStatisticsViewModel => new GameStatisticsView(),
+                SettingsViewModel => new SettingsView(),
+                StatisticsViewModel => new StatisticsView(),
+                CasinoViewModel => new CasinoView(),
+                _ => null
+            };
+        }
+        catch (Exception ex)
+        {
+            return new TextBlock
+            {
+                Text = $"The view could not be created: {ex}"
+            };
+        }
     }
 
     public bool Match(object? data)

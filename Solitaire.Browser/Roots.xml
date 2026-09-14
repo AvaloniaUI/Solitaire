@@ -1,0 +1,4 @@
+<linker>
+  <assembly fullname="Solitaire" preserve="All" />
+  <assembly fullname="Solitaire.Browser" preserve="All" />
+</linker>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,9 +11,6 @@ using Solitaire.Utils;
 
 namespace Solitaire.ViewModels.Pages;
 
-/// <summary>
-/// The Klondike Solitaire View Model.
-/// </summary>
 public partial class KlondikeSolitaireViewModel : CardGameViewModel
 {
     /// <inheritdoc />
@@ -20,21 +18,40 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
     [ObservableProperty] private DrawMode _drawMode;
     private bool _isTurning;
- 
+    private bool _isDealing;
+    private int _gameVersion;
+
+    private bool CanMoveCards => !_isTurning && !_isDealing && !IsGameWon;
+    private bool CanTurnStock() => CanMoveCards && AutoMoveCommand is not IAsyncRelayCommand { IsRunning: true };
+    protected override bool CanUndo => CanTurnStock();
+
+    private void NotifyGameCommands()
+    {
+        (TurnStockCommand as IRelayCommand)?.NotifyCanExecuteChanged();
+        (AutoMoveCommand as IRelayCommand)?.NotifyCanExecuteChanged();
+        (UndoCommand as IRelayCommand)?.NotifyCanExecuteChanged();
+    }
+
     public KlondikeSolitaireViewModel(CasinoViewModel casinoViewModel) : base(casinoViewModel)
     {
         _casinoViewModel = casinoViewModel;
         InitializeFoundationsAndTableauSet();
 
-        //  Create the turn stock command.
-        TurnStockCommand = new AsyncRelayCommand(DoTurnStock);
-        AutoMoveCommand = new AsyncRelayCommand(TryMoveAllCardsToAppropriateFoundations);
+        TurnStockCommand = new AsyncRelayCommand(DoTurnStock, CanTurnStock);
+        var autoMove = new AsyncRelayCommand(TryMoveAllCardsToAppropriateFoundations, () => CanMoveCards);
+        autoMove.PropertyChanged += OnAutoMoveStateChanged;
+        AutoMoveCommand = autoMove;
         NewGameCommand = new AsyncRelayCommand(DoDealNewGame);
+    }
+
+    private void OnAutoMoveStateChanged(object? sender, PropertyChangedEventArgs change)
+    {
+        if (change.PropertyName == nameof(AsyncRelayCommand.IsRunning))
+            NotifyGameCommands();
     }
 
     private void InitializeFoundationsAndTableauSet()
     {
-        //  Create the quick access arrays.
         _foundations.Add(Foundation1);
         _foundations.Add(Foundation2);
         _foundations.Add(Foundation3);
@@ -48,15 +65,12 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         _tableauSet.Add(Tableau7);
     }
 
-    /// <summary>
-    /// Gets the card collection for the specified card.
-    /// </summary>
-    /// <param name="card">The card.</param>
-    /// <returns></returns>
     public override IList<PlayingCardViewModel>? GetCardCollection(PlayingCardViewModel card)
     {
-        if (Stock.Contains(card)) return Stock;
-        if (Waste.Contains(card)) return Waste;
+        if (Stock.Contains(card))
+            return Stock;
+        if (Waste.Contains(card))
+            return Waste;
 
         foreach (var foundation in _foundations.Where(foundation => foundation.Contains(card)))
             return foundation;
@@ -64,52 +78,54 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         return _tableauSet.FirstOrDefault(tableau => tableau.Contains(card));
     }
 
-    private CardSuit GetSuitForFoundations(IList<PlayingCardViewModel> cell)
-    {
-        if (ReferenceEquals(cell, _foundations[0]))
-            return CardSuit.Hearts;
 
-        if (ReferenceEquals(cell, _foundations[1]))
-            return CardSuit.Clubs;
 
-        if (ReferenceEquals(cell, _foundations[2]))
-            return CardSuit.Diamonds;
-
-        if (ReferenceEquals(cell, _foundations[3]))
-            return CardSuit.Spades;
-
-        throw new InvalidConstraintException();
-    }
-    
-    /// <summary>
-    /// Deals a new game.
-    /// </summary>
     private async Task DoDealNewGame()
     {
-        DrawMode = _casinoViewModel.SettingsInstance.DrawMode;
-
         ResetGame();
+        var version = _gameVersion;
+        _isDealing = true;
+        NotifyGameCommands();
+        try
+        {
+            await DealCards(version);
+        }
+        finally
+        {
+            if (version == _gameVersion)
+            {
+                _isDealing = false;
+                NotifyGameCommands();
+            }
+        }
+    }
+
+    private async Task DealCards(int version)
+    {
+        var cancellation = ActionCancellation;
 
         var playingCards = GetNewShuffledDeck();
-        
+
         using (var stock0 = Stock.DelayNotifications())
         {
             stock0.AddRange(playingCards);
         }
-        
-        await Task.Delay(600);
-        
+
+        if (!await PauseGameAction(600, cancellation))
+            return;
+        if (version != _gameVersion)
+            return;
+
         using (var stock0 = Stock.DelayNotifications())
         {
             stock0.Clear();
         }
-        
-        //  Now distribute them - do the tableau sets first.
+
         for (var i = 0; i < 7; i++)
         {
             var tempTableau = new List<PlayingCardViewModel>();
 
-            //  We have i face down cards and 1 face up card.
+            // Each column has i face-down cards and one face-up card.
             for (var j = 0; j < i; j++)
             {
                 var faceDownCardViewModel = playingCards.First();
@@ -118,7 +134,6 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
                 tempTableau.Add(faceDownCardViewModel);
             }
 
-            //  Add the face up card.
             var faceUpCardViewModel = playingCards.First();
             playingCards.Remove(faceUpCardViewModel);
             faceUpCardViewModel.IsFaceDown = false;
@@ -130,11 +145,13 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
             {
                 _tableauSet[i].Add(card);
 
-                await Task.Delay(75);
+                if (!await PauseGameAction(75, cancellation))
+                    return;
+                if (version != _gameVersion)
+                    return;
             }
         }
 
-        //  Finally we add every card that's left over to the stock.
         foreach (var playingCard in playingCards)
         {
             playingCard.IsFaceDown = true;
@@ -142,23 +159,23 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
         }
 
         using var stockD = Stock.DelayNotifications();
-        
+
         stockD.AddRange(playingCards);
 
 
-        //  And we're done.
         StartTimer();
     }
 
     public override void ResetGame()
     {
+        _gameVersion++;
+        _isTurning = false;
+        _isDealing = false;
         using var stockD = Stock.DelayNotifications();
         using var wasteD = Waste.DelayNotifications();
 
         DrawMode = _casinoViewModel.SettingsInstance.DrawMode;
 
-        //  Call the base, which stops the timer, clears
-        //  the score etc.
         ResetInternalState();
 
         foreach (var tableau in _tableauSet)
@@ -169,14 +186,14 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
 
         foreach (var foundation in _foundations)
         {
-            
+
             using var foundationD = foundation.DelayNotifications();
             foundationD.Clear();
         }
 
-        //  Clear everything.
         stockD.Clear();
         wasteD.Clear();
+        NotifyGameCommands();
     }
 
     /// <summary>
@@ -184,350 +201,247 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     /// </summary>
     private async Task DoTurnStock()
     {
-        if(_isTurning)
+        if (!CanTurnStock() || Stock.Count + Waste.Count == 0)
             return;
 
+        var version = _gameVersion;
+        var cancellation = ActionCancellation;
         _isTurning = true;
-        
-        //  If the stock is empty, put every card from the waste back into the stock.
-        if (Stock.Count == 0)
+        NotifyGameCommands();
+        RecordMoves(new KlondikeUndoOperation(this, Stock, Waste));
+        try
         {
             foreach (var card in Waste)
-            {
-                card.IsFaceDown = true;
                 card.IsPlayable = false;
-                Stock.Insert(0, card);
 
-                await Task.Delay(175);
-            }
-            Waste.Clear();
-        }
-        else
-        { 
-            //  Work out how many cards to draw.
-            var cardsToDraw = DrawMode switch
+            if (Stock.Count == 0)
             {
-                DrawMode.DrawOne => 1,
-                DrawMode.DrawThree => 3,
-                _ => 1
-            };
-
-            //  Put up to three cards in the waste.
-            for (var i = 0; i < cardsToDraw; i++)
+                while (Waste.Count > 0)
+                {
+                    var card = Waste[0];
+                    Waste.RemoveAt(0);
+                    card.IsFaceDown = true;
+                    Stock.Insert(0, card);
+                    if (!await PauseGameAction(175, cancellation))
+                        return;
+                    if (version != _gameVersion)
+                        return;
+                }
+            }
+            else
             {
-                if (Stock.Count <= 0) continue;
-                var card = Stock.Last();
-                Stock.Remove(card);
-                card.IsFaceDown = false;
-                card.IsPlayable = false;
-                Waste.Add(card);
+                var count = System.Math.Min(Stock.Count, DrawMode == DrawMode.DrawThree ? 3 : 1);
+                for (var i = 0; i < count; i++)
+                {
+                    var card = Stock.Last();
+                    Stock.RemoveAt(Stock.Count - 1);
+                    card.IsFaceDown = false;
+                    card.IsPlayable = false;
+                    Waste.Add(card);
+                    if (!await PauseGameAction(175, cancellation))
+                        return;
+                    if (version != _gameVersion)
+                        return;
+                }
+            }
 
-                await Task.Delay(175);
+            if (Waste.Count > 0)
+                Waste.Last().IsPlayable = true;
+        }
+        finally
+        {
+            if (version == _gameVersion)
+            {
+                _isTurning = false;
+                NotifyGameCommands();
             }
         }
-
-        //  Everything in the waste must be not playable,
-        //  apart from the top card.
-        foreach (var wasteCard in Waste)
-            wasteCard.IsPlayable = wasteCard == Waste.Last();
-
-        _isTurning = false;
     }
+
     /// <summary>
-    /// Tries the move all cards to appropriate foundations.
+    /// Moves eligible cards to their foundations.
     /// </summary>
     private async Task TryMoveAllCardsToAppropriateFoundations()
     {
-        //  Go through the top card in each tableau - keeping
-        //  track of whether we moved one.
-        var keepTrying = true;
-        
-        while (keepTrying)
+        if (!CanMoveCards)
+            return;
+        var version = _gameVersion;
+        var cancellation = ActionCancellation;
+        var moved = true;
+        while (moved && version == _gameVersion && CanMoveCards)
         {
-            var movedACard = false;
-            
-            if (Waste.Count > 0)
+            moved = false;
+            foreach (var pile in _tableauSet.Prepend(Waste))
             {
-                if (TryMoveCardToAppropriateFoundation(Waste.Last()))
-                {
-                    movedACard = true;
-                    await Task.Delay(75);
-                }
+                if (version != _gameVersion || !CanMoveCards)
+                    return;
+                if (pile.Count == 0 || !TryMoveCardToAppropriateFoundation(pile.Last()))
+                    continue;
+                moved = true;
+                if (!await PauseGameAction(75, cancellation))
+                    return;
             }
-
-            foreach (var tableau in _tableauSet)
-            {
-                if (tableau.Count > 0)
-                {
-                    if (TryMoveCardToAppropriateFoundation(tableau.Last()))
-                    {
-                        movedACard = true;
-                        await Task.Delay(75);
-                    }
-                }
-            }
-
-            //  We'll keep trying if we moved a card.
-            keepTrying = movedACard;
         }
     }
 
     /// <summary>
-    /// Tries the move the card to its appropriate foundation.
+    /// Moves an eligible card to a foundation.
     /// </summary>
     /// <param name="card">The card.</param>
-    /// <returns>True if card moved.</returns>
+    /// <returns>True after a successful move.</returns>
     private bool TryMoveCardToAppropriateFoundation(PlayingCardViewModel card)
     {
-        //  Try the top of the waste first.
         if (Waste.LastOrDefault() == card)
             foreach (var foundation in _foundations)
                 if (CheckAndMoveCard(Waste, foundation, card))
                     return true;
 
-        //  Is the card in a tableau?
         var inTableau = false;
         var i = 0;
         for (; i < _tableauSet.Count && inTableau == false; i++)
             inTableau = _tableauSet[i].Contains(card);
 
-        //  It's if its not in a tableau and it's not the top
-        //  of the waste, we cannot move it.
         if (inTableau == false)
             return false;
 
-        //  Try and move to each foundation.
         foreach (var foundation in _foundations)
             if (CheckAndMoveCard(_tableauSet[i - 1], foundation, card))
                 return true;
 
-        //  We couldn't move the card.
         return false;
     }
 
     /// <summary>
     /// Moves the card.
     /// </summary>
-    /// <param name="from">The set we're moving from.</param>
-    /// <param name="to">The set we're moving to.</param>
-    /// <param name="card">The card we're moving.</param>
-    /// <param name="checkOnly">if set to <c>true</c> we only check if we CAN move, but don't actually move.</param>
-    /// <returns>True if a card was moved.</returns>
+    /// <param name="from">The source pile.</param>
+    /// <param name="destination">The destination pile.</param>
+    /// <param name="card">The card to move.</param>
+    /// <param name="checkOnly">If true, check the move without moving cards.</param>
+    /// <returns>True for a legal move.</returns>
     public override bool CheckAndMoveCard(IList<PlayingCardViewModel> from,
-        IList<PlayingCardViewModel> to,
+        IList<PlayingCardViewModel> destination,
         PlayingCardViewModel card,
         bool checkOnly = false)
     {
-        //  The trivial case is where from and to are the same.
-        if (from.SequenceEqual(to))
+        // Check the source cards before the destination.
+        if (!CanMoveCards || ReferenceEquals(from, destination) || !CanSelectRun(from, destination, card))
             return false;
 
-        //  This is the complicated operation.
         int scoreModifier;
 
-        //  Are we moving from the waste?
-        if (from.SequenceEqual(Waste))
+        // Waste and tableau moves share destination rules, with different tableau scores.
+        var fromWaste = ReferenceEquals(from, Waste);
+        if (fromWaste || _tableauSet.Contains(from))
         {
-            //  Are we moving to a foundation?
-            if (_foundations.Contains(to))
-            {
-                //  We can move to a foundation only if:
-                //  1. It is empty and we are an ace.
-                //  2. It is card SN and we are suit S and Number N+1
-                 if (GetSuitForFoundations(to) == card.Suit && ((to.Count == 0 && card.Value == 0) ||
-                    (to.Count > 0 && to.Last().Suit == card.Suit && to.Last().Value == card.Value - 1)))
-                {
-                    //  Move from waste to foundation.
-                    scoreModifier = 10;
-                }
-                else
-                    return false;
-            }
-            //  Are we moving to a tableau?
-            else if (_tableauSet.Contains(to))
-            {
-                //  We can move to a tableau only if:
-                //  1. It is empty and we are a king.
-                //  2. It is card CN and we are color !C and Number N-1
-                if ((to.Count == 0 && card.Value == 12) ||
-                    (to.Count > 0 && to.Last().Colour != card.Colour && to.Last().Value == card.Value + 1))
-                {
-                    //  Move from waste to tableau.
-                    scoreModifier = 5;
-                }
-                else
-                    return false;
-            }
-            //  Any other move from the waste is wrong.
-            else
+            if (!TryGetForwardMoveScore(destination, card, fromWaste ? 5 : 0, out scoreModifier))
                 return false;
         }
-        //  Are we moving from a tableau?
-        else if (_tableauSet.Contains(from))
-        {
-            //  Are we moving to a foundation?
-            if (_foundations.Contains(to))
-            {
-                //  We can move to a foundation only if:
-                //  1. It is empty and we are an ace.
-                //  2. It is card SN and we are suit S and Number N+1
-                if (GetSuitForFoundations(to) == card.Suit && ((to.Count == 0 && card.Value == 0) ||
-                    (to.Count > 0 && to.Last().Suit == card.Suit && to.Last().Value == card.Value - 1)))
-                {
-                    //  Move from tableau to foundation.
-                    scoreModifier = 10;
-                }
-                else
-                    return false;
-            }
-            //  Are we moving to another tableau?
-            else if (_tableauSet.Contains(to))
-            {
-                //  We can move to a tableau only if:
-                //  1. It is empty and we are a king.
-                //  2. It is card CN and we are color !C and Number N-1
-                if ((to.Count == 0 && card.Value == 12) ||
-                    (to.Count > 0 && to.Last().Colour != card.Colour && to.Last().Value == card.Value + 1))
-                {
-                    //  Move from tableau to tableau.
-                    scoreModifier = 0;
-                }
-                else
-                    return false;
-            }
-            //  Any other move from a tableau is wrong.
-            else
-                return false;
-        }
-        //  Are we moving from a foundation?
         else if (_foundations.Contains(from))
         {
-            //  Are we moving to a tableau?
-            if (_tableauSet.Contains(to))
+            if (_tableauSet.Contains(destination))
             {
-                //  We can move to a tableau only if:
-                //  1. It is empty and we are a king.
-                //  2. It is card CN and we are color !C and Number N-1
-                if ((to.Count == 0 && card.Value == 12) ||
-                    (to.Count > 0 && to.Last().Colour != card.Colour && to.Last().Value == card.Value + 1))
+                if (CardMoveRules.CanPlaceOnTableau(destination, card, card.Value == 12))
                 {
-                    //  Move from foundation to tableau.
                     scoreModifier = -15;
                 }
                 else
                     return false;
             }
-            //  Are we moving to another foundation?
-            else if (_foundations.Contains(to))
+            else if (_foundations.Contains(destination))
             {
-                if (GetSuitForFoundations(to) != card.Suit && card.Value == 0)
+                if (CardMoveRules.GetFoundationSuit(destination, _foundations) != card.Suit && card.Value == 0)
                 {
                     return false;
                 }
-                
-                //  We can move from a foundation to a foundation only 
-                //  if the source foundation has one card (the ace) and the
-                //  destination foundation has no cards).
-                if (from.Count == 1 && to.Count == 0)
+
+                if (from.Count == 1 && destination.Count == 0 && card.Value == 0)
                 {
-                    //  The move is valid, but has no impact on the score.
                     scoreModifier = 0;
                 }
                 else
                     return false;
             }
-            //  Any other move from a foundation is wrong.
             else
                 return false;
         }
         else
             return false;
 
-        //  If we were just checking, we're done.
         if (checkOnly)
             return true;
 
-        //  If we've got here we've passed all tests
-        //  and move the card and update the score.
-        MoveCard(from, to, card, scoreModifier);
+        MoveCard(from, destination, card);
         Score += scoreModifier;
         Moves++;
 
-        //  If we have moved from the waste, we must 
-        //  make sure that the top of the waste is playable.
-        if (from.SequenceEqual(Waste) && Waste.Count > 0)
+        if (fromWaste && Waste.Count > 0)
             Waste.Last().IsPlayable = true;
 
-        //  Check for victory.
         CheckForVictory();
 
         return true;
     }
 
-    /// <summary>
-    /// Actually moves the card.
-    /// </summary>
-    /// <param name="from">The stack to move from.</param>
-    /// <param name="to">The stack to move to.</param>
-    /// <param name="card">The card.</param>
+    private bool CanSelectRun(IList<PlayingCardViewModel> from, IList<PlayingCardViewModel> destination,
+        PlayingCardViewModel card)
+    {
+        var index = from.IndexOf(card);
+        if (index < 0 || card.IsFaceDown || !card.IsPlayable)
+            return false;
+        if (destination.Count > 0 && destination.Last().IsFaceDown)
+            return false;
+        if (ReferenceEquals(from, Waste) || _foundations.Contains(from))
+            return index == from.Count - 1;
+        if (!_tableauSet.Contains(from) || _foundations.Contains(destination) && index != from.Count - 1)
+            return false;
+        for (var i = index + 1; i < from.Count; i++)
+            if (from[i].IsFaceDown || from[i].Colour == from[i - 1].Colour || from[i].Value != from[i - 1].Value - 1)
+                return false;
+        return true;
+    }
+
+    private bool TryGetForwardMoveScore(IList<PlayingCardViewModel> destination,
+        PlayingCardViewModel card, int tableauScore, out int score)
+    {
+        score = _foundations.Contains(destination) ? 10 : tableauScore;
+        if (_foundations.Contains(destination))
+            return CardMoveRules.CanBuildFoundation(destination, card, _foundations, true);
+        return _tableauSet.Contains(destination) && CardMoveRules.CanPlaceOnTableau(destination, card, card.Value == 12);
+    }
+
     private void MoveCard(IList<PlayingCardViewModel> from,
         IList<PlayingCardViewModel> to,
-        PlayingCardViewModel card, int scoreModifier)
+        PlayingCardViewModel card)
     {
-        //  Identify the run of cards we're moving.
-        var run = new List<PlayingCardViewModel>();
-        for (var i = from.IndexOf(card); i < from.Count; i++)
-            run.Add(from[i]);
-
-        //  This function will move the card, as well as setting the 
-        //  playable properties of the cards revealed.
+        var undo = new KlondikeUndoOperation(this, from, to);
+        var run = from.Skip(from.IndexOf(card)).ToArray();
         foreach (var runCard in run)
             from.Remove(runCard);
         foreach (var runCard in run)
             to.Add(runCard);
-
-        //  Are there any cards left in the from pile?
         if (from.Count > 0)
         {
-            //  Reveal the top card and make it playable.
-            var topCardViewModel = from.Last();
-
-            topCardViewModel.IsFaceDown = false;
-            topCardViewModel.IsPlayable = true;
-
-            RecordMoves(new MoveOperation(from, to, run, scoreModifier), new GenericOperation(() =>
-            {
-                topCardViewModel.IsFaceDown = true;
-                topCardViewModel.IsPlayable = false;
-            }));
+            from.Last().IsFaceDown = false;
+            from.Last().IsPlayable = true;
         }
-        else
-        {
-            RecordMoves(new MoveOperation(from, to, run, scoreModifier));
-        }
+        RecordMoves(undo);
     }
 
-    /// <summary>
-    /// Checks for victory.
-    /// </summary>
     private void CheckForVictory()
     {
-        //  We've won if every foundation is full.
         foreach (var foundation in _foundations)
             if (foundation.Count < 13)
                 return;
 
-        //  We've won.
         IsGameWon = true;
+        NotifyGameCommands();
 
-        //  Stop the timer.
         StopTimer();
 
-        //  Fire the won event.
         FireGameWonEvent();
     }
 
-    //  For ease of access we have arrays of the foundations and tableau set.
     private readonly List<BatchObservableCollection<PlayingCardViewModel>> _foundations = new();
     private readonly List<BatchObservableCollection<PlayingCardViewModel>> _tableauSet = new();
     private readonly CasinoViewModel _casinoViewModel;
@@ -559,9 +473,6 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
     public BatchObservableCollection<PlayingCardViewModel> Waste { get; } = new();
 
 
-    /// <summary>
-    /// The turn stock command.
-    /// </summary> 
     public ICommand? TurnStockCommand { get; }
 
 }

@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Solitaire.Utils;
 
@@ -33,6 +34,8 @@ public sealed class BatchObservableCollection<T> : Collection<T>, INotifyCollect
     private event PropertyChangedEventHandler? PropertyChanged;
 
     private event NotifyCollectionChangedEventHandler CollectionChanged = EmptyDelegate;
+
+    internal int SubscriberCount => CollectionChanged.GetInvocationList().Count(handler => !handler.Equals(EmptyDelegate));
 
     public BatchObservableCollection()
     {
@@ -71,12 +74,14 @@ public sealed class BatchObservableCollection<T> : Collection<T>, INotifyCollect
                         OnPropertyChanged(new PropertyChangedEventArgs(CountString));
                         OnPropertyChanged(new PropertyChangedEventArgs(IndexerName));
                     };
-                    _fireIndexerChanged = delegate { OnPropertyChanged(new PropertyChangedEventArgs(IndexerName)); };
+                    _fireIndexerChanged = delegate
+                    { OnPropertyChanged(new PropertyChangedEventArgs(IndexerName)); };
                 }
 
                 PropertyChanged += value;
             }
-            else if (_notifyInfo.RootCollection != null) _notifyInfo.RootCollection.PropertyChanged += value;
+            else if (_notifyInfo.RootCollection != null)
+                _notifyInfo.RootCollection.PropertyChanged += value;
         }
 
         remove
@@ -87,11 +92,14 @@ public sealed class BatchObservableCollection<T> : Collection<T>, INotifyCollect
 
                 if (null == PropertyChanged)
                 {
-                    _fireCountAndIndexerChanged = delegate { };
-                    _fireIndexerChanged = delegate { };
+                    _fireCountAndIndexerChanged = delegate
+                    { };
+                    _fireIndexerChanged = delegate
+                    { };
                 }
             }
-            else if (_notifyInfo.RootCollection != null) _notifyInfo.RootCollection.PropertyChanged -= value;
+            else if (_notifyInfo.RootCollection != null)
+                _notifyInfo.RootCollection.PropertyChanged -= value;
         }
     }
 
@@ -105,9 +113,11 @@ public sealed class BatchObservableCollection<T> : Collection<T>, INotifyCollect
                     CollectionChanged -= EmptyDelegate;
 
                 CollectionChanged += value;
-                if (CollectionChanged != null) _disableReentry = CollectionChanged.GetInvocationList().Length > 1;
+                if (CollectionChanged != null)
+                    _disableReentry = CollectionChanged.GetInvocationList().Length > 1;
             }
-            else if (_notifyInfo.RootCollection != null) _notifyInfo.RootCollection.CollectionChanged += value;
+            else if (_notifyInfo.RootCollection != null)
+                _notifyInfo.RootCollection.CollectionChanged += value;
         }
 
         remove
@@ -121,7 +131,8 @@ public sealed class BatchObservableCollection<T> : Collection<T>, INotifyCollect
 
                 _disableReentry = CollectionChanged.GetInvocationList().Length > 1;
             }
-            else if (_notifyInfo.RootCollection != null) _notifyInfo.RootCollection.CollectionChanged -= value;
+            else if (_notifyInfo.RootCollection != null)
+                _notifyInfo.RootCollection.CollectionChanged -= value;
         }
     }
 
@@ -219,7 +230,7 @@ public sealed class BatchObservableCollection<T> : Collection<T>, INotifyCollect
         }
     }
 
-    private IDisposable BlockReentrancy()
+    private ReentryMonitor BlockReentrancy()
     {
         return _monitor.Enter();
     }
@@ -240,7 +251,8 @@ public sealed class BatchObservableCollection<T> : Collection<T>, INotifyCollect
 
     private void DisposeInternal()
     {
-        if (_notifyInfo is not { HasEventArgs: true }) return;
+        if (_notifyInfo is not { HasEventArgs: true })
+            return;
         if (null != _notifyInfo.RootCollection?.PropertyChanged)
         {
             if (_notifyInfo.IsCountChanged)
@@ -253,20 +265,17 @@ public sealed class BatchObservableCollection<T> : Collection<T>, INotifyCollect
         {
             var args = _notifyInfo.EventArgs;
 
-            foreach (var delegateItem in _notifyInfo.RootCollection!.CollectionChanged.GetInvocationList())
-            {
-                delegateItem.DynamicInvoke(_notifyInfo.RootCollection, args);
-            }
+            _notifyInfo.RootCollection!.CollectionChanged(_notifyInfo.RootCollection, args!);
         }
 
         CollectionChanged = _notifyInfo.Initialize();
     }
 
-    private class ReentryMonitor : IDisposable
+    private sealed class ReentryMonitor : IDisposable
     {
         private int _referenceCount;
 
-        public IDisposable Enter()
+        public ReentryMonitor Enter()
         {
             ++_referenceCount;
 
@@ -284,7 +293,7 @@ public sealed class BatchObservableCollection<T> : Collection<T>, INotifyCollect
         }
     }
 
-    private class NotificationInfo
+    private sealed class NotificationInfo
     {
         private NotifyCollectionChangedAction? _action;
 
@@ -318,7 +327,8 @@ public sealed class BatchObservableCollection<T> : Collection<T>, INotifyCollect
                         wrapper.CollectionChanged = (_, e) =>
                         {
                             AssertActionType(e);
-                            if (e.NewItems == null) return;
+                            if (e.NewItems == null)
+                                return;
                             foreach (T item in e.NewItems)
                                 _newItems.Add(item);
                         };
@@ -331,7 +341,8 @@ public sealed class BatchObservableCollection<T> : Collection<T>, INotifyCollect
                         wrapper.CollectionChanged = (_, e) =>
                         {
                             AssertActionType(e);
-                            if (e.OldItems == null) return;
+                            if (e.OldItems == null)
+                                return;
                             foreach (T item in e.OldItems)
                                 _oldItems.Add(item);
                         };
@@ -418,7 +429,7 @@ public sealed class BatchObservableCollection<T> : Collection<T>, INotifyCollect
             if (e.Action != _action)
             {
                 throw new InvalidOperationException(
-                    string.Format(
+                    string.Format(System.Globalization.CultureInfo.CurrentCulture,
                         "Attempting to perform {0} during {1}. Mixed actions on the same delayed interface are not allowed.",
                         e.Action, _action));
             }

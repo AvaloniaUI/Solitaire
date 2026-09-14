@@ -3,65 +3,45 @@ name: Azure Static Web Apps CI/CD
 on:
   push:
     branches:
-      - release/*
+    - release/*
 
 jobs:
-  build_job:
+  build_and_deploy_job:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - enableThreads: false
-            folderName: "st"
-          - enableThreads: true
-            folderName: "mt"
     name: Build and Deploy Job
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: 9.0.101
+          global-json-file: global.json
 
       - name: Install wasm-tools
         run: dotnet workload install wasm-tools
 
+      - name: Install DotNetCompress
+        run: dotnet tool install --global DotNetCompress --version 1.0.0-preview.7 --no-cache
+
       - name: Publish .NET Project
-        run: dotnet publish Solitaire.Browser/Solitaire.Browser.csproj -c Release -p:WasmEnableThreads=${{matrix.enableThreads}} -o artifacts/${{matrix.folderName}}
+        run: dotnet publish Solitaire.Browser/Solitaire.Browser.csproj -c Release -o release --nologo
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ matrix.folderName }}
-          path: artifacts/${{ matrix.folderName }}/wwwroot
-
-  deploy_job:
-    needs: [ build_job ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          path: artifacts
-
-      - name: Arrange folders
-        run: |
-          mkdir -p deploy/
-          mkdir -p deploy/mt
-          mv artifacts/st/* deploy/
-          mv artifacts/mt/* deploy/mt/
+      - name: Brotli Compress Output (dll)
+        run: DotNetCompress -d Solitaire.Browser/bin/Release/net10.0/browser-wasm/AppBundle/ -p '*.dll' -p '*.js' -p '*.symbols' -p '*.blat' -p '*.bin' -p '*.wasm'
 
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APP_DEPLOY_KEY }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
           action: "upload"
-          app_location: "deploy"
-          api_location: ""
-          output_location: ""
+          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
+          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
+          app_location: "Solitaire.Browser/bin/Release/net10.0/browser-wasm/AppBundle/" # App source code path
+          api_location: "" # Api source code path - optional
+          output_location: "" # Modify this to where your SSG places the built HTML - could be `dist`, `build`... check your config
           skip_app_build: true
+          ###### End of Repository/Build Configurations ######

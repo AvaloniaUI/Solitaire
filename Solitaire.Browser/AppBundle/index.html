@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Solitaire</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#116336">
+    <base href="/" />
+    <link rel="modulepreload" href="./main.js" />
+    <link rel="modulepreload" href="./_framework/dotnet.js" />
+    <link rel="preload" href="./Logo.svg" as="image" type="image/svg+xml" />
+    <link rel="stylesheet" href="./app.css" />
+</head>
+<body>
+    <div id="out" inert></div>
+    <div id="solitaire-loader">
+        <div class="loader-artwork">
+            <img src="./Logo.svg" width="545" height="226" alt="Solitaire. Built with Avalonia UI." />
+        </div>
+        <div class="loader-status">
+            <p id="loading-status" role="status">Loading Solitaire…</p>
+            <div id="loading-progress" role="progressbar" aria-label="Loading Solitaire"
+                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <div id="loading-fill"></div>
+            </div>
+            <button id="loading-retry" type="button" hidden>Try again</button>
+            <noscript>Enable JavaScript to play Solitaire.</noscript>
+        </div>
+    </div>
+    <script type="module" src="./main.js"></script>
+</body>
+</html>

@@ -1,8 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Windows.Input;
+using System.Threading.Tasks;
+using System.Threading;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -12,12 +14,9 @@ using Solitaire.ViewModels.Pages;
 
 namespace Solitaire.ViewModels;
 
-/// <summary>
-/// Base class for a ViewModel for a card game.
-/// </summary>
 public abstract partial class CardGameViewModel : ViewModelBase
 {
-    public ImmutableArray<PlayingCardViewModel>? Deck;
+    public ImmutableArray<PlayingCardViewModel>? Deck { get; set; }
 
     public ICommand? AutoMoveCommand { get; protected set; }
 
@@ -29,9 +28,9 @@ public abstract partial class CardGameViewModel : ViewModelBase
     {
         _moveStack.Clear();
     }
-    
-    
-    
+
+
+
     protected void RecordMoves(params CardOperation[] operations)
     {
         _moveStack.Push(operations);
@@ -39,6 +38,8 @@ public abstract partial class CardGameViewModel : ViewModelBase
 
     private void UndoMove()
     {
+        if (!CanUndo)
+            return;
         if (_moveStack.Count > 0)
         {
             var operations = _moveStack.Pop();
@@ -48,13 +49,12 @@ public abstract partial class CardGameViewModel : ViewModelBase
                 operation.Revert(this);
             }
 
-           
+
         }
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CardGameViewModel"/> class.
-    /// </summary>
+    protected virtual bool CanUndo => true;
+
     protected CardGameViewModel(CasinoViewModel casinoViewModel)
     {
         NavigateToCasinoCommand =
@@ -69,14 +69,13 @@ public abstract partial class CardGameViewModel : ViewModelBase
                 casinoViewModel.CurrentView = casinoViewModel.TitleInstance;
             });
 
-        UndoCommand = new RelayCommand(UndoMove);
+        UndoCommand = new RelayCommand(UndoMove, () => CanUndo);
 
         DoInitialize();
     }
 
     private void DoInitialize()
     {
-        //  Set up the timer.
         _timer.Interval = TimeSpan.FromMilliseconds(500);
         _timer.Tick += timer_Tick;
         InitializeDeck();
@@ -84,13 +83,14 @@ public abstract partial class CardGameViewModel : ViewModelBase
 
     protected virtual void InitializeDeck()
     {
-        if (Deck is { }) return;
+        if (Deck is { })
+            return;
 
         var playingCards = Enum
-            .GetValuesAsUnderlyingType(typeof(CardType))
+            .GetValuesAsUnderlyingType<CardType>()
             .Cast<CardType>()
             .Select(cardType => new PlayingCardViewModel(this)
-                { CardType = cardType, IsFaceDown = true })
+            { CardType = cardType, IsFaceDown = true })
             .ToImmutableArray();
 
         Deck = playingCards;
@@ -111,22 +111,38 @@ public abstract partial class CardGameViewModel : ViewModelBase
     }
 
 
+    protected static async Task<bool> MoveTableauCardsToFoundations(
+        IEnumerable<BatchObservableCollection<PlayingCardViewModel>> tableaus,
+        Func<PlayingCardViewModel, bool> tryMove, CancellationToken cancellation)
+    {
+        var moved = false;
+        foreach (var tableau in tableaus)
+        {
+            if (cancellation.IsCancellationRequested)
+                return false;
+            if (tableau.Count > 0 && tryMove(tableau.Last()))
+            {
+                moved = true;
+                if (!await PauseGameAction(75, cancellation))
+                    return false;
+            }
+        }
+        return moved;
+    }
+
     public abstract IList<PlayingCardViewModel>? GetCardCollection(PlayingCardViewModel card);
 
 
     public abstract bool CheckAndMoveCard(IList<PlayingCardViewModel> from,
-        IList<PlayingCardViewModel> to,
+        IList<PlayingCardViewModel> destination,
         PlayingCardViewModel card,
         bool checkOnly = false);
 
-    /// <summary>
-    /// Deals a new game.
-    /// </summary>
     protected void ResetInternalState()
     {
+        ResetPendingActions();
         ClearUndoStack();
-        
-        //  Stop the timer and reset the game data.
+
         StopTimer();
         ElapsedTime = TimeSpan.FromSeconds(0);
         Moves = 0;
@@ -135,39 +151,24 @@ public abstract partial class CardGameViewModel : ViewModelBase
         OnPropertyChanged(nameof(IsGameWon));
     }
 
-    /// <summary>
-    /// Starts the timer.
-    /// </summary>
     protected void StartTimer()
     {
         _lastTick = DateTime.Now;
         _timer.Start();
     }
 
-    /// <summary>
-    /// Stops the timer.
-    /// </summary>
     protected void StopTimer()
     {
         _timer.Stop();
     }
 
-    /// <summary>
-    /// Handles the Tick event of the timer control.
-    /// </summary>
-    /// <param name="sender">The source of the event.</param>
-    /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
     private void timer_Tick(object? sender, EventArgs e)
     {
-        //  Get the time, update the elapsed time, record the last tick.
         var timeNow = DateTime.Now;
         ElapsedTime += timeNow - _lastTick;
         _lastTick = timeNow;
     }
 
-    /// <summary>
-    /// Fires the game won event.
-    /// </summary>
     protected void FireGameWonEvent()
     {
         _gameStats.UpdateStatistics();
@@ -195,18 +196,11 @@ public abstract partial class CardGameViewModel : ViewModelBase
 
     [ObservableProperty] private bool _isGameWon;
     private GameStatisticsViewModel _gameStats = null!;
+    internal GameStatisticsViewModel GameStatistics => _gameStats;
 
-    /// <summary>
-    /// Gets the go to casino command.
-    /// </summary>
-    /// <value>The go to casino command.</value>
     public ICommand? NavigateToCasinoCommand { get; }
 
-    /// <summary>
-    /// Gets the deal new game command.
-    /// </summary>
-    /// <value>The deal new game command.</value>
-    public ICommand? NewGameCommand { get; protected set; }
+    public ICommand? NewGameCommand { get; protected internal set; }
 
     public ICommand? UndoCommand { get; protected set; }
 
@@ -230,7 +224,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
     public class GenericOperation : CardOperation
     {
         private readonly Action _action;
-        
+
         public GenericOperation(Action action)
         {
             _action = action;
@@ -260,7 +254,7 @@ public abstract partial class CardGameViewModel : ViewModelBase
         public IList<PlayingCardViewModel> Run { get; }
 
         public int Score { get; }
-        
+
         public override void Revert(CardGameViewModel game)
         {
 

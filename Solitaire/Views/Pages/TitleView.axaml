@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Solitaire.Views.Pages.TitleView"
+<UserControl x:Class="Solitaire.Views.Pages.TitleView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -14,10 +14,10 @@
     <Design.DataContext>
         <pages:TitleViewModel />
     </Design.DataContext>
-    <Viewbox MaxWidth="1000" Margin="20">
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10">
+    <controls:MenuScrollViewer Theme="{StaticResource MenuScrollViewer}">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="12,24">
             <!-- The container for the statistics. -->
-            <Viewbox Stretch="UniformToFill" MaxWidth="300" Margin="0 20 0 0" ClipToBounds="False">
+            <Viewbox Name="TitleArtwork" Stretch="Uniform" MaxWidth="420" Margin="0,0,0,24">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Image Height="70" Source="{StaticResource SolitaireGlyph}" Width="300" VerticalAlignment="Center"
                            Margin="20 0 0 -10">
@@ -26,11 +26,12 @@
                     <TextBlock FontFamily="{StaticResource  CasinoFont}" FontSize="130" Text="SOLITAIRE"
                                TextAlignment="Center"
                                VerticalAlignment="Center" />
-                    <TextBlock Height="40" Margin="0 -30 0 0" FontFamily="{StaticResource Nunito}" FontSize="18"
-                               HorizontalAlignment="Right">
-                        <Run Foreground="White" Text="Built with" />
+                    <TextBlock Height="40" Margin="0 -30 0 0" FontFamily="{StaticResource Nunito}" FontSize="16"
+                                   HorizontalAlignment="Right">
+                        <Run Foreground="White" Text="Built with " />
                         <InlineUIContainer>
-                            <Image Width="24" Height="24" Margin="0" Source="{StaticResource Avalonia}" />
+                            <Image Width="16" Height="16" Margin="-3 3  3 0" Source="{StaticResource Avalonia}" />
+
                         </InlineUIContainer>
                         <Run Foreground="White" Text="Avalonia UI" />
 
@@ -40,23 +41,20 @@
             </Viewbox>
 
 
-            <Viewbox Margin="40,10,40,40" StretchDirection="DownOnly" ClipToBounds="False">
+            <Panel MaxWidth="360">
                 <!-- The casino commands. -->
-                <controls:TrayContainer Classes="downDeck">
-                    <controls:TrayContainer.RenderTransform>
-                        <ScaleTransform></ScaleTransform>
-                    </controls:TrayContainer.RenderTransform>
-                    <StackPanel Spacing="10" Orientation="Vertical" Margin="10">
-                        <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="230"
-                                Content="Klondike"
+                <controls:ConnectedTray>
+                    <StackPanel Spacing="12" Orientation="Vertical" Margin="10">
+                        <controls:CasinoButton DockPanel.Dock="Top" VerticalAlignment="Center"
+                                Theme="{StaticResource MenuButton}" Content="Klondike"
                                 Command="{Binding NavigateToKlondikeCommand}" />
 
-                        <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="230"
-                                Content="FreeCell"
+                        <controls:CasinoButton DockPanel.Dock="Top" VerticalAlignment="Center"
+                                Theme="{StaticResource MenuButton}" Content="FreeCell"
                                 Command="{Binding NavigateToFreeCellCommand}" />
 
-                        <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="230"
-                                Content="Spider"
+                        <controls:CasinoButton DockPanel.Dock="Top" VerticalAlignment="Center"
+                                Theme="{StaticResource MenuButton}" Content="Spider"
                                 Command="{Binding  NavigateToSpiderCommand}" />
 
                         <Border Height="2" Margin="10 5 10 5">
@@ -66,19 +64,19 @@
                                                      Transform="rotate(120deg)" />
                             </Border.Background>
                         </Border>
-                        
-                        <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="230"
-                                Content="Statistics"
+
+                        <controls:CasinoButton DockPanel.Dock="Top" VerticalAlignment="Center"
+                                Theme="{StaticResource MenuButton}" Content="Statistics"
                                 Command="{Binding NavigateToStatisticsCommand}" />
 
-                        <Button DockPanel.Dock="Top" VerticalAlignment="Center" Width="230"
-                                Content="Settings"
+                        <controls:CasinoButton DockPanel.Dock="Top" VerticalAlignment="Center"
+                                Theme="{StaticResource MenuButton}" Content="Settings"
                                 Command="{Binding NavigateToSettingsCommand}" />
 
                     </StackPanel>
-                </controls:TrayContainer>
+                </controls:ConnectedTray>
 
-            </Viewbox>
+            </Panel>
         </StackPanel>
-    </Viewbox>
+    </controls:MenuScrollViewer>
 </UserControl>

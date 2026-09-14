@@ -1,25 +1,47 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Solitaire.Models;
 using Solitaire.Utils;
 using Solitaire.ViewModels.Pages;
 
 namespace Solitaire.ViewModels;
 
-/// <summary>
-/// The casino view model.
-/// </summary>
 public partial class CasinoViewModel : ViewModelBase
 {
-    [ObservableProperty] private ViewModelBase? _currentView;
+    private ViewModelBase? _currentView;
+    private int _navigationVersion;
+
+    public ViewModelBase? CurrentView
+    {
+        get => _currentView;
+        set
+        {
+            if (ReferenceEquals(_currentView, value))
+                return;
+            _navigationVersion++;
+            if (_currentView is CardGameViewModel outgoing)
+                outgoing.ResetForNavigation();
+            if (value is CardGameViewModel incoming)
+                incoming.ResetForNavigation();
+            SetProperty(ref _currentView, value);
+        }
+    }
+
+    internal void StartGame(CardGameViewModel game)
+    {
+        CurrentView = game;
+        var version = _navigationVersion;
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (version == _navigationVersion && ReferenceEquals(CurrentView, game))
+                game.NewGameCommand?.Execute(null);
+        }, DispatcherPriority.Background);
+    }
 
 
-    
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CasinoViewModel"/> class.
-    /// </summary>
+
     public CasinoViewModel()
     {
         SettingsInstance = new SettingsViewModel(this);
@@ -30,11 +52,6 @@ public partial class CasinoViewModel : ViewModelBase
         StatisticsInstance = new StatisticsViewModel(this);
         CurrentView = TitleInstance;
 
-        NavigateToTitleCommand = new RelayCommand(() =>
-        {
-            CurrentView = TitleInstance;
-            Save();
-        });
     }
     public StatisticsViewModel StatisticsInstance { get; }
 
@@ -44,36 +61,21 @@ public partial class CasinoViewModel : ViewModelBase
     public FreeCellSolitaireViewModel FreeCellInstance { get; }
     public KlondikeSolitaireViewModel KlondikeInstance { get; }
 
-    public ICommand NavigateToTitleCommand { get; }
-
-    /// <summary>
-    /// Saves this instance.
-    /// </summary>
     public async void Save()
     {
-        var state = new PersistentState(
-            SettingsInstance.GetState(),
-            StatisticsInstance.KlondikeStatsInstance.GetState(),
-            StatisticsInstance.SpiderStatsInstance.GetState(),
-            StatisticsInstance.FreeCellStatsInstance.GetState());
-        await PlatformProviders.CasinoStorage.SaveObject(state, "mainSettings");
+        await PlatformProviders.CasinoStorage.SaveObject(this, "mainSettings");
     }
 
-    /// <summary>
-    /// Loads this instance.
-    /// </summary>
-    /// <returns></returns>
     public static async Task<CasinoViewModel> CreateOrLoadFromDisk()
     {
-        var ret = new CasinoViewModel();
-        var state = await PlatformProviders.CasinoStorage.LoadObject("mainSettings");
-        if (state is not null)
-        {
-            ret.SettingsInstance.ApplyState(state.Settings);
-            ret.StatisticsInstance.KlondikeStatsInstance.ApplyState(state.KlondikeStatsInstance);
-            ret.StatisticsInstance.SpiderStatsInstance.ApplyState(state.SpiderStatsInstance);
-            ret.StatisticsInstance.FreeCellStatsInstance.ApplyState(state.FreeCellStatsInstance);
-        }
+        var ret = await PlatformProviders.CasinoStorage.LoadObject("mainSettings");
+        if (ret is null)
+            return new CasinoViewModel();
+
+        // Refresh game logics.
+        ret.FreeCellInstance.ResetGame();
+        ret.KlondikeInstance.ResetGame();
+        ret.SpiderInstance.ResetGame();
         return ret;
     }
 }

@@ -1,9 +1,6 @@
 ﻿// ReSharper disable InconsistentNaming
 namespace Solitaire.Models;
 
-/// <summary>
-/// The Card Types.
-/// </summary>
 public enum CardType
 {
     //  Hearts
