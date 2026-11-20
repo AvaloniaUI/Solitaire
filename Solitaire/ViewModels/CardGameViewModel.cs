@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -62,7 +62,8 @@ public abstract partial class CardGameViewModel : ViewModelBase
             {
                 if (Moves > 0)
                 {
-                    _gameStats.UpdateStatistics();
+                    if (!IsGameWon)
+                        _gameStats.UpdateStatistics();
                     casinoViewModel.Save();
                 }
 
