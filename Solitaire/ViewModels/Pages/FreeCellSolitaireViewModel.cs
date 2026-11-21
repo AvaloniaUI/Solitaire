@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -304,7 +304,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
                 //  We can move to a tableau only if:
                 //  1. It is empty and we are a king.
                 //  2. It is card CN and we are color !C and Number N-1
-                if (to.Count == 0 ||
+                if ((to.Count == 0 && card.Value == 12) ||
                     (to.Count > 0 && to.Last().Colour != card.Colour && to.Last().Value == card.Value + 1))
                 {
                     scoreModifier = 0;
@@ -358,7 +358,7 @@ public partial class FreeCellSolitaireViewModel : CardGameViewModel
                 //  We can move to a tableau only if:
                 //  1. It is empty and we are a king.
                 //  2. It is card CN and we are color !C and Number N-1
-                if ((to.Count == 0) ||
+                if ((to.Count == 0 && card.Value == 12) ||
                     (to.Count > 0 && to.Last().Colour != card.Colour && to.Last().Value == card.Value + 1))
                 {
                     //  Move from tableau to tableau.
