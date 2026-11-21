@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -492,13 +492,16 @@ public partial class KlondikeSolitaireViewModel : CardGameViewModel
             //  Reveal the top card and make it playable.
             var topCardViewModel = from.Last();
 
+            var wasFaceDown = topCardViewModel.IsFaceDown;
+            var wasPlayable = topCardViewModel.IsPlayable;
+
             topCardViewModel.IsFaceDown = false;
             topCardViewModel.IsPlayable = true;
 
             RecordMoves(new MoveOperation(from, to, run, scoreModifier), new GenericOperation(() =>
             {
-                topCardViewModel.IsFaceDown = true;
-                topCardViewModel.IsPlayable = false;
+                topCardViewModel.IsFaceDown = wasFaceDown;
+                topCardViewModel.IsPlayable = wasPlayable;
             }));
         }
         else
